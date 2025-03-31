@@ -1,0 +1,39 @@
+<div class="topBar row m-0">
+    <div class="col-12 m-auto profileInfo p-0">
+        <!-- <span class="userPic">
+                 <img src="assets/images/Profile.png" alt="userIcon">
+            </span>
+        <span class="userName">{{loggedInEmpDet.firstName || ''}} {{loggedInEmpDet.lastName }}</span>
+        <span class="logoutImg">
+                <a routerLink="../login" class="feather icon-log-out"></a>
+            </span> -->
+        <div class="navbarContainer navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item header-notification" ngbDropdown>
+                    <a class="nav-link" tabindex="0" ngbDropdownToggle id="navbarDropdown1" role="button">
+                        <div class="userProfile">
+                            <img src="assets/images/Profile.png"
+                                onerror="this.src = 'assets/images/ic_profile_placeholder.png'" class="img-radius" />
+                            <!-- <span class="userName" title="{{loggedInEmpDet.fullName}}"> {{loggedInEmpDet.fullName |
+                                slice:0:15 }}
+                                <ng-container
+                                    *ngIf="loggedInEmpDet.fullName && loggedInEmpDet.fullName.length > 15">...</ng-container>
+                            </span> -->
+                        </div>
+                    </a>
+                    <div ngbDropdownMenu aria-labelledby="navbarDropdown1"
+                        class="dropdown-menu show-notification profile-notification active1">
+                        <a ngbDropdownItem href="javascript:;" style="padding-left: 4px;"
+                            href="../template.html#!/profile" target="_self">
+                            <i class="fa fa-sign-out"></i>Profile
+                        </a>
+                        <!-- <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a> -->
+                        <a ngbDropdownItem href="../login.html" target="_self">
+                            <i class="fa fa-sign-out"></i>Logout
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

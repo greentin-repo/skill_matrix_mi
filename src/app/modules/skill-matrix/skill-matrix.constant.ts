@@ -1,0 +1,6 @@
+export const CONSTANT = {
+    EQUAL: "EQUAL",
+    ELIGIBLE: "ELIGIBLE",
+    NOT_ELIGIBLE: "NOT_ELIGIBLE",
+    OTHER: "OTHER"
+}

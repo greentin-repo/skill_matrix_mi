@@ -1,0 +1,126 @@
+<div>
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="height: calc(100vh - 7%);">
+            <div *ngIf="submitLoading">
+                <app-loading></app-loading>
+            </div>
+            <div class="modal-body p-t-0 p-b-0" style="padding: 0;">
+                <div [style.height]="'calc(100vh - 38vh)'">
+                    <div class="row modal-header stage-header">
+                        <div class="col-11">
+                            <div class="main-tab-switcher">
+                                <div class="main-tab-switch" [ngClass]="{'active':isSetMainTab(1)}"
+                                    (click)="setMainTab(1)">
+                                    <span>Training</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="close" (click)="closeModal()">
+                                <span>×</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="height: calc(100vh - 12%);">
+                        <div class="table-block">
+                            <div class="table-responsive tableFixHead">
+                                <table class="table" matSort (matSortChange)="sortData($event)">
+                                    <thead>
+                                        <tr>
+                                            <th mat-sort-header="DayNo" class="fixedColumn" style="text-align: center;">
+                                                Day</th>
+                                            <th mat-sort-header="date" class="">Date</th>
+                                            <th mat-sort-header="keyPoint" class="">Key Point</th>
+                                            <th mat-sort-header="Ref" class="">Reference</th>
+                                            <th mat-sort-header="status" class="">OE Activity Status</th>
+                                            <th class="fixedColumn"
+                                                *ngIf="this.actionDet.status == 'COMPLETED' || this.actionDet.status == 'REJECTED' || this.actionDet.status == 'NOT COMPLETED'">
+                                                Status
+                                            </th>
+                                            <th class="fixedColumn p-0" *ngIf="this.actionDet.status == 'PENDING'">
+                                                <select style="width: fit-content;; border: none;"
+                                                    class="custom-selectField form-control"
+                                                    [(ngModel)]="searchDet.masterSelected"
+                                                    (change)="onChangeCompleteAll($event)">
+                                                    <option value="">Select Status</option>
+                                                    <option value="{{opt.id}}" *ngFor="let opt of constant.ACTION_LIST">
+                                                        {{'All '+opt.name}}</option>
+                                                </select>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of trainingProdDetails.auditPointList">
+                                            <td>{{item.dayNo}}</td>
+                                            <td>{{item.assignedDate | date: 'dd-MM-yyyy'}}</td>
+                                            <td>{{item.keyPoint}}</td>
+                                            <td>{{item.reference || ''}}</td>
+                                            <!-- <td>{{item.stageoneStatus}}</td> -->
+                                            <td class="completed">COMPLETED</td>
+                                            <td class="fixedColumn"
+                                                *ngIf="this.actionDet.status == 'COMPLETED' || this.actionDet.status == 'REJECTED' || this.actionDet.status == 'NOT COMPLETED'"
+                                                [ngClass]="{'completed': this.actionDet.status == 'COMPLETED','pending': this.actionDet.status == 'PENDING','not-completed': this.actionDet.status == 'NOT COMPLETED'}">
+                                                {{this.actionDet.status}}
+                                            </td>
+                                            <td class="fixedColumn p-0" *ngIf="this.actionDet.status == 'PENDING'">
+                                                <select class="custom-selectField form-control"
+                                                    style="width: 100%; border: none;"
+                                                    (change)="onChangeComplete($event, item)"
+                                                    [(ngModel)]="item.selectedStatus">
+                                                    <option value="">Select Status</option>
+                                                    <option value="{{opt.id}}" *ngFor="let opt of constant.ACTION_LIST">
+                                                        {{opt.name}}</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr
+                                            *ngIf="(trainingProdDetails.auditPointList == null || trainingProdDetails.auditPointList.length == 0)">
+                                            <td colspan="11" class="text-center no-record-found" *ngIf="!listLoading">
+                                                Data Not Found
+                                            </td>
+                                            <td colspan="11" class="text-center loading-div" *ngIf="listLoading">
+                                                <app-loading></app-loading>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-0" *ngIf="trainingProdDetails.auditPointList[0].oeComment !== '' && trainingProdDetails.auditPointList[0].oeComment !== null">
+                <div class="col-12" style="display: inline-flex;padding-bottom: 10px;">
+                    <label for="comment" class="col-form-label" style="margin-right: 10px;width: 6rem;">OE Comment</label>
+                    <textarea class="form-control textarea-custom" id="comment" name="comment" [(ngModel)]="trainingProdDetails.auditPointList[0].oeComment"
+                        rows="2" placeholder="Comment" disabled [maxlength]="1000"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer paginationFooter">
+                <div class="row m-0">
+                    <div class="col-9 p-0" style="display: inline-flex;">
+                            <label for="comment" class="col-form-label" style="margin-right: 10px;display: contents;">Comment <span class="astrik">*  </span> </label>
+                                    <textarea class="form-control textarea-custom" id="comment" name="comment" [(ngModel)]="trainingProdDetails.comment" rows="2"  placeholder="Comment"  [maxlength]="1000" [disabled]="actionDet.status != 'PENDING'"></textarea>
+                    </div>
+                    <div class="col-3 text-right">
+                        <ng-container *ngIf="actionDet.status == 'PENDING'">
+                            <button type="button" class="btn submitBtn btn-completed" (click)="submitStageTwoStatus()"
+                                [ngClass]="{'disable-btn' : enableSubmitBtn === false}">Submit
+                            </button>
+                            <!-- <button type="button" class="btn submitBtn btn-completed" (click)="submitStageTwoStatus(true)"
+                                [ngClass]="{'disable-btn' : enableCompletedBtn === false}">Completed
+                                </button>
+                            <button type="button" class="btn submitBtn btn-not-completed" (click)="submitStageTwoStatus(false)"
+                                style="margin-left: 10px; background: #f20000;">Not
+                                Completed</button> -->
+                        </ng-container>
+                        <button type="button" class="btn cancelBtn" (click)="closeModal()"
+                            style="margin-left: 10px;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

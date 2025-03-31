@@ -1,0 +1,159 @@
+.topBar {
+    width: 100%;
+    height: 60px;
+    background: transparent;
+}
+
+.profileInfo {
+    // text-align: right;
+    text-align: center;
+
+    .userPic {
+        img {
+            max-width: 100%;
+            height: 30px;
+            vertical-align: bottom;
+            margin-right: 5px;
+        }
+    }
+
+    .userName {
+        font: normal normal bold 14px/1.5 Helvetica Neue;
+        color: #7044cd;
+        vertical-align: middle;
+    }
+
+    .logoutImg {
+        .feather {
+            padding: 5px;
+            margin-left: 5px;
+            font-size: 1.2rem;
+            border: 1px solid lightgray;
+            border-radius: 5px;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+    }
+}
+
+.navbarContainer {
+    .navbar-nav {
+        padding: 0px;
+        margin: 0px;
+        list-style: none;
+        display: inline-block;
+
+        li {
+            >a {
+                font-size: 16px;
+                padding: 0 0.6rem;
+                color: #7044cd;
+            }
+
+            .userProfile {
+                display: inline-block;
+
+                i {
+                    font-size: 10px;
+                    margin-left: 10px;
+                }
+
+                img {
+                    max-width: 100%;
+                    height: 50px;
+                    width: 50px;
+                    vertical-align: middle;
+                    margin-right: 5px;
+                }
+
+                .userName {
+                    font: normal normal bold 14px/1.5 Helvetica Neue;
+                    color: #7044cd;
+                    vertical-align: middle;
+                }
+            }
+
+            &.header-notification {
+                perspective: 1000px;
+                z-index: 99;
+                position: relative;
+                cursor: pointer;
+
+                .profile-notification {
+                    background: #fff;
+                    box-shadow: 0 0 35px 0 rgb(0 0 0 / 25%);
+                    border-radius: 5px;
+                    opacity: 1;
+                    position: absolute;
+                    right: 0;
+                    visibility: visible;
+                    transform: translateY(20px);
+                    padding: 0px;
+                    z-index: 999;
+
+                    a {
+                        &:hover {
+                            background-color: #f6fcff;
+                        }
+
+                        padding: 0.7em 20px;
+                        display: block;
+                        text-decoration: none;
+                        font-size: 15px;
+                        padding-left: 0;
+                        color: #222;
+
+                        &:not([href]) {
+                            &:not([tabindex]) {
+                                color: inherit;
+                                text-decoration: none;
+
+                                &:focus {
+                                    color: inherit;
+                                    text-decoration: none;
+                                }
+
+                                &:hover {
+                                    color: inherit;
+                                    text-decoration: none;
+                                }
+                            }
+                        }
+                    }
+
+                    a:first-child {
+                        border-top-left-radius: 5px;
+                        border-top-right-radius: 5px;
+                    }
+
+                    a:last-child {
+                        border-bottom-left-radius: 5px;
+                        border-bottom-right-radius: 5px;
+                    }
+
+                    i {
+                        font-size: 15px;
+                        margin-left: 0;
+                        margin-right: 5px;
+                    }
+
+                    &.active1 {
+                        &:before {
+                            content: "";
+                            border: 10px solid transparent;
+                            border-left-color: #fff;
+                            border-top-color: #fff;
+                            position: absolute;
+                            border-radius: 5px;
+                            top: -9px;
+                            right: 20px;
+                            box-shadow: -30px -11px 35px 0 rgb(0 0 0 / 25%);
+                            transform: rotate(45deg);
+                            z-index: 9999;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

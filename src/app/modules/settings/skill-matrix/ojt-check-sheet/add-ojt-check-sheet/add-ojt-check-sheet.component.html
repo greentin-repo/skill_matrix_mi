@@ -1,0 +1,878 @@
+<div class="row m-0">
+    <div class="p-0 col-9">
+        <div class="headerBar">
+            <span class="backArrow">
+                <a routerLink=".."><i class="feather icon-arrow-left"></i></a>
+            </span>
+            <div class="main-tab-switcher">
+                <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetChecksheetTab(3)}"
+                    (click)="setcheckSheetTab(3)">
+                    Create OJT Checksheet
+                </div>
+                <div *ngIf="!isCheckSheetAvailable" class="main-tab-switch"
+                    [ngClass]="{mainActiveSwitch:isSetChecksheetTab(4)}" (click)="setcheckSheetTab(4)">
+                    Copy OJT Checksheet
+                </div>
+            </div>
+            <!-- <app-topBar title="Add OJT Checksheet" style="width: 100%;">
+            </app-topBar> -->
+        </div>
+    </div>
+    <div class="col-3 m-auto">
+        <!-- <app-loginInfo></app-loginInfo> -->
+    </div>
+</div>
+<app-loading *ngIf="actionLoader"></app-loading>
+<ng-container *ngIf="isSetChecksheetTab(3) || isCheckSheetAvailable">
+    <div class="row m-0">
+        <div class="col-md-12">
+            <form class="checksheetForm" [formGroup]="checksheetForm"
+                (ngSubmit)="saveChecksheetDetails(checksheetForm)">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="plant" class=" col-form-label">Plant &nbsp;<span class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="plant" id="plant"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="plant" [placeholder]="'Select Plant'"
+                                [settings]="SingleBranchDropdownSettings"
+                                [data]="getSortFunction(branchAccessList,'dept')" [disabled]="isCheckSheetAvailable"
+                                (onSelect)="onChange($event,'plant')" (onDeSelect)="onChange(false,'plant')">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="checksheetForm.controls['plant'].invalid && (checksheetForm.controls['plant'].touched || checksheetForm.controls['plant'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="checksheetForm.controls['plant'].errors.required">
+                                    Please select plant
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="deptId" class=" col-form-label">Department &nbsp;<span
+                                class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="deptId" id="deptId"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="deptId" [placeholder]="'Select Department'"
+                                [settings]="SingleDropdownSettings" [data]="departmentList"
+                                [disabled]="isCheckSheetAvailable" (onSelect)="onChange($event,'dept')"
+                                (onDeSelect)="onChange(false,'dept')">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="checksheetForm.controls['deptId'].invalid && (checksheetForm.controls['deptId'].touched || checksheetForm.controls['deptId'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="checksheetForm.controls['deptId'].errors.required">
+                                    Please select department
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="cellLineId" class=" col-form-label">Cell/Line &nbsp;<span
+                                class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="cellLineId" id="cellLineId"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="cellLineId" [placeholder]="'Select Cell/Line'"
+                                [settings]="SingleDropdownSettings" [data]="cellList" [disabled]="isCheckSheetAvailable"
+                                (onSelect)="onChange($event,'cell')" (onDeSelect)="onChange(false,'cell')">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="checksheetForm.controls['cellLineId'].invalid && (checksheetForm.controls['cellLineId'].touched || checksheetForm.controls['cellLineId'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="checksheetForm.controls['cellLineId'].errors.required">
+                                    Please select cell/line
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="workstationId" class=" col-form-label">Workstation &nbsp;<span
+                                class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="workstationId" id="workstationId"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="workstationId" [placeholder]="'Select Workstation'"
+                                [settings]="SingleDropdownSettings" [data]="workforceList"
+                                [disabled]="isCheckSheetAvailable"
+                                (onChange)="updateLevelOptions(checksheetForm.get('workstationId').value)">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="checksheetForm.controls['workstationId'].invalid && (checksheetForm.controls['workstationId'].touched || checksheetForm.controls['workstationId'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="checksheetForm.controls['workstationId'].errors.required">
+                                    Please select workstation
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="level" class=" col-form-label">Level &nbsp;<span class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="level" id="level"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="level" [placeholder]="'Select Level'"
+                                [settings]="SingleLevelDropdownSettings" [data]="LevelList"
+                                [disabled]="isCheckSheetAvailable">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="checksheetForm.controls['level'].invalid && (checksheetForm.controls['level'].touched || checksheetForm.controls['level'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="checksheetForm.controls['level'].errors.required">
+                                    Please select level
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="noOfDays" class=" col-form-label">No. of Days &nbsp;<span
+                                class="astrik">*</span></label>
+                        <div class="">
+                            <input placeholder="Enter No. of Days" class="form-control checksheetinputBox" id="noOfDays"
+                                name="noOfDays" [(ngModel)]="noOfDays" formControlName="noOfDays" type="number"
+                                pattern="^\d{1,2}$">
+                            <div *ngIf="checksheetForm.controls['noOfDays'].invalid && (checksheetForm.controls['noOfDays'].touched || checksheetForm.controls['noOfDays'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="checksheetForm.controls['noOfDays'].errors.required">
+                                    Please enter no. of days
+                                </div>
+                                <div *ngIf="checksheetForm.get('noOfDays').hasError('zeroValue')">
+                                    No. of days can not be 0.
+                                </div>
+                                <!-- <div *ngIf="checksheetForm.get('noOfDays').hasError('negativeValue')">
+                                    No. of days can not be negative.
+                                </div> -->
+                                <div *ngIf="checksheetForm.get('noOfDays').hasError('pattern')">
+                                    Please enter two-digit positive integer no. of days.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label for="title" class=" col-form-label">Title &nbsp;<span class="astrik">*</span></label>
+                        <div class="">
+                            <input placeholder="Enter Checksheet Title" class="form-control checksheetinputBox"
+                                id="title" name="title" formControlName="title" type="text" maxlength="250">
+                            <div *ngIf="checksheetForm.controls['title'].invalid && (checksheetForm.controls['title'].touched || checksheetForm.controls['title'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="checksheetForm.controls['title'].errors.required">
+                                    Please enter checksheet title
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="row text-right">
+                    <div class="col-md-12 m-t-5">
+                        <button class="btn btn-lg submitBtn event-btn" type="submit">
+                            <span *ngIf="!isCheckSheetAvailable" class="btn-text">Submit</span>
+                            <span *ngIf="isCheckSheetAvailable" class="btn-text">Update</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div *ngIf="isCheckSheetAvailable" class="row m-t-10">
+                <div class="col-md-6">
+                    <ng-container
+                        *ngIf="(checksheetDetails.hasOwnProperty('groupPointList') && checksheetDetails.groupPointList != null && checksheetDetails.groupPointList.length != 0) || (checksheetDetails.parameterList != null && checksheetDetails.parameterList.length != 0)">
+                        <div class="main-tab-switcher">
+                            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(1)}"
+                                (click)="setMainTab(1)">
+                                Key
+                                Points
+                            </div>
+                            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(2)}"
+                                (click)="setMainTab(2)">
+                                Verification
+                                Parameter
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="col-md-6 text-right">
+                    <button style="margin: 5px;" class="btn btn-lg submitBtn event-btn m-r-10" type="button"
+                        (click)="openAddChecksheetPointsModal(AddChecksheetPointsModel)">
+                        <span class="btn-text">Add Key Points</span>
+                    </button>
+                    <button style="margin: 5px;" class="btn btn-lg submitBtn event-btn m-l-5" type="button"
+                        (click)="openAddChecksheetPointsModal(AddChecksheetParametersModel)">
+                        <span class="btn-text">Add Verification Parameters</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <perfect-scrollbar [style.height]="'calc(100vh - 60vh)'">
+        <div class="row m-0">
+            <div class="col-md-12">
+                <ng-container *ngIf="isSetMainTab(1)">
+                    <div class="pointsBlock"
+                        *ngIf="checksheetDetails.hasOwnProperty('groupPointList') && checksheetDetails.groupPointList != null && checksheetDetails.groupPointList.length != 0">
+                        <div class="row formElementsBlock" *ngFor="let x of checksheetDetails.groupPointList">
+                            <div class="overlay-bg"></div>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">
+                                            Day : {{x.dayNo || ''}}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Key Points</th>
+                                        <th> Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let point of x.pointList">
+                                    <tr>
+                                        <td>{{point.itemName || ''}}</td>
+                                        <td>{{point.reference || ''}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="actionBtn">
+                                <div>
+                                    <button class="btn btn-edit btn-que-edit" type="button"
+                                        (click)="updatePoint(AddChecksheetPointsModel,x)">EDIT</button>
+                                </div>
+                                <div>
+                                    <button class="btn ques-delete-btn btn-que-delete" type="button"
+                                        (click)="deleteChecksheetPoint(x)">DELETE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="isSetMainTab(2)">
+                    <div class="pointsBlock"
+                        *ngIf="checksheetDetails.parameterList != null && checksheetDetails.parameterList.length != 0">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%;"> Field Type</th>
+                                    <th> Field</th>
+                                    <th *ngIf="isActionTakenInParam()" style="width: 20%;"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="formElementsBlock1"
+                                [ngClass]="isActionTakenInParam() ? '' : 'formElementsBlock'"
+                                *ngFor="let x of checksheetDetails.parameterList">
+                                <div class="overlay-bg" *ngIf="!isActionTakenInParam()"></div>
+                                <tr>
+                                    <td style="width: 20%;">
+                                        {{x.parameterType || ''}}
+                                    </td>
+                                    <td>
+                                        <span *ngIf="!x.isActionTaken">
+                                            {{x.parameter || ''}}
+                                            <ng-container
+                                                *ngIf="x.hasOwnProperty('paramObj') && x.paramObj.typeCaption == 'CyclePlan'">
+                                                &nbsp;<small>(<b>Cycle Value : </b>{{x.cycleValue ||
+                                                    ''}})</small></ng-container>
+                                        </span>
+                                        <div *ngIf="x.isActionTaken" style="display: inline-flex;width: 100%;">
+                                            <input placeholder="Enter Parameter" class="form-control" type="text"
+                                                [(ngModel)]="x.editableParameter" name="editableParameter" />
+                                            <ng-container
+                                                *ngIf="x.hasOwnProperty('paramObj') && x.paramObj.typeCaption == 'CyclePlan'">&nbsp;
+                                                <input placeholder="Enter Cycle Value" class="form-control"
+                                                    type="number" [(ngModel)]="x.editableCycleValue"
+                                                    name="editableCycleValue" />
+                                            </ng-container>
+                                        </div>
+                                    </td>
+                                    <td *ngIf="x.isActionTaken" style="width: 20%;">
+                                        <button class="btn submitBtn" type="button"
+                                            (click)="updateParameter(x,'')">Update</button>&nbsp;&nbsp;
+                                        <button class="btn borderBtn" type="button"
+                                            (click)="updateParameter(x,'cancel')">Cancel</button>
+                                    </td>
+                                </tr>
+                                <div class="actionBtn">
+                                    <div>
+                                        <button class="btn btn-edit btn-que-edit" type="button"
+                                            (click)="updateParameter(x,'edit')">EDIT</button>
+                                    </div>
+                                    <div>
+                                        <button class="btn ques-delete-btn btn-que-delete" type="button"
+                                            (click)="deleteChecksheetParameter(x)">DELETE</button>
+                                    </div>
+                                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </perfect-scrollbar>
+</ng-container>
+<ng-container *ngIf="isSetChecksheetTab(4) && !isCheckSheetAvailable">
+    <div class="row m-0">
+        <div class="col-md-12">
+            <form class="checksheetForm" [formGroup]="copyChecksheetForm"
+                (ngSubmit)="saveCopyChecksheetDetails(copyChecksheetForm)" [style.height]="'calc(100vh - 11vh)'">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="plant" class=" col-form-label">Plant &nbsp;<span class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="plant" id="plant"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="plant" [ngModel]="copyChecksheetDetails.plant"
+                                [placeholder]="'Select Plant'" [settings]="SingleBranchDropdownSettings"
+                                [data]="getSortFunction(branchAccessList,'dept')" [disabled]="isCheckSheetAvailable"
+                                (onSelect)="onPlantChange($event,'plant')" (onDeSelect)="onChange(false,'plant')">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="isDirty && copyChecksheetForm.controls['plant'].invalid && (copyChecksheetForm.controls['plant'].touched || copyChecksheetForm.controls['plant'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="copyChecksheetForm.controls['plant'].errors.required">
+                                    Please select plant
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="deptId" class=" col-form-label">Department &nbsp;<span
+                                class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="deptId" id="deptId"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="deptId" ([ngModel])="copyChecksheetDetails.dept"
+                                [placeholder]="'Select Department'" [settings]="SingleDropdownSettings"
+                                [data]="departmentList" [disabled]="isCheckSheetAvailable"
+                                (onSelect)="onPlantChange($event,'dept')" (onDeSelect)="onChange(false,'dept')">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="copyChecksheetForm.controls['deptId'].invalid && (copyChecksheetForm.controls['deptId'].touched || copyChecksheetForm.controls['deptId'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="copyChecksheetForm.controls['deptId'].errors.required">
+                                    Please select department
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="cellLineId" class=" col-form-label">Cell/Line &nbsp;<span
+                                class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="cellLineId" id="cellLineId"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="cellLineId" ([ngModel])="copyChecksheetDetails.cell"
+                                [placeholder]="'Select Cell/Line'" [settings]="SingleDropdownSettings" [data]="cellList"
+                                [disabled]="isCheckSheetAvailable" (onSelect)="onPlantChange($event,'cell')"
+                                (onDeSelect)="onChange(false,'cell')">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="copyChecksheetForm.controls['cellLineId'].invalid && (copyChecksheetForm.controls['cellLineId'].touched || copyChecksheetForm.controls['cellLineId'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="copyChecksheetForm.controls['cellLineId'].errors.required">
+                                    Please select cell/line
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="workstationId" class=" col-form-label">Workstation &nbsp;<span
+                                class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="workstationId" id="workstationId"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="workstationId" ([ngModel])="copyChecksheetDetails.workstation"
+                                [placeholder]="'Select Workstation'" [settings]="SingleDropdownSettings"
+                                [data]="workforceList" [disabled]="isCheckSheetAvailable"
+                                (onChange)="updateLevelOptions(copyChecksheetForm.get('workstationId').value)">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="copyChecksheetForm.controls['workstationId'].invalid && (copyChecksheetForm.controls['workstationId'].touched || copyChecksheetForm.controls['workstationId'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="copyChecksheetForm.controls['workstationId'].errors.required">
+                                    Please select workstation
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="level" class=" col-form-label">Level &nbsp;<span class="astrik">*</span></label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="level" id="level"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                formControlName="level" ([ngModel])="copyChecksheetDetails.level"
+                                (onSelect)="onPlantChange($event,'level')" [placeholder]="'Select Level'"
+                                [settings]="SingleLevelDropdownSettings" [data]="LevelList"
+                                [disabled]="isCheckSheetAvailable">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="copyChecksheetForm.controls['level'].invalid && (copyChecksheetForm.controls['level'].touched || copyChecksheetForm.controls['level'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="copyChecksheetForm.controls['level'].errors.required">
+                                    Please select level
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="noOfDays" class=" col-form-label">No. of Days &nbsp;<span
+                                class="astrik">*</span></label>
+                        <div class="">
+                            <input placeholder="Enter No. of Days" class="form-control checksheetinputBox" id="noOfDays"
+                                name="noOfDays" ([ngModel])="copyChecksheetDetails.noOfDays" formControlName="noOfDays"
+                                type="number" pattern="^\d{1,2}$">
+                            <div *ngIf="copyChecksheetForm.controls['noOfDays'].invalid && (copyChecksheetForm.controls['noOfDays'].touched || copyChecksheetForm.controls['noOfDays'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="copyChecksheetForm.controls['noOfDays'].errors.required">
+                                    Please enter no. of days
+                                </div>
+                                <div *ngIf="copyChecksheetForm.get('noOfDays').hasError('zeroValue')">
+                                    No. of days can not be 0.
+                                </div>
+                                <!-- <div *ngIf="copyChecksheetForm.get('noOfDays').hasError('negativeValue')">
+                                    No. of days can not be negative.
+                                </div> -->
+                                <div *ngIf="copyChecksheetForm.get('noOfDays').hasError('pattern')">
+                                    Please enter two-digit positive integer no. of days.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label for="title" class=" col-form-label">Title &nbsp;<span class="astrik">*</span></label>
+                        <div class="">
+                            <input placeholder="Enter Checksheet Title" class="form-control checksheetinputBox"
+                                id="title" name="title" formControlName="title"
+                                ([ngModel])="copyChecksheetDetails.title" type="text" maxlength="250">
+                            <div *ngIf="copyChecksheetForm.controls['title'].invalid && (copyChecksheetForm.controls['title'].touched || copyChecksheetForm.controls['title'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="copyChecksheetForm.controls['title'].errors.required">
+                                    Please enter checksheet title
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="copy-checksheets" *ngIf="checksheetList != null && checksheetList.length > 0">
+                    <perfect-scrollbar [style.height]="'calc(100vh - 63vh)'">
+                        <div class="row m-t-10">
+                            <div class="col-md-5">
+                                <div class="txt-color-primary" style="text-align:center;font-size:18px;">
+                                    <span>Checksheet List</span>
+                                </div>
+                                <ng-container class="copy-checksheet-container">
+                                    <div>
+                                        <div class="small-checksheet-card" *ngFor="let x of checksheetList"
+                                            [ngClass]="(selectedchecksheet.id==x.id) ? 'active-copy-sheet' : '' ">
+                                            <div style="margin-left: 10px;" (click)="setChecksheet(x)">
+                                                <div class="txt-capitalize checksheet-title">
+                                                    {{x.title}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <div class="col-md-7 checksheet-list-col">
+                                <ng-container>
+                                    <div class="main-tab-switcher1">
+                                        <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(1)}"
+                                            (click)="setMainTab(1)">
+                                            Key
+                                            Points
+                                        </div>
+                                        <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(2)}"
+                                            (click)="setMainTab(2)">
+                                            Verification
+                                            Parameter
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <div class="row m-0">
+                                    <div class="col-md-12" *ngIf="isCopyChecksheetDetailsAvail">
+                                        <ng-container *ngIf="isSetMainTab(1)">
+                                            <div class="modal-body" style="padding: 10px 5px 10px 10px;">
+                                                <!-- <perfect-scrollbar [style.height]="'calc(100vh - 30vh)'"> -->
+                                                <ng-container formArrayName="daysList">
+                                                    <div class="daywiseBlock"
+                                                        *ngFor="let dayNumForm of daysList().controls; let dayNumIndex = index;let dayNumLast = last;">
+                                                        <ng-container [formGroupName]="dayNumIndex">
+                                                            <div class="row m-0">
+                                                                <label for="dayNo" class="col-sm-4 col-form-label"
+                                                                    style="padding-right: 7px !important;">Day
+                                                                    Number &nbsp;<span class="astrik">*</span></label>
+                                                                <div class="col-sm-6"
+                                                                    style="padding-left: 0px !important;padding-right: 7px !important;">
+                                                                    <input placeholder="Enter Number Day"
+                                                                        class="form-control" type="number" id="dayNo"
+                                                                        name="dayNo" formControlName="dayNo" disabled>
+                                                                </div>
+                                                                <div class="col-sm-2 p-0 text-right">
+                                                                    <button type="button" class="btn btn-sm successBtn"
+                                                                        *ngIf="dayNumLast"
+                                                                        (click)="addDaysRow(daysList().controls.length)">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </button>&nbsp;&nbsp;
+                                                                    <button type="button" class="btn btn-sm dangerBtn"
+                                                                        (click)="removeDayNumRow(dayNumIndex)"
+                                                                        *ngIf="daysList().controls.length > 1">
+                                                                        <i class="fa fa-times"></i>
+                                                                    </button>&nbsp;&nbsp;
+                                                                    <button type="button" class="btn btn-sm borderBtn"
+                                                                        (click)="dayNumForm.isVisible = (dayNumForm.isVisible) ? false : true">
+                                                                        <i class="fa"
+                                                                            [ngClass]="(dayNumForm.isVisible) ? 'fa-chevron-up':'fa-chevron-down'"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <ng-container formArrayName="pointList"
+                                                                *ngIf="!dayNumForm.isVisible">
+                                                                <table class="table table-bordered"
+                                                                    style="margin-top: 10px;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Key Points &nbsp;<span
+                                                                                    class="astrik">*</span></th>
+                                                                            <th>Reference
+                                                                                <!--&nbsp;<span class="astrik">*</span>-->
+                                                                            </th>
+                                                                            <th style="width: 10%;"></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr
+                                                                            *ngFor="let point of pointList(dayNumIndex).controls; let pointIndex = index;let pointLast = last;">
+                                                                            <ng-container [formGroupName]="pointIndex">
+                                                                                <td>
+                                                                                    <input type="hidden" name="id"
+                                                                                        formControlName="id" />
+                                                                                    <input type="hidden" name="action"
+                                                                                        formControlName="action" />
+                                                                                    <input
+                                                                                        placeholder="Enter Checksheet Point"
+                                                                                        class="form-control" type="text"
+                                                                                        id="itemName" name="itemName"
+                                                                                        formControlName="itemName" />
+                                                                                    <div *ngIf="pointList(dayNumIndex).controls.at(pointIndex).get('itemName').invalid && (pointList(dayNumIndex).controls.at(pointIndex).get('itemName').touched || pointList(dayNumIndex).controls.at(pointIndex).get('itemName').dirty)"
+                                                                                        class="custom-errorMsg">
+                                                                                        <div
+                                                                                            *ngIf="pointList(dayNumIndex).controls.at(pointIndex).get('itemName').errors.required">
+                                                                                            Please enter checksheet
+                                                                                            point
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input placeholder="Enter Reference"
+                                                                                        class="form-control" type="text"
+                                                                                        id="reference" name="reference"
+                                                                                        formControlName="reference" />
+                                                                                    <div *ngIf="pointList(dayNumIndex).controls.at(pointIndex).get('reference').invalid && (pointList(dayNumIndex).controls.at(pointIndex).get('reference').touched || pointList(dayNumIndex).controls.at(pointIndex).get('reference').dirty)"
+                                                                                        class="custom-errorMsg">
+                                                                                        <div
+                                                                                            *ngIf="pointList(dayNumIndex).controls.at(pointIndex).get('reference').errors.required">
+                                                                                            Please enter reference
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width: 10%;">
+                                                                                    <button type="button"
+                                                                                        class="btn btn-sm successBtn"
+                                                                                        (click)="addPointsRow(dayNumIndex)"
+                                                                                        *ngIf="pointLast">
+                                                                                        <i
+                                                                                            class="fa fa-plus"></i></button>&nbsp;&nbsp;
+                                                                                    <button type="button"
+                                                                                        class="btn btn-sm dangerBtn"
+                                                                                        (click)="removePointRow(dayNumIndex,pointIndex)"
+                                                                                        *ngIf="pointList(dayNumIndex).controls.length > 1">
+                                                                                        <i class="fa fa-times"></i>
+                                                                                    </button>
+                                                                                </td>
+                                                                            </ng-container>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </ng-container>
+                                                        </ng-container>
+                                                    </div>
+                                                </ng-container>
+                                                <!-- </perfect-scrollbar> -->
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="isSetMainTab(2)">
+                                            <div class="modal-body" style="padding: 10px;">
+                                                <div class="checksheetForm">
+                                                    <div class="row">
+                                                        <div class="col-md-3" style="padding-right: 5px !important;padding-left: 5px !important;">
+                                                            <!-- style="padding-right: 5px !important;padding-left: 5px !important;" -->
+                                                            <label for="parameterTypeId"
+                                                                class="col-sm-12 col-form-label">Field
+                                                                Type &nbsp;<span class="astrik">*</span></label>
+                                                            <div class="col-sm-12"
+                                                                style="padding-right: 5px !important;padding-left: 5px !important;">
+                                                                <ng-multiselect-dropdown name="template"
+                                                                    class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                                                    [placeholder]="'Select Field Type'"
+                                                                    [settings]="SingleParaDropdownSettings"
+                                                                    [(ngModel)]="copyChecksheetDetails.parameterType"
+                                                                    [data]="getParaSortFunction(paraTypeList,'paraType')"
+                                                                    formControlName="parameterTypeId"
+                                                                    (onSelect)="onParameterTypeSelect($event)"
+                                                                    (onDeSelect)="onParameterTypeSelect(false)">
+                                                                </ng-multiselect-dropdown>
+                                                                <div *ngIf="isAddButtonClicked" class="custom-errorMsg">
+                                                                    <div
+                                                                        *ngIf="copyChecksheetDetails.parameterType == null || copyChecksheetDetails.parameterType.length == 0">
+                                                                        Please select field type
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <!--  style="padding-right: 5px !important;padding-left: 5px !important;" -->
+                                                            <label for="parameter"
+                                                                class="col-sm-12 col-form-label">Field
+                                                                &nbsp;<span class="astrik">*</span>&nbsp;
+                                                            </label>
+
+                                                            <div class="col-sm-12"
+                                                                style="padding-right: 5px !important;padding-left: 0px !important;">
+                                                                <input placeholder="Enter Parameter"
+                                                                    *ngIf="isDateTimeParameter && !isNumberParameter && !isTextParameter && !isGapParameter && !isModelParameter"
+                                                                    class="form-control checksheetinputBox" type="text"
+                                                                    formControlName="parameter"
+                                                                    [(ngModel)]="copyChecksheetDetails.parameter">
+                                                                <input *ngIf="isNumberParameter"
+                                                                    placeholder="Enter Parameter"
+                                                                    class="form-control checksheetinputBox" type="text"
+                                                                    formControlName="parameter"
+                                                                    [(ngModel)]="copyChecksheetDetails.parameter">
+                                                                <input
+                                                                    *ngIf="!isNumberParameter && !isDateTimeParameter && !isModelParameter && !isGapParameter || isTextParameter"
+                                                                    placeholder="Enter Parameter"
+                                                                    class="form-control checksheetinputBox" type="text"
+                                                                    formControlName="parameter"
+                                                                    [(ngModel)]="copyChecksheetDetails.parameter">
+                                                                <input
+                                                                    *ngIf="isGapParameter && !isDateTimeParameter && !isNumberParameter "
+                                                                    placeholder="Enter Gap"
+                                                                    class="form-control checksheetinputBox" type="text"
+                                                                    formControlName="parameter"
+                                                                    [(ngModel)]="copyChecksheetDetails.parameter">
+                                                                <input *ngIf="isModelParameter && !isDateTimeParameter"
+                                                                    placeholder="Enter Model"
+                                                                    class="form-control checksheetinputBox" type="text"
+                                                                    formControlName="parameter"
+                                                                    [(ngModel)]="copyChecksheetDetails.parameter">
+                                                                <div *ngIf="isAddButtonClicked" class="custom-errorMsg">
+                                                                    <div
+                                                                        *ngIf="copyChecksheetDetails.parameter == undefined || copyChecksheetDetails.parameter == ''">
+                                                                        Please
+                                                                        enter a parameter
+                                                                    </div>
+                                                                    <div
+                                                                        *ngIf=" isAddButtonClicked && isNumberParameter">
+                                                                        Please
+                                                                        enter a number
+                                                                    </div>
+                                                                    <div
+                                                                        *ngIf="isAddButtonClicked && isDateTimeParameter">
+                                                                        Please
+                                                                        enter a parameter
+                                                                    </div>
+                                                                    <div *ngIf="isAddButtonClicked && isGapParameter">
+                                                                        Please
+                                                                        enter a gap
+                                                                    </div>
+                                                                    <div *ngIf="isAddButtonClicked && isModelParameter">
+                                                                        Please
+                                                                        enter a model
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3"
+                                                            style="padding-right: 5px !important;padding-left: 5px !important;">
+                                                            <ng-container
+                                                                *ngIf="(copyChecksheetDetails.parameterType[0].typeName == 'cyclePlan')">
+                                                                <label for="cycleValue"
+                                                                    class="col-sm-12 col-form-label">No.
+                                                                    of
+                                                                    Cycle
+                                                                    &nbsp;<span class="astrik">*</span></label>
+                                                                <div class="col-sm-12"
+                                                                    style="padding-right: 5px !important;padding-left: 0px !important;">
+                                                                    <input placeholder="Enter No. of Cycle"
+                                                                        onkeydown="false" onkeyup="false"
+                                                                        class="form-control checksheetinputBox"
+                                                                        type="text"
+                                                                        (input)="onParameterInputChange($event ,'Number')"
+                                                                        formControlName="cycleValue"
+                                                                        [(ngModel)]="copyChecksheetDetails.cycleValue">
+                                                                    <div *ngIf="isAddButtonClicked"
+                                                                        class="custom-errorMsg">
+                                                                        <div
+                                                                            *ngIf="copyChecksheetDetails.cycleValue == undefined || copyChecksheetDetails.cycleValue == ''">
+                                                                            Please enter cycle plan
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+                                                        </div>
+                                                        <div class="col-md-3 m-auto">
+                                                            <button style="margin-top: 0.2rem;"
+                                                                class="btn btn-lg submitBtn event-btn" type="button"
+                                                                (click)="addChecksheetParameter()">
+                                                                <span *ngIf="addLoader"
+                                                                    class="spinner-grow spinner-grow-sm"
+                                                                    role="status"></span>
+                                                                <span *ngIf="addLoader" class="load-text">
+                                                                    Loading...</span>
+                                                                <span *ngIf="!addLoader" class="btn-text">Add </span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        *ngIf="isSelectedParaType == 'Datetime' || isSelectedParaType == 'Model'">
+                                                        <!-- <form [formGroup]="checksheetParameterFormDate"
+                                                    (ngSubmit)="addChecksheetParameter(checksheetParameterFormDate)"> -->
+                                                        <input type="hidden" name="checkSheetId"
+                                                            formControlName="checkSheetId" />
+                                                        <div class="row" style="margin-top: 6px;">
+                                                            <div class="col-md-3"
+                                                                style="padding-right: 5px !important;padding-left: 5px !important;">
+                                                                <div class="col-sm-12"
+                                                                    style="padding-right: 5px !important;padding-left: 5px !important;">
+                                                                    <ng-multiselect-dropdown name="template"
+                                                                        class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                                                        [placeholder]="'Select Field Type'"
+                                                                        [settings]="SingleParaDropdownSettings"
+                                                                        [(ngModel)]="copyChecksheetDetails.parameterType"
+                                                                        [data]="getParaSortFunction(paraTypeList,'paraType')"
+                                                                        formControlName="parameterTypeId"
+                                                                        (onSelect)="onParameterTypeSelect($event)"
+                                                                        (onDeSelect)="onParameterTypeSelect(false)">
+                                                                    </ng-multiselect-dropdown>
+                                                                    <div *ngIf="isAddButtonClicked"
+                                                                        class="custom-errorMsg">
+                                                                        <div
+                                                                            *ngIf="copyChecksheetDetails.parameterType == null || copyChecksheetDetails.parameterType.length == 0">
+                                                                            Please select field type
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <!-- 
+                                                                style="padding-right: 5px !important;padding-left: 5px !important;" -->
+                                                                <div class="col-sm-12"
+                                                                style="padding-right: 5px !important;padding-left: 0px !important;">
+                                                                    <input placeholder="Enter Target Parameter"
+                                                                        *ngIf="isDateTimeParameter && !isNumberParameter && !isTextParameter && !isGapParameter && !isModelParameter"
+                                                                        class="form-control checksheetinputBox"
+                                                                        [(ngModel)]="copyChecksheetDetails.parameter1"
+                                                                        type="text" formControlName="parameter">
+                                                                    <input
+                                                                        *ngIf="isModelParameter && !isDateTimeParameter"
+                                                                        placeholder="Enter To Model"
+                                                                        class="form-control checksheetinputBox"
+                                                                        [(ngModel)]="copyChecksheetDetails.parameter1"
+                                                                        type="text" formControlName="parameter">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3"></div>
+                                                            <div class="col-md-3 m-auto">
+                                                                <button style="margin-top: 0.2rem;"
+                                                                    class="btn btn-lg submitBtn event-btn" type="button"
+                                                                    (click)="addChecksheetParameter()">
+                                                                    <span *ngIf="addLoader"
+                                                                        class="spinner-grow spinner-grow-sm"
+                                                                        role="status"></span>
+                                                                    <span *ngIf="addLoader" class="load-text">
+                                                                        Loading...</span>
+                                                                    <span *ngIf="!addLoader" class="btn-text">Add
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <!-- </form> -->
+                                                    </div>
+                                                </div>
+                                                <!-- <perfect-scrollbar [style.height]="'calc(100vh - 40vh)'"> -->
+                                                <div class
+                                                    *ngIf="parameterDet.rec != null && parameterDet.rec.length > 0">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Parameter Type</th>
+                                                                <th>Parameter</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr
+                                                                *ngFor="let x of parameterDet.rec;let paramIndex = index;">
+                                                                <td>{{x.parameterData.typeName || ''}}</td>
+                                                                <td>
+                                                                    {{x.parameter || ''}}
+                                                                    <span
+                                                                        *ngIf="x.parameterData.typeName == 'cyclePlan'"><small>(<b>Cycle
+                                                                                Value :
+                                                                            </b>{{x.cycleValue || 0}})</small></span>
+                                                                </td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-sm dangerBtn"
+                                                                        (click)="removeParameter(paramIndex)">
+                                                                        <i class="fa fa-times"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- </perfect-scrollbar> -->
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </perfect-scrollbar>
+                </div>
+
+                <div class="row text-right">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn submitBtn event-btn">
+                            <span *ngIf="submitLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                            <span *ngIf="submitLoader" class="load-text"> Loading...</span>
+                            <span *ngIf="!submitLoader" class="btn-text">Submit </span>
+                        </button>
+                        <button type="button" class="btn cancelBtn m-l-5" aria-label="Close" [disabled]="submitLoader"
+                            (click)="close('Cross Click')">Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-container>
+
+
+<!-- Add OJT Checksheet point or Update Popup -->
+<ng-template #AddChecksheetPointsModel let-modal let-c="close">
+    <app-add-check-sheet-points [close]="c" [dayValue]="noOfDays"></app-add-check-sheet-points>
+</ng-template>
+
+<!-- Add OJT Checksheet Parameter Popup -->
+<ng-template #AddChecksheetParametersModel let-modal let-c="close">
+    <app-add-check-sheet-parameter [close]="c"></app-add-check-sheet-parameter>
+</ng-template>

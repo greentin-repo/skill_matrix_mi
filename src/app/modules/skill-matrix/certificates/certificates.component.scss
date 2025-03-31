@@ -1,0 +1,92 @@
+.extraContent {
+    padding: 0px;
+
+    .has-search {
+        margin-bottom: 0px;
+
+        .form-control-feedback {
+            color: #7044cd;
+        }
+
+        .form-control-clear {
+            color: #f95371;
+            cursor: pointer;
+        }
+
+        input,
+        input:focus,
+        input:hover {
+            box-shadow: none;
+            outline: none;
+            border: none;
+            border-radius: 0px;
+            border-bottom: 1px solid #7044cd;
+            background-color: transparent;
+        }
+    }
+
+    .col-form-label {
+        position: absolute;
+        z-index: 999;
+        top: 4px !important;
+        font: normal normal bold 12px/1.5 Helvetica Neue !important;
+        left: 1rem !important;
+        color: #7044cd !important;
+    }
+}
+
+.input-group-append {
+    .fa {
+        position: relative;
+        top: 0.5em;
+    }
+}
+
+.form-group {
+    // border-bottom: 1px solid lightgray;
+    padding: 0.7rem 0px;
+    margin: 0px;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .col-form-label {
+        text-align: left;
+        font: normal normal normal 14px/1.5 Helvetica Neue;
+        letter-spacing: 0px;
+        color: #707070;
+    }
+}
+
+.custom-errorMsg {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #ff5252;
+}
+
+.customInputField {
+    margin-left: 15px;
+    padding-top: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    box-shadow: none;
+    // border-bottom: 1px solid lightgray;
+}
+
+.tableFixHead {
+    table {
+        position: relative;
+
+        th.actionTh,
+        td.actionTd {
+            width: 100px;
+        }
+
+        tbody td {
+            vertical-align: middle;
+        }
+    }
+}

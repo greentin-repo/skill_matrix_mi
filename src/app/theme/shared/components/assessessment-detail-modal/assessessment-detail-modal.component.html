@@ -1,0 +1,161 @@
+<div class="modal-header p-0" style="border-bottom:2px solid #7044cd">
+    <h2 class="assessmen_det_header">Assessment</h2>
+    <button type="button" class="close closebtn1" aria-label="Close" (click)="dismissModal()">
+        <span aria-hidden="true" class="close-icon">&times;</span>
+    </button>
+</div>
+<div class="modal-body" style="background: #F1F1F1 0% 0% no-repeat padding-box;padding: 0; padding-top: 10px;">
+    <div class="row m-0 assessment-block">
+        <div class="col-4">
+            <div class="assessmentDet-block">
+                <perfect-scrollbar [style.max-height]="'calc(100vh - 135px)'">
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-6 text-left p-r-0">
+                            <span class="key">Assessment ID</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <span class="value">{{assessmentDetailData.assessmentId
+                                }}</span>
+                            <!-- {{empAssessmentDet.assessmentId}} -->
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-6 text-left p-r-0">
+                            <span class="key">Assessment Type</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <span class="value">{{assessmentDetailData.assessmentType || 'N/A'
+                                }}</span>
+                            <!-- {{empAssessmentDet.assessmentId}} -->
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-6 text-left p-r-0">
+                            <span class="key">Plant</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <span class="value">{{assessmentDetailData.branchName
+                                }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-6 text-left p-r-0">
+                            <span class="key">Cell</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <span class="value">
+                                {{assessmentDetailData.deptName}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-6 text-left p-r-0">
+                            <span class="key">Level</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <span class="value">{{assessmentDetailData.levelName}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-6 text-left p-r-0">
+                            <span class="key">Actual Score</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <span class="value">{{assessmentDetailData.score}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-6 text-left p-r-0">
+                            <span class="key">Total Score</span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <span class="value">{{assessmentDetailData.totalMarks
+                                }}</span>
+
+                        </div>
+                    </div>
+                </perfect-scrollbar>
+            </div>
+        </div>
+        <div class="p-0 pr col-8">
+            <div class="dataNotAvailable"
+                *ngIf="!empAssessmentDet || !empAssessmentDet.quesList || empAssessmentDet.quesList.length === 0">
+
+            </div>
+            <div class="assessmentQueAns-block"
+                *ngIf="empAssessmentDet && empAssessmentDet.quesList != null && empAssessmentDet.quesList.length > 0">
+                <perfect-scrollbar [style.height]="'calc(100vh - 62px)'" #QuesPerfectScroll>
+                    <ng-container
+                        *ngIf="empAssessmentDet.quesListGroupBy != null && empAssessmentDet.quesListGroupBy.length > 0">
+                        <div *ngFor="let quesGroup of empAssessmentDet.quesListGroupBy">
+                            <div class="qsBlock">
+                                <div class="questions-block">
+                                    <div class="overlay">
+                                        <div class="Category" *ngIf="quesGroup.catId && quesGroup.catName">
+                                            <label class="form-check-label catLbl" for="isCatgeory">{{quesGroup.catName
+                                                || 'N/A'}}</label>
+                                        </div>
+                                        <ng-container
+                                            *ngIf="quesGroup.quesList != null && quesGroup.quesList.length > 0">
+                                            <div class="assessmentQue-block">
+                                                <div class="ques-card otherQuesCard"
+                                                    *ngFor="let ques of quesGroup.quesList; let quesIndex = index">
+                                                    <div class="row m-0">
+                                                        <div class="col-1 p-0">
+                                                            <p class="question_number text-center">{{quesIndex + 1}}</p>
+                                                        </div>
+                                                        <div class="col-11">
+                                                            <p class="questions">{{ques.question || 'N/A'}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="option-block">
+                                                        <ul class="optList-Div">
+                                                            <ng-container
+                                                                *ngIf="ques.optList != null && ques.optList.length > 0">
+                                                                <li
+                                                                    *ngFor="let opt of ques.optList; let optIndex = index">
+                                                                    <div class="row">
+                                                                        <div class="col-2 p-0 text-center"
+                                                                            style="margin: auto 0px;">
+                                                                            <div class="optIndex">
+                                                                                {{constant.AlphabetLetter[optIndex]}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-8 p-0">
+                                                                            <ng-container>
+                                                                                <div class="optText-div radiobtn">
+                                                                                    <input type="radio"
+                                                                                        id="opt_{{ques.quetionId+'_'+opt.assessmentQueOptId}}"
+                                                                                        name="answer{{ques.quetionId}}"
+                                                                                        value="{{opt.option}}"
+                                                                                        [checked]="opt.selected" disabled/>
+                                                                                    <!-- id="opt_{{ques.quetionId+'_'+opt.assessmentQueOptId}}" -->
+                                                                                    <!-- name="answer{{ques.quetionId}}" -->
+                                                                                    <label
+                                                                                        for="opt_{{ques.quetionId+'_'+opt.assessmentQueOptId}}"
+                                                                                        class="optText">
+                                                                                        <!-- for="opt_{{ques.quetionId+'_'+opt.assessmentQueOptId}}" -->
+                                                                                        {{opt.option || 'N/A'}}
+                                                                                    </label>
+                                                                                </div>
+                                                                            </ng-container>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ng-container>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </perfect-scrollbar>
+            </div>
+        </div>
+    </div>
+</div>

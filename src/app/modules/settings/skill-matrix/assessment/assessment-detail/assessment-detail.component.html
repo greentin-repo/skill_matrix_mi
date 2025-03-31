@@ -1,0 +1,654 @@
+<div class="row m-0">
+    <div class="p-0" [ngClass]="selectedDet.assessmentId != 0 ? 'col-10':'col-12'">
+        <div class="headerBar">
+            <span class="backArrow">
+                <a routerLink=".."><i class="feather icon-arrow-left"></i></a>
+            </span>
+            <app-topBar
+                title="Assessment Details {{(selectedDet.assessmentId > 0) ? ' - '+ selectedDet.assessmentId : ''}}"
+                style="width: 100%;">
+            </app-topBar>
+        </div>
+    </div>
+    <div class="col-2 text-right m-auto p-0 text-center" *ngIf="selectedDet.assessmentId != 0">
+        <button class="btn submitBtn publishBtn" (click)="publishAssessment()" [disabled]="deletePublishloader"
+            *ngIf="assessmentDet.quesList != null && assessmentDet.quesList.length > 0 && selectedDet.status != 'PUBLISHED'">
+            <span *ngIf="deletePublishloader" class="spinner-grow spinner-grow-sm" role="status"></span>
+            <span *ngIf="deletePublishloader" class="load-text"> Loading...</span>
+            <span *ngIf="!deletePublishloader" class="btn-text">Publish</span>
+        </button>&nbsp;&nbsp;
+        <!-- <button class="btn submitBtn deleteBtn" (click)="deleteAssessment()"
+            *ngIf="selectedDet.isEditable || selectedDet.status == 'COMPLETED'" [disabled]="deletePublishloader">
+            <span *ngIf="deletePublishloader" class="spinner-grow spinner-grow-sm" role="status"></span>
+            <span *ngIf="deletePublishloader" class="load-text"> Loading...</span>
+            <span *ngIf="!deletePublishloader" class="btn-text">Delete</span>
+        </button> -->
+    </div>
+</div>
+<div class="homepage-block bg-Transperant p-l-15 p-r-15">
+    <!-- <perfect-scrollbar [style.height]="'calc(100vh - 62px)'"> -->
+    <form [formGroup]="assessmentForm" class="formStyle" autocomplete="off"
+        (ngSubmit)="saveAssessmentDetails(assessmentForm)">
+        <div class="row">
+            <div class="col-md-6 m-auto">
+                <div class="form-group row">
+                    <label for="assessmentType" class="col-sm-12 col-form-label">Assessment Type &nbsp;<span
+                            class="astrik">*</span></label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="assessmentType"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                            [placeholder]="'Select Assessment Type'" [settings]="SingleDropdownSettings"
+                            [data]="assessmentTypeList" formControlName="assessmentType"
+                            [disabled]="!selectedDet.isEditable || isCheckSheetAvailable"
+                            (onSelect)="onChange($event,'type')" (onDeSelect)="onChange(false,'type')">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf="assessmentForm.controls['assessmentType'].invalid && (assessmentForm.controls['assessmentType'].touched || assessmentForm.controls['assessmentType'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['assessmentType'].errors.required">
+                                Please select assessment type
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 m-auto">
+                <div class="form-group row">
+                    <label for="branchId" class="col-sm-12 col-form-label">Plant &nbsp;<span
+                            class="astrik">*</span></label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="branchId"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                            [placeholder]="'Select Plant'" [settings]="SingleDropdownSettings"
+                            [data]="getSortFunction(plantList,'dept')" formControlName="branchId"
+                            [disabled]="!selectedDet.isEditable || isCheckSheetAvailable"
+                            (onSelect)="onChange($event,'plant')" (onDeSelect)="onChange(false,'plant')">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf="assessmentForm.controls['branchId'].invalid && (assessmentForm.controls['branchId'].touched || assessmentForm.controls['branchId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['branchId'].errors.required">
+                                Please select plant
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-6 m-auto">
+                <div class="form-group row">
+                    <label for="deptId" class="col-sm-12 col-form-label">Department &nbsp;<span class="astrik">*</span>
+                    </label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="deptId"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                            [placeholder]="'Select Department'" [settings]="SingleDropdownSettings"
+                            [data]="departmentList" formControlName="deptId"
+                            [disabled]="!selectedDet.isEditable || isCheckSheetAvailable"
+                            (onSelect)="onChange($event,'dept')" (onDeSelect)="onChange(false,'dept')">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf=" assessmentForm.controls['deptId'].invalid && (assessmentForm.controls['deptId'].touched || assessmentForm.controls['deptId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['deptId'].errors.required">
+                                Please select department
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 m-auto">
+                <div class="form-group row">
+                    <label for="cellLineId" class="col-sm-12 col-form-label">Cell/Line &nbsp;<span
+                            class="astrik">*</span>
+                    </label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="cellLineId"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                            [placeholder]="'Select Cell/Line'" [settings]="SingleDropdownSettings" [data]="cellList"
+                            formControlName="cellLineId" [disabled]="!selectedDet.isEditable || isCheckSheetAvailable"
+                            (onSelect)="onChange($event,'cell')">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf=" assessmentForm.controls['cellLineId'].invalid && (assessmentForm.controls['cellLineId'].touched || assessmentForm.controls['cellLineId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['cellLineId'].errors.required">
+                                Please select cell/line
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="m-auto" [ngClass]="(!isSafetyAssessment) ? 'col-md-3' :'col-md-6'">
+                <div class="form-group row">
+                    <label for="workstationId" class="col-sm-12 col-form-label">Workstation &nbsp;<span
+                            class="astrik">*</span>
+                    </label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="workstationId"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                            [placeholder]="'Select Workstation'" [settings]="SingleDropdownSettings"
+                            [data]="workforceList" formControlName="workstationId"
+                            [disabled]="!selectedDet.isEditable || isCheckSheetAvailable"
+                            (onSelect)="onChange($event,'work')">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf=" assessmentForm.controls['workstationId'].invalid && (assessmentForm.controls['workstationId'].touched || assessmentForm.controls['workstationId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['workstationId'].errors.required">
+                                Please select workstation
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!isSafetyAssessment" class="col-md-3 m-auto">
+                <div class="form-group row">
+                    <label for="skillLvlId" class="col-sm-12 col-form-label">Level &nbsp;<span class="astrik">*</span>
+                    </label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="skillLvlId"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                            [placeholder]="'Select Level'" [settings]="SingleDropdownSettings" [data]="masterLevelList"
+                            formControlName="skillLvlId" [disabled]="!selectedDet.isEditable || isCheckSheetAvailable">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf=" assessmentForm.controls['skillLvlId'].invalid && (assessmentForm.controls['skillLvlId'].touched || assessmentForm.controls['skillLvlId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['skillLvlId'].errors.required">
+                                Please select level
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="title" class="col-sm-12 col-form-label">Assessment Title
+                        &nbsp;<span class="astrik">*</span></label>
+                    <div class="col-sm-12">
+                        <input type="text" id="title" name="title" placeholder="Enter Assessment Title"
+                            formControlName="title" class="form-control assessmentinputBox" maxlength="250"
+                            [readonly]="!selectedDet.isEditable" />
+                        <div *ngIf="assessmentForm.controls['title'].invalid && (assessmentForm.controls['title'].touched || assessmentForm.controls['title'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['title'].errors.required">
+                                Please enter assessment title
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-3">
+                <div class="form-group row">
+                    <label for="time" class="col-sm-12 col-form-label">Assessment Time (Minutes)
+                        &nbsp;<span class="astrik">*</span></label>
+                    <div class="col-sm-12">
+                        <input type="number" id="time" name="time" placeholder="Enter Assessment Time"
+                            formControlName="time" class="form-control assessmentinputBox"
+                            [readonly]="!selectedDet.isEditable" min="0" max="999" step="1"
+                            (input)="validateTimeInput(assessmentForm.get('time'))" />
+                        <div *ngIf="assessmentForm.controls['time'].invalid && (assessmentForm.controls['time'].touched || assessmentForm.controls['time'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['time'].errors.required">
+                                Please enter assessment time
+                            </div>
+                            <div *ngIf="assessmentForm.get('time').hasError('zeroValue')">
+                                Assessment time cannot be 0.
+                            </div>
+                            <div *ngIf="assessmentForm.get('time').hasError('negativeValue')">
+                                Assessment time cannot be negative.
+                            </div>
+                            <div *ngIf="assessmentForm.get('time').hasError('threeDigits')">
+                                Assessment time should be two digits.
+                            </div>
+                            <div *ngIf="assessmentForm.get('time').hasError('decimalValue')">
+                                Assessment time should not be a decimal value.
+                            </div>
+                        </div>
+                        <div *ngIf="isReqAssTime" class="custom-errorMsg">
+                            Please enter assessment time
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-md-3">
+                    <div class="form-group row">
+                        <label for="time" class="col-sm-12 col-form-label">Assessment Time (Minutes)
+                            &nbsp;<span class="astrik">*</span></label>
+                        <div class="col-sm-12">
+                            <input type="number" id="time" name="time" placeholder="Enter Assessment Time"
+                            formControlName="time" class="form-control assessmentinputBox"
+                            [readonly]="!selectedDet.isEditable" min="0" max="999" step="1" pattern="^[0-9]{1,3}" />
+                            <div *ngIf="assessmentForm.controls['time'].invalid && (assessmentForm.controls['time'].touched || assessmentForm.controls['time'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="assessmentForm.controls['time'].errors.required">
+                                    Please enter assessment time
+                                </div>
+                                <div *ngIf="assessmentForm.get('time').hasError('zeroValue')">
+                                    Assessment time can not be 0.
+                                </div>
+                                <div *ngIf="assessmentForm.get('time').hasError('negativeValue')">
+                                    Assessment time can not be negative.
+                                </div>
+                               
+                                <div *ngIf="assessmentForm.get('time').hasError('pattern') && !assessmentForm.get('time').hasError('decimalValue')">
+                                    Assessment time should be three digits.
+                                </div>
+                           
+                                <div *ngIf="assessmentForm.get('time').hasError('decimalValue')">
+                                    Assessment time should not be a decimal value.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            <div class="col-md-3">
+                <div class="form-group row">
+                    <label for="passingMark" class="col-sm-12 col-form-label">Passing (%)
+                        &nbsp;<span class="astrik">*</span></label>
+                    <div class="col-sm-12">
+                        <input type="number" id="passingMark" name="passingMark" placeholder="Enter Passing Marks"
+                            formControlName="passingMark" class="form-control assessmentinputBox" maxlength="255"
+                            [readonly]="!selectedDet.isEditable" min="0" max="100" step="0.01"
+                            pattern="^(100(\.0{1,2})?|[0-9]{1,2}(\.[0-9]{1,2})?)$" />
+                        <div *ngIf="assessmentForm.controls['passingMark'].invalid && (assessmentForm.controls['passingMark'].touched || assessmentForm.controls['passingMark'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="assessmentForm.controls['passingMark'].errors.required">
+                                Please enter passing marks
+                            </div>
+                            <div *ngIf="assessmentForm.get('passingMark').hasError('zeroValue')">
+                                Passing marks can not be 0.
+                            </div>
+                            <div *ngIf="assessmentForm.get('passingMark').hasError('negativeValue')">
+                                Passing marks can not be negative.
+                            </div>
+                            <div *ngIf="assessmentForm.controls['passingMark'].errors?.pattern">
+                                Passing percent should be between 0 and 100, with a maximum
+                                of 2 decimal places.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-right" *ngIf="selectedDet.isEditable">
+            <!-- && (assessmentDet.quesList == null || assessmentDet.quesList.length == 0)" -->
+            <button type="submit" class="btn submitBtn">
+                <span *ngIf="submitLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                <span *ngIf="submitLoader" class="load-text"> Loading...</span>
+                <span *ngIf="!submitLoader" class="btn-text">
+                    <!-- *ngIf="!submitLoader" -->
+                    <!-- *ngIf="!selectedDet.isUpdate" -->
+                    <!-- *ngIf="selectedDet.assessmentId != 0" -->
+                    <!-- *ngIf="selectedDet.assessmentId == 0" -->
+                    <!-- *ngIf="!isAssessmentAvailable" -->
+                    <!-- *ngIf="isAssessmentAvailable" -->
+                    <b *ngIf="selectedDet.assessmentId == 0">Submit</b>
+                    <b *ngIf="selectedDet.assessmentId != 0">Update</b>
+                </span>
+            </button>
+        </div>
+    </form>
+    <div *ngIf="!assessmentService.isEmptyObject(assessmentDet)">
+        <div class="form-group row" style="margin: 10px 0px;">
+            <!-- <div class="form-group row"> -->
+            <div class="checkbox-block text-center form-check" style="border-bottom: none;"
+                [ngClass]="(assessmentDet.isCatgeorychecked && assessmentDetails.categoryList != null && assessmentDetails.categoryList.length > 0) ? 'col-sm-8' : (assessmentDet.isCatgeorychecked && (assessmentDetails.categoryList == null || assessmentDetails.categoryList.length == 0) ? 'col-sm-8' :'col-sm-12')">
+                <input type="checkbox" class="form-check-input" id="isCatgeory"
+                    [(ngModel)]="assessmentDet.isCatgeorychecked"
+                    [disabled]="!selectedDet.isEditable || (assessmentDetails.categoryList != null && assessmentDetails.categoryList.length > 0)" />
+                <label class="form-check-label" for="isCatgeory">Is Category applicable?</label>
+            </div>
+            <!-- [ngClass]="(assessmentDet.isCatgeorychecked && catAndSubCatList != null && catAndSubCatList.length > 0) ? 'col-sm-4' : 'col-sm-2'" -->
+            <div class="m-auto text-right" *ngIf="assessmentDet.isCatgeorychecked">
+                <button *ngIf="(assessmentDetails.categoryList != null && assessmentDetails.categoryList.length > 0)"
+                    type="button" class="btn submitBtn viewCatBtn" (click)="viewCategory(CategotyViewOrUpdate)">
+
+                    <span class="btn-text">View Categories</span>
+                </button>
+                <button type="button" class="btn submitBtn" *ngIf="selectedDet.isEditable"
+                    (click)="addCategory(categoryModel)">
+                    <span class="btn-text">Add Category</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-12 text-right p-r-0" *ngIf="selectedDet.isEditable">
+            <button type="button" class="btn submitBtn"
+                [disabled]="assessmentDet.isCatgeorychecked && (assessmentDetails.categoryList == null || assessmentDetails.categoryList.length == 0)"
+                (click)="openAddQuestionModal(AddQuestionModel)">Add
+                Question</button>
+        </div>
+        <!-- </div> -->
+        <ng-container *ngIf="assessmentDet.quesList != null && assessmentDet.quesList.length > 0">
+            <div class="qsBlock" style="margin-top: 25px;">
+                <div class="questions-block">
+                    <div class="overlay">
+                        <ng-container *ngFor="let ques of assessmentDet.quesList; let qIdx = index">
+                            <div class="ques-blk">
+                                <div class="overlay-bg"></div>
+                                <div class="grid-item formElementsBlock">
+                                    <div class="quesDiv row">
+                                        <div class="quesIndex col-1">
+                                            <label class="">Q{{qIdx+1}}</label>
+                                        </div>
+                                        <div class="col-9 quesBlock">
+                                            <label>{{ques.question}}</label>
+                                        </div>
+                                        <div class="markDiv col-2">
+                                            <label><b>Marks : </b> {{ques.questionMark || '0'}}</label>
+                                        </div>
+                                        <div class="actionBtn" *ngIf="selectedDet.isEditable">
+                                            <div>
+                                                <button class="btn btn-edit btn-que-edit" type="button"
+                                                    [disabled]="dataSpinner[ques.quetionId]"
+                                                    (click)="updateques(AddQuestionModel,ques)">EDIT</button>
+                                            </div>
+                                            <div>
+                                                <button class="btn ques-delete-btn btn-que-delete" type="button"
+                                                    [disabled]="dataSpinner[ques.quetionId]"
+                                                    (click)="showDeleteQuestModal(ques)">DELETE</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="option-block">
+                                        <ul class="optList-Div">
+                                            <ng-container *ngIf="ques.optList != null && ques.optList.length > 0">
+                                                <li *ngFor="let opt of ques.optList;let optIndex = index">
+                                                    <div class="row">
+                                                        <div class="col-2 p-0 text-center" style="margin: auto 0px;">
+                                                            <div class="optIndex">
+                                                                {{constant.AlphabetLetter[optIndex]}}</div>
+                                                        </div>
+                                                        <div class="col-8 p-0">
+                                                            <div class="optText-div radiobtn">
+                                                                <input type="radio" id="opt_{{qIdx +'_'+optIndex}}"
+                                                                    disabled name="answer{{qIdx}}" value="{{optIndex}}"
+                                                                    required [(ngModel)]="ques.rightAns"
+                                                                    [checked]="ques.rightAns" />
+                                                                <label for="opt_{{qIdx +'_'+optIndex}}" class="optText">
+                                                                    {{opt.option || 'N/A'}}</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ng-container>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <!-- </perfect-scrollbar>  -->
+</div>
+<!-- Add Category Popup -->
+<ng-template #categoryModel let-modal let-c="close">
+    <div class="custom-backdrop" *ngIf="catUpdateFlag"></div>
+    <div class="catModal">
+        <div class="modal-header">
+            <h4 class="modal-title headerTitle" id="modal-basic-title" *ngIf="!catUpdateFlag">Add Category</h4>
+            <h4 class="modal-title headerTitle" id="modal-basic-title" *ngIf="catUpdateFlag">Update Category</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group row">
+                <label for="category" class="col-sm-3 col-form-label">Category : </label>
+                <div class="col-sm-9">
+                    <input id="category" class="form-control customInput-field" placeholder="Enter Category"
+                        name="category" id="category" [(ngModel)]="assessmentDet.category">
+                </div>
+            </div>
+            <!-- <div class="form-group">
+                <label for="subCategory" class="col-form-label" style="padding-left: 0px !important;">Sub Category <span
+                        *ngIf="selectedDet.assessmentType == constant.TEMPLETE_TYPE[2].id"> & Number Of Questions</span>
+                    :</label>
+                <div class="row" *ngFor="let cat of assessmentDet.subCategoryList;let Index = index;let first = first;">
+                    <div class="input-group m-t-5"
+                        [ngClass]="(selectedDet.assessmentType == constant.TEMPLETE_TYPE[2].id) ? 'col-sm-6' : 'col-sm-9'">
+                        <input id="subCategory" class="form-control customInput-field" placeholder="Enter Sub Category"
+                            name="subCategory" [(ngModel)]="cat.name">
+                    </div>
+                    <div class="input-group col-sm-3 m-t-5"
+                        *ngIf="selectedDet.assessmentType == constant.TEMPLETE_TYPE[2].id">
+                        <input id="applicableNumOfQues" class="form-control customInput-field"
+                            placeholder="Number of Questions" name="number" [(ngModel)]="cat.applicableNumOfQues">
+                    </div>
+                    <div class="col-sm-3 m-auto">
+                        <label class="col-sm-6 col-form-label">
+                            <i class="fa fa-plus subCategoryadd" (click)="addSubCategory(cat,Index)"
+                                *ngIf="(catUpdateFlag && cat.hasOwnProperty('id')) ? !subCatSpinner[cat.id] : 'true'"></i>
+                            <ng-container *ngIf="(catUpdateFlag && cat.hasOwnProperty('id')) && subCatSpinner[cat.id]">
+                                <i class="fa fa-spinner fa-spin fa-fw"></i>
+                                <span class="sr-only">Loading...</span>
+                            </ng-container>
+                        </label>
+                        <label class="col-sm-6 col-form-label" *ngIf="!first">
+                            <i class="fa fa-minus subCategoryremove"
+                                (click)="(catUpdateFlag && cat.hasOwnProperty('id')) ? removeSubCategory(cat,'rm') : removeSubCategory(Index,'new')"
+                                *ngIf="(catUpdateFlag && cat.hasOwnProperty('id')) ? !subCatSpinner[cat.id] : 'true'"></i>
+                            <ng-container *ngIf="(catUpdateFlag && cat.hasOwnProperty('id')) && subCatSpinner[cat.id]">
+                                <i class="fa fa-spinner fa-spin fa-fw"></i>
+                                <span class="sr-only">Loading...</span>
+                            </ng-container>
+                        </label>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="modal-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="button" class="btn submitBtn" (click)="submitCatAndSubCat(c)">
+                        <!-- [disabled]="submitCatLoader || !assessmentDet.category" -->
+                        <!--  -->
+                        <!--   -->
+                        <span *ngIf="!catUpdateFlag" class="btn-text">Save</span>
+                        <span *ngIf="catUpdateFlag" class="btn-text">Update</span>
+                    </button>
+                    <!-- [disabled]="submitCatLoader" -->
+                    <button type="button" class="btn cancelBtn m-l-5" aria-label="Close"
+                        (click)="c('Cross click')">Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- View and Modify Category -->
+<ng-template #CategotyViewOrUpdate let-modal let-c="close">
+    <div class="catSubCatPopup">
+        <div class="modal-header">
+            <h4 class="modal-title headerTitle" id="modal-basic-title">Category</h4>
+            <button type="button" class="close" aria-label="Close" (click)="c('Cross Click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="">
+            <div class="tableFixHead">
+                <table class="table table-bordered table-md" style="font-family: 'Helvetica Neue';">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <!-- <th>Sub Category</th> -->
+                            <th class="actionTh" style="width:20%" *ngIf="selectedDet.isEditable">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let x of assessmentDetails.categoryList">
+                            <td>{{x.categoryName || 'N/A'}}</td>
+                            <!-- <td>
+                                <span *ngFor="let subCat of x.subCategoryList;let last = last;">{{subCat.name ||
+                                    'N/A'}} <span *ngIf="!last">,</span></span>
+                            </td> -->
+                            <td class="actionTd" style="width:20%" *ngIf="selectedDet.isEditable">
+                                <i class="fa fa-edit editIcon" (click)="editCatAndSubCat(categoryModel, x)"
+                                    *ngIf="!dataSpinner[x.id]"></i> &nbsp; &nbsp;
+                                <i class="fas fa-trash-alt deleteIcon" (click)="deleteCatAndSubCat(x.id)"
+                                    *ngIf="!dataSpinner[x.id]"></i>
+                                <ng-container *ngIf="dataSpinner[x.id]">
+                                    <i class="fa fa-spinner fa-spin fa-fw"></i>
+                                    <span class="sr-only">Loading...</span>
+                                </ng-container>
+                            </td>
+                        </tr>
+                        <tr
+                            *ngIf="(assessmentDetails.categoryList == null || assessmentDetails.categoryList.length == 0)">
+                            <td colspan="3" class="text-center no-record-found" *ngIf="!listLoading">
+                                Data not found
+                            </td>
+                            <td colspan="3" class="text-center loading-div" *ngIf="listLoading">
+                                <app-loading></app-loading>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Assessment Add or Update Popup -->
+<ng-template #AddQuestionModel let-modal let-c="close">
+    <div class="modal-header">
+        <h4 class="modal-title headerTitle" id="modal-basic-title">Add Question</h4>
+        <button type="button" class="close" aria-label="Close" (click)="c('Cross Click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form #quesForm="ngForm" (ngSubmit)="saveQuestion(quesForm)" novalidate autocomplete="off">
+        <div class="modal-body">
+            <perfect-scrollbar [style.height]="'calc(100vh - 18vh)'">
+                <div class="formStyle">
+                    <ng-container>
+                        <div class="row" *ngIf="assessmentDet.isCatgeorychecked">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label for="Category" class="col-sm-2 col-form-label">Category Name</label>
+                                    <div class="col-sm-10">
+                                        <ng-multiselect-dropdown name="category"
+                                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                            [placeholder]="'Select Category'" [settings]="SingleDropdownSettings"
+                                            [data]="categoryList" [disabled]="false"
+                                            [(ngModel)]="assessmentDet.tempQues.selectedCat">
+                                        </ng-multiselect-dropdown>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label for="question1" class="col-sm-2 col-form-label">Question &nbsp;<span
+                                            class="astrik">*</span></label>
+                                    <div class="col-sm-10">
+                                        <textarea id="question" name="question" placeholder="Enter Question"
+                                            [(ngModel)]="assessmentDet.tempQues.assessmentQuestion"
+                                            class="form-control assessmentinputBox textarea-custom" required
+                                            maxlength="1000"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container
+                            *ngIf="assessmentDet && assessmentDet.tempQues.optList != null && assessmentDet.tempQues.optList.length > 0">
+                            <div class="row" *ngFor="let opt of assessmentDet.tempQues.optList;let Index = index;">
+                                <div class="col-md-8">
+                                    <div class="form-group row">
+                                        <label for="question1"
+                                            class="col-sm-2 col-form-label">{{constant.AlphabetLetter[Index]}}</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" placeholder="Enter Option"
+                                                class="form-control assessmentinputBox" name="opt_{{Index}}"
+                                                [(ngModel)]="opt.option" maxlength="255" required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 m-auto">
+                                    <div class="form-group row text-center">
+                                        <label class="col-sm-6 p-0 m-0" *ngIf="Index < 4">
+                                            <i class="fa fa-plus btn-add" (click)="addRemoveOptions(Index,'add')"
+                                                *ngIf="!dataSpinner[assessmentDet.tempQues.quetionId]"></i>
+                                            <ng-container *ngIf="dataSpinner[assessmentDet.tempQues.quetionId]">
+                                                <i class="fa fa-spinner fa-spin fa-fw"></i>
+                                                <span class="sr-only">Loading...</span>
+                                            </ng-container>
+                                        </label>
+                                        <label class="col-sm-6 p-0 m-0"
+                                            *ngIf="assessmentDet.tempQues.optList.length > 1">
+                                            <i class="fa fa-minus btn-minus"
+                                                (click)="(opt.hasOwnProperty('assessmentQueOptId')) ? removeExistOption(opt,assessmentDet.tempQues.quetionId) :addRemoveOptions(Index,'rm')"
+                                                *ngIf="!dataSpinner[assessmentDet.tempQues.quetionId]"></i>
+                                            <ng-container *ngIf="dataSpinner[assessmentDet.tempQues.quetionId]">
+                                                <i class="fa fa-spinner fa-spin fa-fw"></i>
+                                                <span class="sr-only">Loading...</span>
+                                            </ng-container>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group row m-b-0">
+                                        <div class="optText-div radiobtn col-sm-12">
+                                            <input type="radio" id="isRightAns{{Index}}" name="isRightAns"
+                                                [(ngModel)]="assessmentDet.tempQues.isRightAns" value="{{Index}}"
+                                                required [checked]="assessmentDet.tempQues.isRightAns == Index"
+                                                (change)="opt.isRightAns = (assessmentDet.tempQues.isRightAns == Index) ? true : false;" />
+                                            <label for="isRightAns{{Index}}" class="optText">Is Answer</label>
+                                            <!-- {{assessmentDet.tempQues.isRightAns}} -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div class="marksApplicableDiv"
+                            *ngIf="(assessmentDet.tempQues.optList != null && assessmentDet.tempQues.optList.length > 0)">
+                            <div class="form-group row">
+                                <label for="question1" class="col-sm-2 col-form-label">Mark &nbsp;<span
+                                        class="astrik">*</span></label>
+                                <div class="col-sm-10">
+                                    <input type="number" placeholder="Enter Mark"
+                                        class="form-control assessmentinputBox" name="mark"
+                                        [(ngModel)]="assessmentDet.tempQues.mark" min="0"
+                                        pattern="^(?:[1-9]|[1-9][0-9]|100)$" required />
+                                    <div *ngIf="quesForm.controls['mark'].invalid && (quesForm.controls['mark'].touched || quesForm.controls['mark'].dirty)"
+                                        class="custom-errorMsg">
+                                        <div
+                                            *ngIf="quesForm.controls['mark'].errors.pattern && assessmentDet.tempQues.mark !== 0">
+                                            Mark should be between 1 to 100
+                                        </div>
+                                        <div *ngIf="assessmentDet.tempQues.mark === 0">
+                                            Mark cannot be 0.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </perfect-scrollbar>
+        </div>
+        <div class="modal-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn submitBtn event-btn" [disabled]="quesForm.invalid || submitLoader">
+                        <span *ngIf="submitLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                        <span *ngIf="submitLoader" class="load-text"> Loading...</span>
+                        <span *ngIf="!submitLoader" class="btn-text">Save </span>
+                    </button>
+                    <button type="button" class="btn cancelBtn m-l-5" aria-label="Close" [disabled]="submitLoader"
+                        (click)="c('Cross Click')">Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</ng-template>

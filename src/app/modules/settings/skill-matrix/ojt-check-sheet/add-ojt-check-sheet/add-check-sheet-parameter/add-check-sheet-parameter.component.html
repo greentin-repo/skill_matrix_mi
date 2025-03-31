@@ -1,0 +1,207 @@
+<div class="modal-header">
+    <h4 class="modal-title headerTitle" id="modal-basic-title" style="color: #7044cd;font-weight: bold;">Add OJT
+        Checksheet Parameters</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close('Cross Click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" style="padding: 10px;">
+    <div class="checksheetForm">
+        <form [formGroup]="checksheetParameterForm" (ngSubmit)="addChecksheetParameter(checksheetParameterForm)">
+            <input type="hidden" name="checkSheetId" formControlName="checkSheetId" />
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="parameterTypeId" class="col-sm-12 col-form-label">Field
+                        Type &nbsp;<span class="astrik">*</span></label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="template"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                            [placeholder]="'Select Field Type'" [settings]="SingleDropdownSettings"
+                            [(ngModel)]="selectedDet.parameterType" [data]="getSortFunction(paraTypeList,'paraType')"
+                            formControlName="parameterTypeId" (onSelect)="onParameterTypeSelect($event)"
+                            (onDeSelect)="onParameterTypeSelect(false)">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf="checksheetParameterForm.controls['parameterTypeId'].invalid && (checksheetParameterForm.controls['parameterTypeId'].touched || checksheetParameterForm.controls['parameterTypeId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="checksheetParameterForm.controls['parameterTypeId'].errors.required">
+                                Please select field type
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="parameter" class="col-sm-12 col-form-label">Field
+                        &nbsp;<span class="astrik">*</span>&nbsp;
+                        <!-- <small style="color:red" *ngIf="isNoteShowParameter">&nbsp;&nbsp;[Only]</small> -->
+                    </label>
+
+                    <div class="col-sm-12">
+                        <input placeholder="Enter Actual Parameter"
+                            *ngIf="isDateTimeParameter && !isNumberParameter && !isTextParameter && !isGapParameter && !isModelParameter"
+                            class="form-control checksheetinputBox" type="text" formControlName="parameter">
+                        <input *ngIf="isNumberParameter" placeholder="Enter Parameter"
+                            class="form-control checksheetinputBox" type="text" formControlName="parameter">
+                        <input
+                            *ngIf="!isNumberParameter && !isDateTimeParameter && !isModelParameter && !isGapParameter || isTextParameter"
+                            placeholder="Enter Parameter" class="form-control checksheetinputBox" type="text"
+                            formControlName="parameter">
+                        <!-- <span *ngIf="isNoteShowParameter" class="custom-errorMsg">Note <sup style="font-size: 10px;">*</sup></span> -->
+                        <!-- <label for="parameter" *ngIf="isNoteShowParameter" class="col-sm-12 col-form-label">Note
+                        &nbsp;<span class="astrik">*</span></label> -->
+                        <input *ngIf="isGapParameter && !isDateTimeParameter && !isNumberParameter "
+                            placeholder="Enter Gap" class="form-control checksheetinputBox" type="text"
+                            formControlName="parameter">
+                        <input *ngIf="isModelParameter && !isDateTimeParameter" placeholder="Enter From Model"
+                            class="form-control checksheetinputBox" type="text" formControlName="parameter">
+                        <div *ngIf="checksheetParameterForm.controls['parameter'].invalid && (checksheetParameterForm.controls['parameter'].touched || checksheetParameterForm.controls['parameter'].dirty) || checksheetParameterForm.get('parameter').hasError('required') "
+                            class="custom-errorMsg">
+                            <div
+                                *ngIf="isAddButtonClicked && checksheetParameterForm.get('parameter').hasError('required') && !isDateTimeParameter && !isNumberParameter && !isGapParameter && !isModelParameter">
+                                Please
+                                enter a parameter
+                            </div>
+                            <div *ngIf=" isAddButtonClicked && isNumberParameter">Please
+                                enter a number
+                            </div>
+                            <div *ngIf="isAddButtonClicked && isDateTimeParameter">Please
+                                enter a parameter
+                            </div>
+                            <div *ngIf="isAddButtonClicked && isGapParameter">Please
+                                enter a gap
+                            </div>
+                            <div *ngIf="isAddButtonClicked && isModelParameter">Please
+                                enter a model
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <ng-container
+                        *ngIf="( checksheetParameterForm.get('parameterTypeId').value != null && checksheetParameterForm.get('parameterTypeId').value.length > 0 && checksheetParameterForm.get('parameterTypeId').value[0].typeName == 'cyclePlan')">
+                        <label for="cycleValue" class="col-sm-12 col-form-label">No. of Cycle
+                            &nbsp;<span class="astrik">*</span></label>
+                        <div class="col-sm-12">
+                            <input placeholder="Enter No. of Cycle" onkeydown="false" onkeyup="false"
+                                class="form-control checksheetinputBox" type="text"
+                                (input)="onParameterInputChange($event ,'Number')" formControlName="cycleValue">
+                            <div *ngIf="checksheetParameterForm.controls['cycleValue'].invalid && (checksheetParameterForm.controls['cycleValue'].touched || checksheetParameterForm.controls['cycleValue'].dirty)"
+                                class="custom-errorMsg">
+                                <div
+                                    *ngIf="isAddButtonClicked && isCyclePlan && checksheetParameterForm.controls['cycleValue'].errors.required">
+                                    Please enter cycle plan
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="col-md-3 m-auto">
+                    <button style="margin-top: 1.7rem;" class="btn btn-lg submitBtn event-btn" type="submit"
+                        [disabled]="!disableReferModel">
+                        <span *ngIf="addLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                        <span *ngIf="addLoader" class="load-text"> Loading...</span>
+                        <span *ngIf="!addLoader" class="btn-text">Add </span>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <!-- for cretae duplicate -->
+
+        <div *ngIf="isSelectedParaType == 'Datetime' || isSelectedParaType == 'Model'" style="margin-top: 10px;">
+            <form [formGroup]="checksheetParameterFormDate"
+                (ngSubmit)="addChecksheetParameterCopy(checksheetParameterFormDate)">
+                <input type="hidden" name="checkSheetId" formControlName="checkSheetId" />
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="col-sm-12">
+                            <ng-multiselect-dropdown name="template"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                                [placeholder]="'Select Field Type'" [settings]="SingleDropdownSettings"
+                                [(ngModel)]="selectedDet.parameterType"
+                                [data]="getSortFunction(paraTypeList,'paraType')" formControlName="parameterTypeId"
+                                (onSelect)="onParameterTypeSelect($event)" (onDeSelect)="onParameterTypeSelect(false)">
+                            </ng-multiselect-dropdown>
+                            <div *ngIf="checksheetParameterFormDate.controls['parameterTypeId'].invalid && (checksheetParameterFormDate.controls['parameterTypeId'].touched || checksheetParameterFormDate.controls['parameterTypeId'].dirty)"
+                                class="custom-errorMsg">
+                                <div *ngIf="checksheetParameterFormDate.controls['parameterTypeId'].errors.required">
+                                    Please select field type
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="col-sm-12">
+                            <input placeholder="Enter Target Parameter"
+                                *ngIf="isDateTimeParameter && !isNumberParameter && !isTextParameter && !isGapParameter && !isModelParameter"
+                                class="form-control checksheetinputBox" type="text" formControlName="parameter">
+                            <input *ngIf="isModelParameter && !isDateTimeParameter" placeholder="Enter To Model"
+                                class="form-control checksheetinputBox" type="text" formControlName="parameter">
+                            <div *ngIf="checksheetParameterFormDate.controls['parameter'].invalid && (checksheetParameterFormDate.controls['parameter'].touched || checksheetParameterFormDate.controls['parameter'].dirty) || checksheetParameterFormDate.get('parameter').hasError('required') "
+                                class="custom-errorMsg">
+                                <div *ngIf="isAddButtonClicked && isDateTimeParameter">Please
+                                    enter a parameter
+                                </div>
+                                <div *ngIf="isAddButtonClicked && isModelParameter">Please
+                                    enter a model
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3 m-auto">
+                        <button style="margin-top: 0.2rem;" class="btn btn-lg submitBtn event-btn" type="submit"
+                            [disabled]="!disableReferModel">
+                            <span *ngIf="addLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                            <span *ngIf="addLoader" class="load-text"> Loading...</span>
+                            <span *ngIf="!addLoader" class="btn-text">Add </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <perfect-scrollbar [style.height]="'calc(100vh - 52vh)'">
+        <div class *ngIf="parameterDet.rec != null && parameterDet.rec.length > 0">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Parameter Type</th>
+                        <th>Parameter</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let x of parameterDet.rec;let paramIndex = index;">
+                        <td>{{x.parameterData.typeName || ''}}</td>
+                        <td>
+                            {{x.parameter || ''}}
+                            <span *ngIf="x.parameterData.typeName == 'cyclePlan'"><small>(<b>Cycle
+                                        Value :
+                                    </b>{{x.cycleValue || 0}})</small></span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm dangerBtn" (click)="removeParameter(paramIndex)">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </perfect-scrollbar>
+</div>
+<div class="modal-footer">
+    <div class="row">
+        <div class="col-sm-12">
+            <button type="button" class="btn submitBtn event-btn"
+                *ngIf="parameterDet.rec != null && parameterDet.rec.length > 0" (click)="saveChecksheetParameter()">
+                <span *ngIf="submitLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                <span *ngIf="submitLoader" class="load-text"> Loading...</span>
+                <span *ngIf="!submitLoader" class="btn-text">Submit </span>
+            </button>
+            <button type="button" class="btn cancelBtn m-l-5" aria-label="Close" [disabled]="submitLoader"
+                (click)="close('Cross Click')">Cancel
+            </button>
+        </div>
+    </div>
+</div>

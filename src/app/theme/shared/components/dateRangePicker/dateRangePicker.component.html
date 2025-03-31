@@ -1,0 +1,57 @@
+<!-- <h2>Angular 11 Date Range Picker Demo</h2> -->
+
+<div class="dateRangePicker">
+    <div class="row">
+        <div class="col-12">
+            <ul>
+                <li class="dateBlock" [ngClass]="(selectedDateType == '1M') ? 'dateBlockactive' : ''">
+                    <div class="dateBlock-inner" (click)="setDate('1M')">1M</div>
+                </li>
+                <li class="dateBlock" [ngClass]="(selectedDateType == '6M') ? 'dateBlockactive' : ''">
+                    <div class="dateBlock-inner" (click)="setDate('6M')">6M</div>
+                </li>
+                <li class="dateBlock" [ngClass]="(selectedDateType == '1Y') ? 'dateBlockactive' : ''">
+                    <div class="dateBlock-inner" (click)="setDate('1Y')">1Y</div>
+                </li>
+                <li class="dateBlock" [ngClass]="(selectedDateType == '2Y') ? 'dateBlockactive' : ''">
+                    <div class="dateBlock-inner" (click)="setDate('2Y')">2Y</div>
+                </li>
+                <li class="dateBlock customDateBlock" [ngClass]="(isSet) ? 'noBg' : ''">
+                    <div class="dateBlock-inner" (click)="setDate('')" *ngIf="!isSet">Custom</div>
+                    <div class="pr" *ngIf="isSet">
+                        <mat-form-field appearance="fill" panelClass="select-picker">
+                            <mat-label>Enter a date range</mat-label>
+                            <mat-date-range-input [rangePicker]="picker" [max]="maxDate">
+                                <input matStartDate placeholder="Start date" (dateChange)="selectCustomDate($event, '')" [value]="selectedDate.fromDate" (keydown)="false">
+                                <input matEndDate placeholder="End date" (dateChange)="selectCustomDate('', $event)" [value]="selectedDate.toDate" (keydown)="false">
+                            </mat-date-range-input>
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-date-range-picker #picker></mat-date-range-picker>
+                        </mat-form-field>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- <div class="col-4 m-auto  profileInfo">
+            <div class="navbarContainer navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item header-notification" ngbDropdown>
+                        <a class="nav-link" tabindex="0" ngbDropdownToggle id="navbarDropdown1" role="button">
+                            <div class="userProfile">
+                                <img src="assets/images/Profile.png" class="img-radius" />
+                                <span class="userName">{{loggedInEmpDet.firstName || ''}} {{loggedInEmpDet.lastName }}</span>
+                            </div>
+                        </a>
+                        <div ngbDropdownMenu aria-labelledby="navbarDropdown1" class="dropdown-menu show-notification profile-notification active1">
+                            <a ngbDropdownItem href="javascript:;" (click)="logout()"><i class="fa fa-sign-out"></i> Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div> -->
+    </div>
+</div>
+
+<!-- <hr />
+<pre>From date model: {{ fromDate | json }}</pre>
+<pre>To date model: {{ toDate | json }}</pre> -->

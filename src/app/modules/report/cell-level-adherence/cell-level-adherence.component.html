@@ -1,0 +1,44 @@
+<app-loading *ngIf="listLoading"></app-loading>
+<div class="table-block">
+    <div class="table-responsive tableFixHead">
+        <table matSort (matSortChange)="sortData($event)" [matSortActive]="sort.active"
+            [matSortDirection]="sort.direction" matSortDisableClear class="table table-bordered">
+            <thead>
+                <tr>
+                    <th mat-sort-header="BranchName">Plant</th>
+                    <th mat-sort-header="DeptName">Department</th>
+                    <th mat-sort-header="LineName">Cell/Line</th>
+                    <th mat-sort-header="Workstation">Workstation</th>
+                    <th mat-sort-header="LevelName">Level</th>
+                    <th mat-sort-header="Plan">Plan</th>
+                    <th mat-sort-header="CompleteCount">Completed</th>
+                    <th mat-sort-header="CompletePercentage">Completed %</th>
+                    <th mat-sort-header="PendingCount">Pending</th>
+                    <th mat-sort-header="PendingPercentage">Pending %</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let x of reportData.cellLevelAdherence">
+                    <td>{{x.branchName}}</td>
+                    <td>{{x.deptName}}</td>
+                    <td>{{x.lineName}}</td>
+                    <td>{{x.workstation}}</td>
+                    <td>{{x.levelName}}</td>
+                    <td>{{x.plan}}</td>
+                    <td>{{x.completeCount}}</td>
+                    <td>{{x.completePercentage}}</td>
+                    <td>{{x.pendingCount}}</td>
+                    <td>{{x.pendingPercentage}}</td>
+                </tr>
+                <tr *ngIf="reportData.cellLevelAdherence == null || reportData.cellLevelAdherence.length == 0">
+                    <td colspan="10" class="text-center no-record-found">
+                        Data Not Found
+                        <!-- <div class="dataNotAvailable"></div> -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"></app-pagination> -->
+
+</div>

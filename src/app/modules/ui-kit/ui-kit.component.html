@@ -1,0 +1,251 @@
+<div class="">
+    <div class="row m-0">
+        <div class="col-8 m-auto">
+            <app-topBar title="Title"></app-topBar><!--Title => replace to your page title-->
+        </div>
+        <div class="col-3 m-auto">
+            <app-loginInfo></app-loginInfo> <!--LoggedIn Info Directive-->
+        </div>
+        <div class="col-1 p-0 m-auto text-center">
+            <button class="btn btn-default filter-btn" title="Filter" (click)="filterModalOpen(FilterModal)">
+                <i class="fa fa-filter filter-icon" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+    <div class="homepage-block bg-Transperant p-l-15 p-r-15">
+        <div class="extraContent">
+            <div class="row m-0">
+                <div class="p-l-0 p-r-5 col-4">
+                    <div class="row m-0">
+                        <div class="p-l-0 p-r-5" [ngClass]="(filterFlag)?'col-6':'col-12'">
+                            <div class="form-group has-search">
+                                <span class="fa fa-search form-control-feedback"></span>
+                                <input type="text" class="form-control" name="searchInput"
+                                    placeholder="Search By Participant Name or ID" [(ngModel)]="searchDet.searchInput"
+                                    (keyup)="$event.keyCode == 13 ? getSearchList(true) : ''" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="col-6 p-r-5 p-l-5" *ngIf="filterFlag">
+                            <div class="filterDiv">
+                                <button class="clearFilter" (click)="removeFilter()">Clear filter</button>
+                                &nbsp;
+                                <span style="color: green;font-size: 12px; font-weight: 500;">Filter
+                                    Applied</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 p-r-5 p-l-5 form-group">
+                    <label for="opt" class="col-form-label p-0">DROPDOWN</label>
+                    <div class="">
+                        <ng-multiselect-dropdown name="opt"
+                            class="custom-multiSelection assessmentdropDown customWidthForRport"
+                            [placeholder]="'Select option'" [settings]="multipleDropdownSettings" [data]="array"
+                            [(ngModel)]="searchDet.optId" (onSelect)="onChange($event)" (onDeSelect)="onChange(false)"
+                            (onSelectAll)="onChangeAll($event)" (onDeSelectAll)="onChangeAll($event)">
+                        </ng-multiselect-dropdown>
+                    </div>
+                </div>
+                <div class="col-4 p-0">
+                    <div class="addRegDiv">
+                        <button class="btn addRegBtn m-0" type="button"><i class="fa fa-plus m-r-10"></i>Add
+                            Button</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Section -->
+        <div style="margin-bottom: 10px;">
+            <button type="button" class="btn submitBtn" (click)="modalOpen(topModal,'top')">Top</button>&nbsp;&nbsp;
+            <button type="button" class="btn submitBtn"
+                (click)="modalOpen(bottomModal,'bottom')">Bottom</button>&nbsp;&nbsp;
+            <button type="button" class="btn submitBtn"
+                (click)="modalOpen(rightModal,'right')">Right</button>&nbsp;&nbsp;
+        </div>
+        <!-- Input Field -->
+        <div class="form-group row">
+            <div class="col-md-4">
+                <div class="row">
+                    <label for="fieldName1" class="col-sm-4 col-form-label">Field 1 &nbsp;<span
+                            class="astrik">*</span></label>
+                    <div class="col-sm-8">
+                        <ng-multiselect-dropdown name="fieldName1"
+                            class="custom-multiSelection assessmentdropDown customWidthForInter"
+                            [placeholder]="'Select DROPDOWN'" [settings]="SingleDropdownSettings" [data]="array"
+                            (onSelect)="onChange($event)" (onDeSelect)="onChange(false)" [disabled]="false">
+                        </ng-multiselect-dropdown>
+                        <!-- <div *ngIf="formdata.controls['fieldName1'].invalid && (formdata.controls['fieldName1'].touched || formdata.controls['fieldName1'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="formdata.controls['fieldName1'].errors.required">
+                                Please Select Field
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <label for="fieldName2" class="col-sm-4 col-form-label">Field 2 &nbsp;<span
+                            class="astrik">*</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" id="fieldName2" name="fieldName2" placeholder="Enter Field"
+                            class="form-control customInput-field" maxlength="255" />
+                        <!-- <div *ngIf="formdata.controls['fieldName2'].invalid && (formdata.controls['fieldName2'].touched || formdata.controls['fieldName2'].dirty)"
+                        class="custom-errorMsg">
+                        <div *ngIf="formdata.controls['fieldName2'].errors.required">
+                            Please Enter Field
+                        </div>
+                    </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <label for="fieldName3" class="col-sm-8 col-form-label">Field 3
+                        &nbsp;<span class="astrik">*</span></label>
+                    <div class="col-sm-4 custom-toggle-btn">
+                        <span class="switcher switcher-1">
+                            <input type="checkbox" id="fieldName3" name="fieldName3" [attr.inter-label-true]="'YES'"
+                                [attr.inter-label-false]="'NO'" />
+                            <label for="fieldName3"></label>
+                        </span>
+                        <!-- <div *ngIf="formdata.controls['fieldName3'].invalid && (formdata.controls['fieldName3'].touched || formdata.controls['fieldName3'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="formdata.controls['fieldName3'].errors.required">
+                                Please Select Field
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- TABLE BLOCK -->
+        <div class="table-block">
+            <div class="table-responsive tableFixHead">
+                <table datatable class="table">
+                    <thead>
+                        <tr>
+                            <th class="fixedColumn">SR NO</th>
+                            <th class="">COL 1</th>
+                            <th class="">COL 2</th>
+                            <th class="">COL 3</th>
+                            <th class="">COL 4</th>
+                            <th class="">COL 5</th>
+                            <th class="">COL 6</th>
+                            <th class="">COL 7</th>
+                            <th class="">COL 8</th>
+                            <th class="">COL 9</th>
+                            <th class="">COL 10</th>
+                            <th class="pending fixedColumn">STATUS</th>
+                            <th class="actionTh fixedColumn">ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>DATA 1</td>
+                            <td>DATA 2</td>
+                            <td>DATA 3</td>
+                            <td>DATA 4</td>
+                            <td>DATA 5</td>
+                            <td>DATA 6</td>
+                            <td>DATA 7</td>
+                            <td>DATA 8</td>
+                            <td>DATA 9</td>
+                            <td>DATA 10</td>
+                            <td>STATUS</td>
+                            <td>
+                                <button type="button" class="btn btn-sm actionBtn">Action</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"></app-pagination> -->
+            <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"
+                [submitButton]="getCheckedValue()" [submitSpinner]="submitSpinner" (submitData)="statusUpdate($event)"
+                [buttonLabel]="'Submit'">
+            </app-pagination>
+        </div>
+    </div>
+</div>
+<!-- Filter Popup  -->
+<ng-template #FilterModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title popup-header-txt" id="myModalLabel2">Filter</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body p-2" style="height: calc(100vh - 14vh);">
+        <perfect-scrollbar></perfect-scrollbar>
+    </div>
+    <div class="modal-footer footerBlock text-right">
+        <button class="btn submitBtn event-btn" type="submit">
+            <span *ngIf="submitSpinner" class="spinner-grow spinner-grow-sm" role="status"></span>
+            <span *ngIf="submitSpinner" class="load-text"> Loading...</span>
+            <span *ngIf="!submitSpinner" class="btn-text">Apply Filter</span>
+        </button>
+        <button type="button" class="btn cancelBtn" aria-label="Close" (click)="d('Cross click')">Cancel
+        </button>
+    </div>
+</ng-template>
+<!-- Filter Popup  -->
+<!-- Top Modal -->
+<ng-template #topModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel2">TOP MODAL</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body p-0">
+        <div style="height: 100px;"></div>
+    </div>
+    <div class="footerDiv"></div>
+    <div class="footerBtn">
+        <button class="btn btn-lg submitBtn event-btn" type="submit" [disabled]="submitSpinner">
+            <span *ngIf="submitSpinner" class="spinner-grow spinner-grow-sm" role="status"></span>
+            <span *ngIf="submitSpinner" class="load-text"> Loading...</span>
+            <span *ngIf="!submitSpinner" class="btn-text">Submit</span>
+        </button>
+    </div>
+</ng-template>
+<!-- Top Modal -->
+<!-- Bottom Modal-->
+<ng-template #bottomModal let-c="close" let-d="dismiss">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="height: calc(100vh - 7%);">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel2" style="width: 98%;display: inline-block;">Bottom Modal</h4>
+                <button type="button" class="close closebtn1" aria-label="Close" (click)="d('Cross click');">
+                    <span aria-hidden="true" class="close-icon">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-t-0 p-b-0">
+                <div [style.height]="'calc(100vh - 38vh)'"></div>
+            </div>
+            <div class="modal-footer text-center pad0 paginationFooter">
+                <app-pagination [staticPagination]="staticPagination"
+                    (paginationData)="loadMore($event)"></app-pagination>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<!-- Bottom Modal-->
+<!-- Right Modal-->
+<ng-template #rightModal let-modal let-c="close" let-d="dismiss">
+    <div class="modal-content interDetContent">
+        <div class="modal-header" style="border-bottom:2px solid #c8e4f5; width: 98%;">
+            <h4 class="name">Right Modal</h4>
+            <button style="position: absolute;right: 20px;" type="button" class="close closebtn1" aria-label="Close"
+                (click)="d('Cross click');">
+                <span aria-hidden="true" class="close-icon">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body fixedHead">
+
+        </div>
+    </div>
+</ng-template>
+<!-- Right Modal-->

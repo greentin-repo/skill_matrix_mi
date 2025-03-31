@@ -1,0 +1,94 @@
+.main-tab-switcher {
+    padding: 0px !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0px !important;
+    margin: 0px !important;
+    left: 0px !important;
+
+    .main-tab-switch {
+        padding: 10px 20px;
+
+        &.active {
+            background: #7044cd;
+            color: #fff;
+        }
+    }
+}
+
+.modal-footer.paginationFooter {
+    padding: 5px 10px;
+}
+
+.tableFixHead {
+    table {
+        thead th {
+            vertical-align: middle;
+            text-align: center;
+        }
+    }
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    /* or other alignment value */
+}
+
+.stopBtn {
+    background: #ffa21d 0% 0% no-repeat padding-box;
+    /* box-shadow: 0px 3px 6px #00000029; */
+    color: #fff;
+    text-transform: capitalize;
+    font: normal normal 400 10pt/1.5 Helvetica Neue;
+    /* box-shadow: none; */
+    outline: none;
+    border: none;
+    border-radius: 4px;
+    margin: 0px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.tableFixHead {
+    overflow-y: auto !important;
+    max-height: calc(100vh - 50vh) !important;
+    min-height: calc(100vh - 50vh) !important;
+    height: calc(100vh - 50vh) !important;
+    border-bottom: 2px solid #b395f1 !important;
+}
+// .textarea-custom {
+//     border: 1px solid #ccc; 
+//     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+//     overflow-y: auto; 
+//     max-height: 200px; 
+//     height: auto;
+//     min-height: 65px;
+//     resize: none; 
+//     padding: 10px; 
+//     font-family: Arial, sans-serif; 
+// }
+
+.tableFixHead table thead th {
+    background: #f2f2f2;
+    color: #707070;
+    font: normal normal bold 13px / 1.5 Helvetica Neue;
+    // position: sticky;
+    position: relative !important;
+    top: 0;
+    // z-index: 1;
+    box-shadow: inset 0px 1px #d2c1f3, 0 1px #b395f1 !important;
+    border-top: none;
+    border: 2px solid #d2c1f3;
+    border-collapse: collapse;
+    white-space: nowrap;
+    width: 15% !important;
+}
+ .tableFixHead table td {
+    padding: 8px 16px;
+    border: 2px solid #d2c1f3;
+}
+.asterisk {
+    color: red;
+    font-weight: bold;
+  }
+  

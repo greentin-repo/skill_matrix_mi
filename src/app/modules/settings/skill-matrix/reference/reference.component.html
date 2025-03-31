@@ -1,0 +1,32 @@
+<!-- Author - Sanket B.
+Purpose - Skill-matrix > Settings > Reference UI tabs
+Date - 16.08.2023 -->
+
+<div class="row m-0">
+    <div class="col-9 m-auto">
+        <div class="main-tab-switcher">
+            <!-- <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(1)}" (click)="setMainTab(1)">Level
+            </div> -->
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(1)}" (click)="setMainTab(1)">Model
+            </div>
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(2)}" (click)="setMainTab(2)">Gap
+                Reason
+            </div>
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(3)}" (click)="setMainTab(3)">No. Of
+                Shifts
+            </div>
+        </div>
+    </div>
+    <div class="col-3 m-auto">
+        <!-- <app-loginInfo></app-loginInfo> -->
+    </div>
+    <!-- <div class="col-1 p-0 m-auto text-center">
+        <button class="btn btn-default filter-btn" title="Filter" (click)="filterModalOpen(FilterModal)">
+            <i class="fa fa-filter filter-icon" aria-hidden="true"></i>
+        </button>
+    </div> -->
+</div>
+<!-- <app-reference-level *ngIf="isSetMainTab(1)"></app-reference-level> -->
+<app-reference-model *ngIf="isSetMainTab(1)"></app-reference-model>
+<app-reference-gap-reason *ngIf="isSetMainTab(2)"></app-reference-gap-reason>
+<app-reference-shift *ngIf="isSetMainTab(3)"></app-reference-shift>

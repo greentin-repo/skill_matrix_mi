@@ -1,0 +1,375 @@
+<div class="row m-0">
+    <div class="col-7 m-auto" >
+        <app-topBar title="Home" style="max-width: 200px;"></app-topBar>
+   </div>
+
+   
+    <div class="col-3 m-auto main" >
+        <div></div>
+        <div class="form-group has-search " style="margin-top: 20px; max-width: 220px;">
+            <span
+                class="fa form-control-feedback"
+                [ngClass]="{'fa-search': !searchInput, 'fa-times-circle': searchInput}"
+                (click)="clearSearch()">
+            </span>
+            <input style="border: 1px solid #7044cd; background-color: transparent; border-radius: 12px; min-width: 218px;" type="text" class="form-control"
+                name="searchInput" placeholder="Search by Emp Id, Name"  [(ngModel)]="searchInput"
+                (input)="filterList()" autocomplete="off" />
+        </div>
+    </div>
+    <div class="col-2 p-0 m-auto " style="display: flex; gap: 30px;">
+        <div class="btn-filter-wrap">
+            <button class="btn btn-default filter-btn" [ngClass]="{'applied' : isAppliedFilter}" title="Filter"
+                (click)="filterModalOpen(FilterModal)">
+                <i class="fa fa-filter filter-icon" aria-hidden="true"></i>
+            </button>
+            <div class="btn-clear-filter" *ngIf="isAppliedFilter" (click)="removeFilter();">x</div>
+            <div class="lbl-filter-applied" *ngIf="isAppliedFilter">Filter Applied</div>
+        </div>
+
+        <img src="assets/images/ic_excel.png" style="height: 37px; width: 30px;" alt="" class="img-fluid btn-excel-export" (click)="exportReport()">
+    </div>
+    <!-- <div class="col-1 m-auto" style="padding-left: 17px;">
+        <img src="assets/images/ic_excel.png" alt="" class="img-fluid btn-excel-export" (click)="exportReport()">
+    </div> -->
+    <!-- <div class="col-3 m-auto">
+        <app-loginInfo></app-loginInfo>
+    </div> -->
+</div>
+
+
+
+<!-- <div class="row" style="margin-top: 3px;">
+    <div class="col-11 m-auto">
+    </div>
+    <div class="col-1 m-auto" style="padding-left: 17px;">
+        <img src="assets/images/ic_excel.png" alt="" class="img-fluid btn-excel-export" (click)="exportReport()">
+    </div>
+</div> -->
+<div class="homepage-block bg-Transperant p-l-15 p-r-15">
+    <div class="extraContent">
+    </div>
+    <div class="table-block skill-table">
+        <div class="table-responsive tableFixHead">
+            <table id="tbl-skill-matrix" class="table table-bordered">
+                <ng-container *ngIf="!isObjectEmpty(skillMatrixDetails)">
+                    <thead>
+                        <tr>
+                            <th colspan="3" class="first-col" scope="col">
+                                <!--    Aniket :- Show Document Name  -->
+                                <b>Doc No:- &nbsp; {{ skillMatrixDocument?.docName || '-' }}</b>
+                            </th>
+                            <th colspan="2" scope="col" class="">MACHINE INDEX RATING</th>
+                            <ng-container *ngFor="let column of skillMatrixDetails.columns">
+                                <ng-container
+                                    *ngIf="column.field != 'empId' && column.field != 'empName' && column.field != 'gender' && column.field != 'experience' && column.field != 'empLevel'">
+                                    <th class="text-center" scope="col">
+                                        {{column.machineIndex}}
+                                    </th>
+                                </ng-container>
+                            </ng-container>
+                            <th class="vertical-text" rowspan="2" scope="col">
+                                NO. OF SHIFTS
+                            </th>
+                            <th class="vertical-text" rowspan="2" colspan="2" scope="col">
+                                <ng-multiselect-dropdown name="shift"
+                                    class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                                    [placeholder]="'Select Shift'" [settings]="SingleDropdownSettings"
+                                    [data]="shiftList" [(ngModel)]="searchDet.shift" (onSelect)="onChangeShift($event)"
+                                    (onDeSelect)="onChangeShift(false)">
+                                </ng-multiselect-dropdown>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="first-col" colspan="3" scope="col">
+                                <!--    Aniket :- Show Document date  -->
+                                <b>Rev Date:- &nbsp; {{ skillMatrixDocument?.currentDate | date:' dd MMMM yyyy' || '-'
+                                    }}</b>
+                            </th>
+                            <th colspan="2" class="" scope="col">MIN. SKILL LEVEL REQ.</th>
+                            <ng-container *ngFor="let column of skillMatrixDetails.columns">
+                                <ng-container
+                                    *ngIf="column.field != 'empId' && column.field != 'empName' && column.field != 'gender' && column.field != 'experience' && column.field != 'empLevel'">
+                                    <th class="text-center" scope="col">
+                                        {{column.levelName}}
+                                    </th>
+                                </ng-container>
+                            </ng-container>
+                        </tr>
+                        <tr>
+                            <!--    Aniket :- Show Document Rev No  -->
+                            <th class="first-col" colspan="3" scope="col">
+                                <div class="input-wrapper">
+                                    <label>
+                                        <b>Rev No:- </b>
+                                    </label>
+                                    <input placeholder="Enter Rev No" class="form-control checksheetinputBox" id="revNo"
+                                        name="revNo" [(ngModel)]="revNo" type="number" pattern="^\d{1,2}$">
+                                </div>
+                            </th>
+                            <th colspan="2" class="" scope="col">REQUIRED NUMBER TRAINED</th>
+                            <ng-container *ngFor="let column of skillMatrixDetails.columns">
+                                <ng-container
+                                    *ngIf="column.field != 'empId' && column.field != 'empName' && column.field != 'gender' && column.field != 'experience' && column.field != 'empLevel'">
+                                    <th class="text-center" scope="col">
+                                        {{column.requiredWorkforce}}
+                                    </th>
+                                </ng-container>
+                            </ng-container>
+                            <th class="vertical-text" rowspan="2" scope="col">SKILL LEVEL</th>
+
+                            <th class="vertical-text" rowspan="2" scope="col" style="position: static !important;">
+                                MULTI SKILL %
+                            </th>
+                            <th class="vertical-text" rowspan="2" scope="col" style="position: static !important;">
+                                MARKS
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="first-col first-col-head" scope="col">Sr No</th>
+                            <ng-container *ngFor="let x of skillMatrixDetails.columns">
+                                <ng-container *ngIf="x.field != 'gender'">
+                                    <th 
+                                        class="" 
+                                        scope="col" 
+                                        [ngClass]="{
+                                            'second-col': x.field === 'empId', 
+                                            'third-col': x.field === 'empName'
+                                        }">
+                                        {{x.heading}}
+                                    </th>
+                                </ng-container>
+                            </ng-container>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--filteredEmpData <ng-container *ngFor="let row of skillMatrixDetails.tableEmpData; let recIndex = index;"> -->
+                            <ng-container *ngFor="let row of filteredEmpData; let recIndex = index;">
+                            <tr *ngIf="row.empLevel != 'TL'">
+                                <td class="first-col-td">{{recIndex+1}}</td>
+                                <td class="second-col-td">{{row.empId}}</td>
+                                <td class="third-col-td">{{row.empName}}</td>
+                                <!-- <td class="">{{ row.gender }}</td> -->
+                                <td class="">{{row.experience}}</td>
+                                <td class="">{{row.empLevel}}</td>
+                                <ng-container *ngFor="let column of skillMatrixDetails.columns">
+                                    <ng-container
+                                        *ngIf="column.field != 'empId' && column.field != 'empName' && column.field != 'gender' && column.field != 'experience' && column.field != 'empLevel'">
+                                        <td class="text-center empSkillLevelTd"
+                                            [ngClass]="(!isObjectEmpty(isChecked(row, column.field))) ? isChecked(row, column.field).status : ''">
+                                            {{!isObjectEmpty(isChecked(row, column.field)) ? isChecked(row,
+                                            column.field).level : ''}}
+                                        </td>
+                                    </ng-container>
+                                </ng-container>
+                                <td style="text-align: center;" class="{{getSkillLevelClass(row.skillLevel)}}">
+                                    {{row.skillLevel}}</td>
+                                <td style="text-align: center;" class="">{{row.skillingPer}}%</td>
+                                <td style="text-align: center;" class="">{{row.marks}}</td>
+                            </tr>
+                        </ng-container>
+                        <!-- <ng-container *ngFor="let row of skillMatrixDetails.workstationLvlCount;let recIndex = index;"> -->
+                        <tr>
+                            <!-- Header for 'Actual No Trained' -->
+                            <td colspan="5" style="text-align: center;">Actual No Trained</td>
+
+                            <!-- Loop through workstationLvlCount -->
+                            <ng-container
+                                *ngFor="let lvlCount of skillMatrixDetails.workstationLvlCount; let recIndex = index;">
+                                <!-- Loop through columns -->
+                                <ng-container *ngFor="let column of skillMatrixDetails.columns;">
+                                    <!-- Check if workstation matches the column field -->
+                                    <td *ngIf="column.field === lvlCount.workstation"
+                                        class="text-center empSkillLevelTd">
+                                        <!-- Output workstation and total count -->
+                                        {{ lvlCount.totalCount }}
+                                    </td>
+                                </ng-container>
+                            </ng-container>
+
+                            <!-- Empty cells to match colspan -->
+                            <td colspan="3"></td>
+                        </tr>
+                        <!-- </ng-container> -->
+                        <tr>
+                            <td style="padding-left: 15em;" [attr.colspan]="skillMatrixDetails.columns.length + 3">Team
+                                Leader Skill Level</td>
+                        </tr>
+                    
+                        <ng-container *ngFor="let row of filteredSkillMatrixTLData; let index = index;">
+                            <tr>
+                                <td class="first-col-td">{{ index + 1 }}</td>
+                                <td class="second-col-td">{{ row.empId }}</td>
+                                <td class="third-col-td">{{ row.empName }}</td>
+                                <td>{{ row.experience }}</td>
+                                <td>{{ row.empLevel }}</td>
+                                <ng-container *ngFor="let column of skillMatrixDetails.columns">
+                                    <ng-container
+                                        *ngIf="column.field !== 'empId' && column.field !== 'empName' &&
+                                                column.field !== 'gender' && column.field !== 'experience' &&
+                                                column.field !== 'empLevel'">
+                                        <td class="text-center empSkillLevelTd"
+                                            [ngClass]="(!isObjectEmpty(isChecked(row, column.field))) ? isChecked(row, column.field).status : ''">
+                                            {{ !isObjectEmpty(isChecked(row, column.field)) ? isChecked(row, column.field).level : '' }}
+                                        </td>
+                                    </ng-container>
+                                </ng-container>
+                                <td style="text-align: center;" class="{{ getSkillLevelClass(row.skillLevel) }}">
+                                    {{ row.skillLevel }}
+                                </td>
+                                <td style="text-align: center;">{{ row.skillingPer }}%</td>
+                                <td style="text-align: center;">{{ row.marks }}</td>
+                            </tr>
+                        </ng-container>
+                        
+                    </tbody>
+                </ng-container>
+                <ng-container *ngIf="isObjectEmpty(skillMatrixDetails)">
+                    <tbody>
+                        <tr>
+                            <td colspan="11" class="text-center no-record-found" *ngIf="!listLoader">
+                                Data Not Found
+                            </td>
+                            <td colspan="11" class="text-center loading-div" *ngIf="listLoader">
+                                <app-loading></app-loading>
+                            </td>
+                        </tr>
+                    </tbody>
+                </ng-container>
+                <tr *ngIf="(filteredEmpData == null || filteredEmpData.length == 0)">
+                    <td colspan="11" class="text-center no-record-found" *ngIf="!listLoading">
+                        Data Not Found
+                    </td>
+                  
+                </tr>
+
+                
+            </table>
+        </div>
+    </div>
+    <div class="pr">
+        <ul class="count-block">
+            <ng-container *ngFor="let count of skillMatrixDetails.levelSummary">
+                <li class="countLi" *ngIf="count.levelName != 'L4'">
+                    <div class="headerBlock">
+                        <label class="heading">{{count.levelName}}</label>
+                    </div>
+                    <div class="row m-0">
+                        <div class="col-4 text-center m-auto p-l-5 p-r-5">
+                            <label class="heading">REQD.</label><br />
+                            <p class="m-0 count">{{count.requiredCount || '0'}}</p>
+                        </div>
+                        <div class="col-4 text-center m-auto p-l-5 p-r-5">
+                            <label class="heading">ACT.</label><br />
+                            <p class="m-0 count">{{count.actualCount || '0'}}</p>
+                        </div>
+                        <div class="col-4 text-center m-auto p-l-5 p-r-5">
+                            <label class="heading">GAP</label><br />
+                            <p class="m-0 count">{{((count.requiredCount && count.requiredCount > 0) &&
+                                (count.requiredCount
+                                > count.actualCount)) ? (count.requiredCount -
+                                count.actualCount) : 0 || '0'}}</p>
+                        </div>
+                    </div>
+                </li>
+            </ng-container>
+
+            <ng-container >
+                <li class="countLi">
+                    <div class="headerBlock">
+                        <label class="heading">Average Multiskilling %</label>
+                    </div>
+                    <div class="row m-0">
+                        <div class="col-4 text-center m-auto p-l-5 p-r-5">
+                            <label class="heading"> </label><br />
+                            <p class="m-0 count">{{multiskillingPercentage}} %</p>
+                        </div>
+                        <!-- <div class="col-4 text-center m-auto p-l-5 p-r-5">
+                            <label class="heading">ACT.</label><br />
+                            <p class="m-0 count">D3</p>
+                        </div>
+                        <div class="col-4 text-center m-auto p-l-5 p-r-5">
+                            <label class="heading">GAP</label><br />
+                           
+                        </div> -->
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+</div>
+<!-- Filter Modal -->
+<ng-template #FilterModal let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title popup-header-txt" id="myModalLabel2">Filter</h4> <button type="button" class="close"
+            aria-label="Close" (click)="d('Cross click')"> <span aria-hidden="true">&times;</span> </button>
+    </div>
+    <form [formGroup]="filterData" (ngSubmit)="submitFilterForm(filterData)" autocomplete="off"
+        class="needs-validation">
+        <div class="modal-body p-2" style="height: calc(100vh - 14vh);"> <perfect-scrollbar>
+                <div class="row m-b-0"> <label for="moduleId" class="col-sm-12 col-form-label filter-label">Plant <span
+                            class="astrik">*</span></label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="selectedModuleId"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                            [placeholder]="'Select Plant'" [settings]="SingleDropdownSettings" [data]="branchAccessList"
+                            formControlName="branchId" (onSelect)="onChangeBranch($event)"
+                            (onDeSelect)="onChangeBranch(false)" [(ngModel)]="searchDet.branch">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf="filterData.controls['branchId'].invalid && (filterData.controls['branchId'].touched || filterData.controls['branchId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="filterData.controls['branchId'].errors.required">
+                                Please select plant
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-b-0">
+                    <label for="dept" class="col-sm-12 col-form-label filter-label">Department <!--<span class="astrik"
+                            *ngIf="deptList != null && deptList.length > 0">*</span>--></label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="dept"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                            [placeholder]="'Select Department'" [settings]="SingleDropdownSettings" [data]="deptList"
+                            formControlName="deptId" [(ngModel)]="searchDet.dept" (onSelect)="onChangeDept($event)"
+                            (onDeSelect)="onChangeDept(false)">
+                        </ng-multiselect-dropdown>
+                        <!-- <div *ngIf="filterData.controls['deptId'].invalid && (filterData.controls['deptId'].touched || filterData.controls['deptId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="filterData.controls['deptId'].errors.required">
+                                Please select department
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="row m-b-0">
+                    <label for="cell" class="col-sm-12 col-form-label filter-label">Cell / Line <!--<span class="astrik"
+                            *ngIf="cellList != null && cellList.length > 0">*</span>--></label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="cell"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                            [placeholder]="'Select Cell / Line'" [settings]="SingleDropdownSettings" [data]="cellList"
+                            formControlName="lineIds" [(ngModel)]="searchDet.cell" (onSelect)="onChangeCell($event)"
+                            (onDeSelect)="onChangeCell(false)">
+                        </ng-multiselect-dropdown>
+                        <!-- <div *ngIf="filterData.controls['lineIds'].invalid && (filterData.controls['lineIds'].touched || filterData.controls['lineIds'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="filterData.controls['lineIds'].errors.required">
+                                Please select cell/line
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </perfect-scrollbar>
+        </div>
+        <div class="modal-footer footerBlock text-right">
+            <button class="btn submitBtn event-btn" type="submit"> <span *ngIf="submitSpinner"
+                    class="spinner-grow spinner-grow-sm" role="status"></span>
+                <span *ngIf="submitSpinner" class="load-text"> Loading...</span>
+                <span *ngIf="!submitSpinner" class="btn-text">Apply Filter</span> </button>
+            <button type="button" class="btn cancelBtn" aria-label="Close" (click)="d('Cross click')">Cancel
+            </button>
+        </div>
+    </form>
+</ng-template>

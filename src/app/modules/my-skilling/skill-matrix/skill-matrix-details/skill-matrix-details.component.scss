@@ -1,0 +1,105 @@
+.hidden {
+    display: none;
+}
+
+.expand {
+    display: block;
+}
+
+.modal-footer.paginationFooter {
+    padding: 5px 10px;
+}
+
+.expand-card {
+
+    margin: 20px 0px;
+
+    .title {
+        height: auto;
+        background-color: #7044cd;
+        color: white;
+        vertical-align: middle;
+        padding: 10px 15px;
+        cursor: pointer;
+
+        i {
+            float: right;
+            margin-top: 3px;
+        }
+    }
+
+    .content {
+        min-height: 50px;
+        background-color: white;
+        padding: 15px 20px;
+        border-left: 1px solid #7044cd;
+        border-bottom: 1px solid #7044cd;
+        border-right: 1px solid #7044cd;
+
+        .table-responsive {
+            margin-bottom: 20px;
+        }
+
+        .table-responsive:last-child {
+            margin-bottom: 0px;
+        }
+
+        .tableFixHead {
+            max-height: unset;
+            min-height: unset;
+            height: auto;
+        }
+
+        .stage-title {
+            display: inline-flex;
+            background: #7044cd;
+            color: white;
+            padding: 8px;
+            height: auto;
+
+            .index {
+                margin-right: 10px;
+                background: #b395f1;
+                padding: 1px 6px;
+                font-size: 13px;
+            }
+
+            .text {
+                padding: 1px 0px;
+                font-size: 13px;
+            }
+        }
+
+        .table {
+            margin-bottom: 0px;
+
+            // .tableFixHead table tbody td.no-record-found {
+            //     position: unset !important;
+            // }
+        }
+    }
+}
+
+.stage-header {
+    border-bottom: 3px solid #7044cd !important;
+
+    .modal-title {
+        padding: 7px 12px;
+        color: #7044cd !important;
+    }
+}
+
+.expand-card:first-child {
+    margin-top: 0px;
+}
+.textarea-custom {
+    border: 1px solid #ccc; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    overflow-y: auto; 
+    max-height: 200px; 
+    height: auto;
+    min-height: 65px;
+    resize: none; 
+    padding: 10px; 
+    font-family: Arial, sans-serif; 
+}

@@ -1,0 +1,88 @@
+.plantDropdown {
+    position: relative;
+    top: 30%;
+    // right: 22%;
+}
+// Aniket :- Css for Horizontal ScrollBar
+.tabMenu {
+    margin-left: -5px;
+    .swiper-container {
+        width: 100%;
+        margin: auto;
+        overflow-y: auto;
+        margin-top: 17px;
+        .swiper-wrapper {
+            display: inline-flex;
+            flex-direction: row;
+            overflow-y: auto;
+            justify-content: center;
+            .scrollmenu {
+                overflow: auto;
+                white-space: nowrap;
+                background-color: #fff;
+                border-radius: 25px;
+                .main-tab-switch1 {
+                    display: inline-block;
+                    color: #474747;
+                    text-align: center;
+                    line-height: 1.5;
+                    padding: 3px 20px;
+                    cursor: pointer;
+                    text-decoration: none;
+                    &.mainActiveSwitch {
+                        background: #7044cd 0% 0% no-repeat padding-box;
+                        padding: 3px 20px;
+                        color: white;
+                        border-radius: 25px;
+                        line-height: 1.5;
+                        -webkit-box-shadow: 0px 0px 12px -2px rgba(143, 141, 143, 1);
+                        -moz-box-shadow: 0px 0px 12px -2px rgba(143, 141, 143, 1);
+                        box-shadow: 0px 0px 12px -2px rgba(143, 141, 143, 1);
+                    }
+                }
+            }
+        }
+    }
+    .swiper-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .swiper-container::-webkit-scrollbar {
+        width: 0;
+        /* Remove scrollbar space */
+        background: transparent;
+        /* Optional: just make scrollbar invisible */
+    }
+    .swiper-container::-webkit-scrollbar-thumb {
+        background: transparent;
+    }
+    .scrollRightside {
+        position: absolute;
+        z-index: 999;
+        right: -26px;
+        top: 0;
+        // transform: translate(0%, -50%);
+        background: #7044cd 0% 0% no-repeat padding-box;
+        padding: 0.3rem;
+        cursor: pointer;
+        // box-shadow: 0 1rem 3rem rgb(0, 0, 0);
+        .feather {
+            color: #fff;
+            font-weight: bold;
+        }
+    }
+    .scrollLeftside {
+        position: absolute;
+        z-index: 999;
+        left: -15px;
+        top: 0;
+        // transform: translate(0%, -50%);
+        background: #7044cd 0% 0% no-repeat padding-box;
+        padding: 0.3rem;
+        cursor: pointer;
+        // box-shadow: 0 1rem 3rem rgb(0, 0, 0);
+        .feather {
+            color: #fff;
+            font-weight: bold;
+        }
+    }
+}

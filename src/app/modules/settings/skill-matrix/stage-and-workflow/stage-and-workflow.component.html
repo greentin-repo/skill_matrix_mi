@@ -1,0 +1,79 @@
+<div class="homepage-block bg-Transperant p-l-15 p-r-15">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="col-12 execution">
+                Workflow Approach
+            </div>
+            <div class="custom-toggle-btn">
+            </div>
+            <div class="row m-0" style="padding: 1rem 0em;">
+                <div class="col-12 p-0 ">
+                    <span class="header-title">Skill-Level</span>
+                </div>
+            </div>
+            <div class="scrollableDiv">
+                <div class="interventions" *ngFor="let level of levelList" (click)="selectLevel(level)"
+                    [ngClass]="selectedLevelData.id == level.id ? 'active' : ''">
+                    <p class="interventionName col-12">{{level.levelName}}
+                    </p>
+                    <i class="fa fa-caret-right arrow-right" *ngIf="selectedLevelData.id == level.id"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 interventionfeatures p-0">
+            <app-loading *ngIf="listLoading" style="position: absolute;top: 50%;left: 50%;">Please Wait...</app-loading>
+            <div *ngIf="!listLoading">
+                <div class="row intNames m-0">
+                    <div class="col-6 name m-auto">
+                        {{selectedLevelData.levelName}}
+                    </div>
+                    <div class="col-6 insideLabel">
+                        <label for="moduleId" class="col-form-label p-0">Plant</label>
+                        <div class="">
+                            <ng-multiselect-dropdown name="selectedModuleId"
+                                class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                                [placeholder]="'Select Plant'" [settings]="SingleDropdownSettings"
+                                [data]="branchAccessList" (onSelect)="onChangeBranch($event)"
+                                [(ngModel)]="selectedBranch.branch">
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="(workflowStageList == null || workflowStageList.length == 0)">
+                    <div class="text-center no-record-found" *ngIf="!listLoading">
+                        Data not found
+                    </div>
+                </div>
+                <perfect-scrollbar [style.height]="'calc(100vh - 13vh)'">
+                    <div>
+                        <div class="row assessment" *ngFor="let stage of workflowStageList">
+                            <div class="col-7 assessmentname" *ngIf="stage.stageCaption !== 'Stage7'">
+                                {{ stage.stageLabelName ? stage.stageLabelName : stage.stageName }}
+                            </div>
+                            <div class="col-5 custom-toggle-btn m-auto" *ngIf="stage.stageCaption !== 'Stage7'">
+                                <span class="switcher switcher-1">
+                                    <input type="checkbox" [id]="'isActive_' + stage.id" [name]="'isActive_' + stage.id"
+                                        [attr.inter-label-true]="'YES'" [attr.inter-label-false]="'NO'" [attr.disabled]="stage.isDisabled ? true : null"
+                                        [(ngModel)]="stage.isActive" (click)="handleCheckboxClick(stage)">
+                                    <label [for]="'isActive_' + stage.id"></label>
+                                </span> 
+                            </div>
+                        </div>
+                    </div>
+                </perfect-scrollbar>
+                
+            </div>
+        </div>
+        <div class="col-md-3 pr">
+            <div class="row m-0">
+                <div class="col-12 m-auto p-0">
+                    <!-- <app-loginInfo></app-loginInfo> -->
+                </div>
+            </div>
+            <div class="FooterButton text-right">
+                <button type="button" class="btn submitBtn" (click)="saveWorkFlow()"
+                    [disabled]="submitLoader">Submit</button> &nbsp;&nbsp;
+            </div>
+        </div>
+    </div>
+</div>

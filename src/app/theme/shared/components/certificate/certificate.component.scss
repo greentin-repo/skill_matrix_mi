@@ -1,0 +1,95 @@
+.m-0 {
+    margin: 0px;
+}
+.modal-content {
+    background-color: transparent;
+    .Downloadbtn,
+    .Downloadbtn:hover,
+    .Downloadbtn:focus {
+        color: white;
+        background-color: #7044cd;
+        font: normal normal 400 12px/1.5 Helvetica Neue;
+        letter-spacing: 0px;
+    }
+    .certImgDiv {
+        text-align: center;
+        margin-top: 10px;
+        .certImg {
+            max-width: 100%;
+            // height: calc(100vh - 20vh);
+        }
+        .empName {
+            position: absolute;
+            z-index: 999;
+            left: calc(100% - 63%);
+            top: calc(100% - 59.5%);
+            font: normal normal bold 15px / 1.5 Helvetica Neue;
+            color: #000;
+            vertical-align: middle;
+            text-align: center;
+            right: calc(100% - 83.5%);
+        }
+        .levelName {
+            position: absolute;
+            z-index: 999;
+            left: calc(100% - 52%);
+            top: calc(100% - 51.5%);
+            font: normal normal bold 14px / 1.5 Helvetica Neue;
+            color: #000;
+            vertical-align: middle;
+            text-align: center;
+            right: calc(100% - 69%);
+        }
+        .workStation {
+            position: absolute;
+            z-index: 999;
+            left: calc(100% - 69.5%);
+            top: calc(100% - 45.3%);
+            font: normal normal bold 14px / 1.5 Helvetica Neue;
+            color: #000;
+            vertical-align: middle;
+            text-align: center;
+            right: calc(100% - 84%);
+        }
+        .cellName {
+            position: absolute;
+            z-index: 999;
+            left: calc(100% - 63.5%);
+            top: calc(100% - 39%);
+            font: normal normal bold 14px / 1.5 Helvetica Neue;
+            color: #000;
+            vertical-align: middle;
+            text-align: center;
+            right: calc(100% - 84%);
+        }
+        .plantName {
+            position: absolute;
+            z-index: 999;
+            left: calc(100% - 64.5%);
+            top: calc(100% - 32%);
+            font: normal normal bold 14px / 1.5 Helvetica Neue;
+            color: #000;
+            vertical-align: middle;
+            text-align: center;
+            right: calc(100% - 58.5%);
+        }
+        .date {
+            position: absolute;
+            z-index: 999;
+            // left: calc(100% - 67%);
+            // top: calc(100% - 9%);
+            // font: normal normal bold 13px / 1.5 Helvetica Neue;
+            // color: #000;
+            // vertical-align: middle;
+            // text-align: center;
+            // right: calc(100% - 47.5%);
+            left: calc(100% - 50%);
+            top: calc(100% - 10%);
+            font: normal normal bold 13px / 1.5 Helvetica Neue;
+            color: #000;
+            vertical-align: middle;
+            text-align: center;
+            right: calc(100% - 64.5%);
+        }
+    }
+}

@@ -1,0 +1,313 @@
+<div *ngIf="submitLoading">
+    <app-loading></app-loading>
+</div>
+<div class="row modal-header">
+    <div class="col-12" style="display: inline-flex;">
+        <h2 class="heading m-0">
+            Assessment
+        </h2>
+        <!-- Aniket :- when start assessment then remove the close icon -->
+        <button type="button" aria-label="Close" class="close" (click)="closeModal()"
+            *ngIf="!isAssessmentStart"><span>×</span></button>
+    </div>
+</div>
+<div class="modal-body assessment-block" style="height: 83.5%;">
+    <div class="row" style="height: 100%;">
+        <div class="col-4" style="height: 100%;">
+            <div class="assessmentDet-block">
+                <perfect-scrollbar [style.max-height]="'calc(73vh)'">
+                    <!--Anikte - Countdown time show in assessment -->
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-8 text-left p-r-0">
+                            <span class="key">Assessment Time</span>
+                        </div>
+                        <div class="col-4 text-right">
+                            <span class="value assessmentTimer">{{actionDet.assessmentTimer
+                                || '00:00:00'}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-8 text-left p-r-0">
+                            <span class="key">Total Marks</span>
+                        </div>
+                        <div class="col-4 text-right">
+                            <span class="value">{{assessmentDet.totalMark
+                                || '00:00:00'}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-8 text-left p-r-0">
+                            <span class="key">Passing %</span>
+                        </div>
+                        <div class="col-4 text-right">
+                            <span class="value">{{assessmentDet.passingMark
+                                || '00:00:00'}}</span>
+                        </div>
+                    </div>
+                   
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Assessment Type</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.assessmentType || 'N/A'}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Plant</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.branchName || 'N/A'}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Cell</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.lineName || 'N/A'}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Workstation</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.workstation || 'N/A'}}</span>
+                        </div>
+                    </div>
+                    <div *ngIf="actionDet.assessmentType != 'SAFETY'" class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Level</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.levelName || 'N/A'}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Activity</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.activity || 'N/A'}}</span>
+                        </div>
+                    </div>
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Assigned Date</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.activityDate | date: 'dd-MM-yyyy' || 'N/A'}}</span>
+                        </div>
+                    </div>
+                    <!-- <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Activity Completeion Date</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.activityCompletionDate || 'N/A'}}</span>
+                        </div>
+                    </div> -->
+                    <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Status</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.status || 'N/A'}}</span>
+                        </div>
+                    </div>
+                    <!-- <div class="row assessment-input-block m-0">
+                        <div class="col-4 text-left p-r-0">
+                            <span class="key">Action Status</span>
+                        </div>
+                        <div class="col-8 text-right">
+                            <span class="value">{{actionDet.actionStatus || 'N/A'}}</span>
+                        </div>
+                    </div> -->
+                </perfect-scrollbar>
+            </div>
+        </div>
+        <div class="col-8" *ngIf="!isAssessmentStart && !assessmentStartCloseSpinner &&
+        (assessmentDet.quesList != null && assessmentDet.quesList.length>
+        0)">
+            <!-- Aniket :- Show start button in assessment-->
+            <div class="asessmentStartBlock">
+                <div class="assessmentMsg text-center">
+                    <ng-container *ngIf="!isAssessmentClose">
+                        <div class="assessmentHighlightMsg">
+                            <p>Online Assessment Precautions</p>
+                            <ul>
+                                <li>
+                                    <b>Check your internet connection:</b> Make sure you have a stable and reliable connection
+                                    before you begin.
+                                </li>
+                                <li>
+                                    <b>Avoid closing or refreshing your browser while taking the assessment:</b> Doing so could
+                                    lead to losing progress or facing technical problems.
+                                </li>
+                                <li>
+                                    <b>Once you begin the assessment, you cannot cancel it:</b> Be prepared to start and
+                                    complete it by the set deadline.
+                                </li>
+                                <li>
+                                    <b>If you miss the submission deadline:</b> Your responses up to that point will be
+                                    automatically submitted.
+                                </li>
+                            </ul>
+                            <p class="allTheBest">Good luck!</p>
+                        </div>
+                        <!-- <p class="msg">Start Assessment</p> -->
+                        <button class="btn submitBtn startAssessment" type="button" (click)="connect()">
+
+                            <span *ngIf="assessmentStartCloseSpinner" class="spinner-grow spinner-grow-sm"
+                                role="status"></span>
+                            <span *ngIf="assessmentStartCloseSpinner" class="load-text"> {{'Loading' |
+                                translate}}...</span>
+                            <span *ngIf="!assessmentStartCloseSpinner" class="btn-text">Start Assessment</span>
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="isAssessmentClose">
+                        <p class="msg"> Assessment time closed</p>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="col-8" style="height: 100%;" *ngIf="isAssessmentStart && assessmentStartCloseSpinner ">
+            <app-spinner *ngIf="assessmentLoader"></app-spinner>
+            <div class="dataNotAvailable"
+                *ngIf="(assessmentDet.quesList == null || assessmentDet.quesList.length == 0) && !assessmentLoader">
+            </div>
+            <ng-container>
+                <div class="assessmentQueAns-block"
+                    *ngIf="assessmentDet.quesList !=
+                    null && assessmentDet.quesList.length> 0 && !assessmentLoader">
+                    <form #empSkillForm="ngForm" autocomplete="off"
+                        class="needs-validation" novalidate [ngClass]="empSkillForm.submitted ? 'was-validated':''">
+                        <perfect-scrollbar [style.height]="'calc(73vh)'" #QuesPerfectScroll>
+                            <ng-container
+                                *ngIf="assessmentDet.quesListGroupBy != null && assessmentDet.quesListGroupBy.length > 0">
+                                <div *ngFor="let quesGroup of assessmentDet.quesListGroupBy">
+                                    <div class="qsBlock">
+                                        <div class="questions-block">
+                                            <div class="overlay">
+                                                <div class="Category" *ngIf="quesGroup.catId && quesGroup.catName">
+                                                    <label class="form-check-label catLbl"
+                                                        for="isCatgeory">{{quesGroup.catName
+                                                        || 'N/A'}}</label>
+                                                </div>
+                                                <ng-container
+                                                    *ngIf="quesGroup.quesList != null && quesGroup.quesList.length > 0">
+                                                    <div class="assessmentQue-block">
+                                                        <div class="ques-card otherQuesCard"
+                                                            *ngFor="let ques of quesGroup.quesList; let quesIndex = index" [ngClass]="{'highlight-unanswered': ques.highlight}">
+                                                            <div class="row m-0">
+                                                                <div class="col-1 p-0">
+                                                                    <!-- <p class="question_number text-center">{{quesIndex + 1}}</p> -->
+                                                                    <p class="question_number text-center">
+                                                                        {{quesIndex + 1}}
+                                                                    </p>
+                                                                </div>
+                                                                <div class="col-11">
+                                                                    <!-- <p class="questions">{{ques.question || 'N/A'}}</p> -->
+                                                                    <p class="questions">
+                                                                        {{ques.question}}&nbsp;<span
+                                                                            class="astrick">*</span>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="option-block">
+                                                                <ul class="optList-Div">
+                                                                    <ng-container
+                                                                        *ngIf="ques.optList != null && ques.optList.length > 0">
+                                                                        <li
+                                                                            *ngFor="let opt of ques.optList; let optIndex = index">
+                                                                            <div class="row">
+                                                                                <div class="col-2 p-0 text-center"
+                                                                                    style="margin: auto 0px;">
+                                                                                    <div class="optIndex">
+                                                                                        {{Constant.AlphabetLetter[optIndex]}}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-8 p-0">
+                                                                                    <ng-container>
+                                                                                        <div
+                                                                                            class="optText-div radiobtn">
+                                                                                            <input type="radio"
+                                                                                                id="opt_{{ques.quetionId+'_'+opt.assessmentQueOptId}}"
+                                                                                                name="answer{{ques.quetionId}}"
+                                                                                                value="{{opt.assessmentQueOptId}}"
+                                                                                                required
+                                                                                                [(ngModel)]="opt.isChecked"
+                                                                                                (change)="addOrUpdateRequestList(ques, opt);" />
+                                                                                            <label
+                                                                                                for="opt_{{ques.quetionId+'_'+opt.assessmentQueOptId}}"
+                                                                                                class="optText">{{opt.option
+                                                                                                || 'N/A'}}
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </ng-container>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                    </ng-container>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </perfect-scrollbar>
+                    </form>
+                </div>
+
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="modal-footer text-center pad0 paginationFooter" *ngIf="isAssessmentStart && assessmentStartCloseSpinner ">
+    <button type="button" class="btn submitBtn" (click)="submitStageFiveStatus()"
+        style="background: #7044cd;">Submit</button>
+</div>
+<!-- Aniket :- show confirmation model -->
+<ng-template #openRefModalShiftNo let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel2">{{modalTitle}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="formdata" (ngSubmit)="saveDocument(formdata)" autocomplete="off">
+        <div class="modal-body p-0">
+            <div>
+                <div class="row form-group">
+                    <label for="docName" class="col-sm-4 col-form-label">Document Name &nbsp;
+                        <span class="astrik">*</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <input type="text" id="docName" name="docName" placeholder="Enter Document Name"
+                            formControlName="docName" [(ngModel)]="addEditReferenceDocName.doc"
+                            class="form-control customInput-field" maxlength="255" />
+                        <div *ngIf="isFormSubmitted && formdata.controls['docName'].invalid || 
+                            (formdata.controls['docName'].touched || formdata.controls['docName'].Untouched) 
+                            && formdata.controls['docName'].hasError('required')" class="custom-errorMsg">
+                            Please enter document name
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footerDiv"></div>
+        <div class="footerBtn">
+            <button class="btn btn-lg submitBtn event-btn" type="submit" [disabled]="submitSpinner">
+                <span *ngIf="submitSpinner" class="spinner-grow spinner-grow-sm" role="status"></span>
+                <span *ngIf="submitSpinner" class="load-text"> Loading...</span>
+                <span *ngIf="!submitSpinner" class="btn-text">Submit</span>
+            </button>
+        </div>
+    </form>
+</ng-template>

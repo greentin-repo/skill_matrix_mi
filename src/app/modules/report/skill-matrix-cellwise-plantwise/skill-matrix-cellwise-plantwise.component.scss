@@ -1,0 +1,40 @@
+.tableFixHead {
+    table {
+        background: #fff;
+        thead {
+            position: sticky;
+            z-index: 999;
+            top: 0px;
+            th {
+               /* background: #fff; */
+               box-shadow: none !important;
+               /* border-right: 1px solid #fff; */
+               /* border-left: 1px solid #fff; */
+               border-bottom: 2px solid #d2c1f3 !important;
+               border-top: 2px solid #d2c1f3;
+               font-weight: bold;
+               color: #000;
+               /* border-top: none !important; */
+               /* border-bottom: none !important; */
+               vertical-align: middle;
+            }
+            &.lastRow {
+                position: sticky;
+                z-index: 1;
+                bottom: 0px;
+            }
+        }
+        td{
+            border-bottom: 1px solid rgb(218, 215, 215);
+        }
+        .assessmentCol {
+            background: #fbe4d5 !important;
+        }
+        .approvalCol {
+            background: #e2efd9 !important;
+        }
+        // .projectCol {
+        //     background: #deeaf6 !important;
+        // }
+    }
+}

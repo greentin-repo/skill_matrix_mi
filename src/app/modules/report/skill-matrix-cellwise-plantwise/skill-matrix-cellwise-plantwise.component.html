@@ -1,0 +1,38 @@
+<div class="table-block">
+    <div class="table-responsive tableFixHead">
+        <table matSort (matSortChange)="sortData($event)" [matSortActive]="sort.active"
+            [matSortDirection]="sort.direction" matSortDisableClear class="table table-bordered">
+            <thead>
+                <tr>
+                    <th mat-sort-header="BranchName">Plant</th>
+                    <th mat-sort-header="DeptName">Department</th>
+                    <th mat-sort-header="LineName">Cell/Line</th>
+                    <th mat-sort-header="LevelName">Level</th>
+                    <th mat-sort-header="PlanCount">Plan Count</th>
+                    <th mat-sort-header="ActualCount">Actual Count</th>
+                    <th mat-sort-header="WorkstationName">Workstation Name</th>
+                    <th mat-sort-header="MonthYear">Month Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let x of reportData.skillMatrixCellPlantWise">
+                    <td>{{x.branchName}}</td>
+                    <td>{{x.deptName}}</td>
+                    <td>{{x.lineName}}</td>
+                    <td>{{x.levelName}}</td>
+                    <td>{{x.planCount}}</td>
+                    <td>{{x.actualCount}} ({{x.percentage}} %)</td>
+                    <td>{{x.workstationName}}</td>
+                    <td>{{x.monthYear}}</td>
+                </tr>
+                <tr *ngIf="reportData.skillMatrixCellPlantWise == null || reportData.skillMatrixCellPlantWise.length == 0">
+                    <td colspan="5" class="text-center no-record-found">
+                        Data Not Found
+                        <!-- <div class="dataNotAvailable"></div> -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"></app-pagination> -->
+</div>

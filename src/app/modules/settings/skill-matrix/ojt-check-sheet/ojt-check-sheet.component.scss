@@ -1,0 +1,29 @@
+.checksheetinputBox,
+.checksheetinputBox:hover {
+    border-radius: 4px;
+    box-shadow: 0 0 2px 1px #eae1ea;
+    border: 1px solid #dedede;
+    background: #fff;
+}
+
+.extraContent .addRegDiv .addRegBtn,
+.extraContent .addRegDiv .addRegBtn:hover,
+.extraContent .addRegDiv .addRegBtn:focus {
+    position: absolute;
+    right: 6rem !important;
+    font: normal normal 400 14px/37px Helvetica Neue;
+    color: #fff;
+    text-transform: capitalize;
+    top: 0px;
+    box-shadow: none;
+    outline: none;
+    border: none;
+    padding: 0px;
+}
+.tableFixHead th{
+    text-align: center;
+}
+// :host ::ng-deep .mat-sort-header-container {
+//     display: flex;
+//     justify-content: center;
+//  }

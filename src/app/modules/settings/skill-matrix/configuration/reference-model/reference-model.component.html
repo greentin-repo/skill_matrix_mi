@@ -1,0 +1,139 @@
+<div class="homepage-block bg-Transperant p-l-15 p-r-15">
+    <div class="extraContent">
+        <div class="row m-0">
+            <div class="col-8 p-0">
+                <div class="row m-0">
+                    <div class="col-6">
+                        <div class="form-group has-search">
+                            <!-- <span class="fa fa-search form-control-feedback"></span>
+                            <input type="text" class="form-control" name="searchInput" placeholder="Search"> -->
+                            <!-- [(ngModel)]="searchDet.searchInput" -->
+                            <span class="fa fa-search form-control-feedback" (click)="getSearchList(true)"
+                                *ngIf="!searchDet.searchData"></span>
+                            <span *ngIf="searchDet.searchData" class="fa fa-times-circle form-control-clear"
+                                (click)="getSearchList(false)"></span>
+
+                            <input type="text" class="form-control" id="your-element-id" name="searchInput"
+                                placeholder="Search by model or plant name" [(ngModel)]="searchDet.searchInput"
+                                (keyup)="$event.keyCode == 13 ? getSearchList(true) : ''" autocomplete="off"
+                                style="padding-right: 2.4rem;" />
+
+                        </div>
+                    </div>
+                    <div class="col-6 p-r-5 p-l-5">
+                        <!-- <div class="form-group m-0">
+                            <label for="branch" class="col-form-label1 p-0" style="top: 11px;">Plant</label>
+                            <div class="p-l-5">
+                                <ng-multiselect-dropdown name="branch" id="branch"
+                                    class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                                    [placeholder]="'Select Plant'" [settings]="SingleBranchDropdownSettings"
+                                    (onSelect)="onChangeBranch($event)" (onDeSelect)="onChangeBranch(false)"
+                                    [data]="branchAccessList" [(ngModel)]="referenceModel.branch">
+                                </ng-multiselect-dropdown>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 p-0">
+                <div class="addRegDiv">
+                    <button class="btn addRegBtn m-0" type="button" (click)="addRefModalOpen(openRefModalModel, 'top')"
+                        [disabled]="!disableReferModel">
+                        <i class="fa fa-plus m-r-10"></i> Add Model</button>
+                </div>
+            </div>
+        </div>
+        <app-loading *ngIf="isModelListLoading" style="position: absolute;top: 50%;left: 50%;">Please
+            Wait...</app-loading>
+        <div class="table-block">
+            <div class="table-responsive tableFixHead">
+                <table class="table" matSort (matSortChange)="sortData($event)">
+                    <thead>
+                        <tr>
+                            <th mat-sort-header="BranchName">Plant</th>
+                            <th mat-sort-header="ModelName">Model</th>
+                            <th mat-sort-header="CreatedDate">Created Date</th>
+                            <th class="actionTh fixedColumn">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let x of referencemodelList">
+                            <td>{{x.branchName}}</td>
+                            <td>{{x.modelName}}</td>
+                            <td>{{(x.createdDate) ? (x.createdDate | date:'dd-MM-yyyy') : 'N/A'}}</td>
+                            <td class="actionTd size text-left">
+                                <i class="fa fa-edit editIcon" (click)="editRefModel(openRefModalModel, 'top', x)">
+                                </i>&nbsp; &nbsp;
+                                <i class="fas fa-trash-alt deleteIcon" (click)="removeRefModel(x)">
+                                </i>&nbsp; &nbsp;
+                            </td>
+                        </tr>
+                        <tr *ngIf="(referencemodelList == null || referencemodelList.length == 0)">
+                            <td colspan="2" class="text-center no-record-found" *ngIf="!isModelListLoading">
+                                Data not Found
+                            </td>
+                            <td colspan="2" class="text-center loading-div" *ngIf="isModelListLoading">
+                                <app-loading></app-loading>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"></app-pagination>
+        </div>
+    </div>
+</div>
+<ng-template #openRefModalModel let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel2">{{modalTitle}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="formdata" (ngSubmit)="saveReferenceModel(formdata)" autocomplete="off">
+        <div class="modal-body p-0">
+            <div>
+                <!-- <div class="form-group row">
+                    <label for="branch" class="col-sm-4 col-form-label">Plant &nbsp;
+                        <span class="astrik">*</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <ng-multiselect-dropdown name="branch" class="custom-multiSelection customWidthForInter"
+                            [placeholder]="'Select Plant'" [settings]="SingleBranchDropdownSettings"
+                            formControlName="branch" [data]="branchAccessList" [disabled]="false"
+                            [(ngModel)]="addEditReferenceModel.branch">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf="isFormSubmitted && formdata.controls['branch'].invalid || 
+                        (formdata.controls['branch'].touched || formdata.controls['branch'].Untouched) 
+                        && formdata.controls['branch'].hasError('required')" class="custom-errorMsg" style="padding-left: 15px;">
+                            Please select plant
+                        </div>
+                    </div>
+                </div> -->
+                <div class="row form-group">
+                    <label for="modelName" class="col-sm-4 col-form-label">Model Name &nbsp;
+                        <span class="astrik">*</span>
+                    </label>
+                    <div class="col-sm-8">
+                        <input type="text" id="modelName" name="modelName" placeholder="Enter model name"
+                            formControlName="modelName" [(ngModel)]="addEditReferenceModel.modelName"
+                            class="form-control customInput-field" maxlength="255" />
+                        <div *ngIf="isFormSubmitted && formdata.controls['modelName'].invalid || 
+                        (formdata.controls['modelName'].touched || formdata.controls['modelName'].Untouched) 
+                        && formdata.controls['modelName'].hasError('required')" class="custom-errorMsg">
+                            Please enter model name
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footerDiv"></div>
+        <div class="footerBtn">
+            <button class="btn btn-lg submitBtn event-btn" type="submit" [disabled]="submitSpinner">
+                <span *ngIf="submitSpinner" class="spinner-grow spinner-grow-sm" role="status"></span>
+                <span *ngIf="submitSpinner" class="load-text"> Loading...</span>
+                <span *ngIf="!submitSpinner" class="btn-text">Submit</span>
+            </button>
+        </div>
+    </form>
+</ng-template>

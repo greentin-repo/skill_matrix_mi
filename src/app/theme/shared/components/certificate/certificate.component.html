@@ -1,0 +1,30 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-body p-0 text-center">
+            <div class="certImgDiv">
+                <span id="certModalBody" style="display: inline-block;width: calc(100% - 50%);position: relative;">
+                    <img src="assets\images\certificate\Certificate.png" alt="" class="certImg" />
+                    <p class="m-0 empName">{{selectedDet.empName}}</p>
+                    <p class="m-0 levelName">{{selectedDet.levelName}}</p>
+                    <p class="m-0 workStation">{{selectedDet.workstationName}}</p>
+                    <p class="m-0 cellName">{{selectedDet.lineName}}</p>
+                    <p class="m-0 plantName">{{selectedDet.branchName}}</p>
+                    <p class="m-0 date">{{selectedDet.updatedDate | date: 'dd-MM-yyyy'}}</p>
+                </span>
+            </div>
+            <div class="row text-center p-2">
+                <div class="col">
+                    <button class="btn Downloadbtn submitBtn" type="button" (click)="downloadCertificate()"
+                        [disabled]="downloadLoader">
+                        <span *ngIf="downloadLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                        <span *ngIf="downloadLoader" class="load-text"> Loading...</span>
+                        <span *ngIf="!downloadLoader" class="btn-text">Download</span>
+                    </button> &nbsp;&nbsp;
+                    <button type="button" class="btn cancelBtn" (click)="closeModal()" [disabled]="downloadLoader">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

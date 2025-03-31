@@ -1,0 +1,156 @@
+.row {
+    &.topBar {
+        margin-bottom: 20px !important;
+        border-bottom: 4px solid #dcd5eb;
+        background-color: #f1f1f1;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        padding-bottom: 10px;
+
+
+        .col-3 {
+            label {
+                width: 100%;
+                margin-bottom: 0;
+            }
+
+            .custom-errorMsg {
+                color: red;
+            }
+
+            ng-multiselect-dropdown {
+                position: relative;
+                height: auto;
+                max-height: none;
+            }
+
+        }
+
+        .col-2 {
+
+            .datePickInput {
+                width: 100%;
+                height: 34px;
+            }
+        }
+
+        .submitBtn {
+            background-color: #7044cd;
+            color: white;
+            border-radius: 5px;
+            height: 34px;
+            font-size: 12px;
+        }
+
+        .excelbutton-container {
+            position: fixed;
+            z-index: 1001;
+            left: 90%;
+
+            .excelbutton {
+                .exportPdf {
+                    border-radius: 50%;
+                    border: 1px solid #7044cd;
+                    width: 40px;
+                    height: 40px;
+                    background-color: #7044cd;
+                    margin-left: calc(100% - 73%);
+
+                    .iconPDF {
+                        font-size: 25px;
+                        color: #ffffff;
+                        margin: 7px 10px;
+                    }
+                }
+
+                .excelFont {
+                    font-weight: 500;
+                    font-size: 11px;
+                    line-height: 20px;
+                    font-family: Helvetica Neue;
+                }
+            }
+        }
+    }
+
+}
+
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: inline-block;
+}
+
+.homepage-block {
+
+    .barGraph {
+        top: 25px;
+        left: 0;
+        right: 0;
+        padding:4px;
+        bottom:0px;
+        width: calc(100% - 1px);
+        z-index: 999;
+        height: 100%;
+        margin-bottom: 5px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        padding-left: 10px;
+        padding-bottom:5px;
+        position: absolute;
+ 
+        &::-webkit-scrollbar {
+            width: 7px;
+            border-radius: 30px;
+            height: 1px;
+ 
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 10px;
+
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+            border-radius: 5px;
+
+        }
+
+        #branch-chart-container{
+            padding-bottom: 1px;
+
+        }
+        #dept-chart-container {
+            padding-bottom: 1px;
+            margin-bottom:30px;
+        }
+        #org-chart-container {
+            margin-top: 70px;
+            padding-bottom: 1px;
+        }
+
+        .pr {
+            height: calc(100vh - 18vh);
+
+            .dataNotAvailable {
+                background-size: 17% auto;
+                height: calc(100vh - 20vh);
+            }
+        }
+    }
+}
+
+.barGraph.noData {
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
