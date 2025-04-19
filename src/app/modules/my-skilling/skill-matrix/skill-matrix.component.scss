@@ -1,0 +1,35 @@
+.homepage-block {
+    .row {
+        .exportPdf {
+            border: 1px solid #00AEEF;
+            width: 30px;
+            height: 30px;
+            background-color: #00AEEF;
+            margin-left: calc(100% - 60%);
+            float: right;
+            margin: 5px;
+
+            .iconPDF {
+                font-size: 22px;
+                color: #ffffff;
+                margin: 3px 5px;
+            }
+        }
+
+        .excelbutton {
+            cursor: pointer;
+            margin-left: 20px;
+
+            .img-fluid {
+                height: 25px;
+                width: 25px;
+                right: initial;
+                position: absolute;
+                left: 200%;
+            }
+            .excelFont {
+                font: normal normal 500 11px/20px Helvetica Neue;
+            }
+        }
+    }
+}

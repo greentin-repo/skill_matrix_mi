@@ -1,0 +1,226 @@
+<div class="modal-header">
+    <h4 class="modal-title headerTitle" id="modal-basic-title">
+        {{selectedDet.title}} Workforce Deployment
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="close('Cross Click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="row m-0 formInputField">
+    <div class="col-2 insideLabel p-l-5 p-r-5">
+        <label for="moduleId" class="col-form-label p-0">Plant&nbsp;<span class="astrik">*</span></label>
+        <div class="">
+            <ng-multiselect-dropdown name="branch"
+                class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                [placeholder]="'Select Plant'" [settings]="SingleDropdownSettings" [data]="branchAccessList"
+                (onSelect)="onChangeBranch($event)" (onDeSelect)="onChangeBranch(false)" [(ngModel)]="searchDet.branch"
+                [disabled]="selectedDet.title == 'View'">
+            </ng-multiselect-dropdown>
+        </div>
+    </div>
+    <div class="col-2 insideLabel p-l-5 p-r-5">
+        <label for="dept" class="col-form-label p-0">Department&nbsp;<span class="astrik">*</span></label>
+        <div class="">
+            <ng-multiselect-dropdown name="dept"
+                class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                [placeholder]="'Select Department'" [settings]="SingleDropdownSettings" [data]="deptList"
+                [(ngModel)]="searchDet.dept" (onSelect)="onChangeDept($event)" (onDeSelect)="onChangeDept(false)"
+                [disabled]="selectedDet.title == 'View'">
+            </ng-multiselect-dropdown>
+        </div>
+    </div>
+    <div class="col-2 insideLabel p-l-5 p-r-5">
+        <label for="cell" class="col-form-label p-0">Cell / Line&nbsp;<span class="astrik">*</span></label>
+        <div class="">
+            <ng-multiselect-dropdown name="cell"
+                class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                [placeholder]="'Select Cell / Line'" [settings]="SingleDropdownSettings" [data]="cellList"
+                [(ngModel)]="searchDet.cell" (onSelect)="onChangeCell($event)" (onDeSelect)="onChangeCell(false)"
+                [disabled]="selectedDet.title == 'View'">
+            </ng-multiselect-dropdown>
+        </div>
+    </div>
+    <div class="col-2 insideLabel p-l-5 p-r-5">
+        <label for="shift" class="col-form-label p-0">Shift&nbsp;<span class="astrik">*</span></label>
+        <div class="">
+            <ng-multiselect-dropdown name="shift"
+                class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                [placeholder]="'Select Shift'" [settings]="SingleDropdownSettings" [data]="shiftList"
+                [(ngModel)]="searchDet.shift" (onSelect)="onChangeShift($event)" (onDeSelect)="onChangeShift(false)"
+                [disabled]="selectedDet.title == 'View'">
+            </ng-multiselect-dropdown>
+        </div>
+    </div>
+    <div class="col-4 p-l-5 p-r-5">
+        <div class="row  m-0">
+            <div class="col-6 insideLabel datePickerBlock p-l-5 p-r-5">
+                <label for="fromDate" class="col-form-label">From
+                    Date&nbsp;<span class="astrik">*</span></label>
+                <div class="custom-Input-Group" (click)="fromDatePicker.open()">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="feather icon-calendar"></i>
+                        </div>
+                        <input matInput #input="ngModel" [(ngModel)]="searchDet.fromDate" [min]="minDate"
+                            [matDatepicker]="fromDatePicker" class="form-control datePickInput" placeholder="From Date"
+                            (keydown)="false" (dateChange)="selectDate('from', $event)" name="fromDate"
+                            [disabled]="selectedDet.title == 'View'">
+                        <mat-datepicker #fromDatePicker></mat-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 insideLabel datePickerBlock p-l-5 p-r-5">
+                <label for="toDate" class="col-form-label">To
+                    Date&nbsp;<span class="astrik">*</span></label>
+                <div class="custom-Input-Group" (click)="toDatePicker.open()">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <i class="feather icon-calendar"></i>
+                        </div>
+                        <input matInput #input="ngModel" [(ngModel)]="searchDet.toDate" [min]="searchDet.fromDate" [matDatepicker]="toDatePicker" class="form-control datePickInput"
+                            placeholder="To Date" (keydown)="false" (dateChange)="selectDate('to', $event)"
+                            name="toDate" [disabled]="selectedDet.title == 'View'">
+                        <mat-datepicker #toDatePicker></mat-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-body" style="padding: 10px;">
+    <perfect-scrollbar [style.height]="(selectedDet.title == 'Add') ? 'calc(100vh - 23vh)' : 'calc(100vh - 15vh)'">
+        <div class="table-block skill-table">
+            <div class="table-responsive tableFixHead">
+                <table class="table table-bordered">
+                    <ng-container *ngIf="!isObjectEmpty(skillMatrixDetails)">
+                        <thead>
+                            <tr>
+                                <ng-container *ngFor="let x of skillMatrixDetails.columns">
+                                    <ng-container
+                                        *ngIf="(selectedDet.title == 'Add') ? (x.field != 'empId' && x.field != 'cmpyEmpId' && x.field != 'empName') : true">
+                                        <th class="" scope="col">
+                                            {{x.heading}}<ng-container
+                                                *ngIf="x.hasOwnProperty('levelName') && x.levelName">
+                                                ({{x.levelName}})
+                                            </ng-container>
+                                        </th>
+                                    </ng-container>
+                                </ng-container>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngIf="!isObjectEmpty(skillMatrixDetails)">
+                                <ng-container *ngFor="let row of skillMatrixDetails.columns">
+                                    <ng-container
+                                        *ngIf="(selectedDet.title == 'Add') ? (row.field != 'empId' && row.field != 'cmpyEmpId' && row.field != 'empName') : true">
+                                        <td class="p-0">
+                                            <!-- <ng-container
+                                                *ngIf="selectedWorkForceData != null && selectedWorkForceData.length > 0">
+                                                <ng-container *ngFor="let x of selectedWorkForceData">
+                                                    <div class="checkbox-block form-check" 
+                                                        (click)="(selectedDet.title == 'View') ? '' : onChangeEmp(x, row,'remove')"
+                                                        *ngIf="x.isSelected && row.id == x.workstationId">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            [checked]="x.isSelected"
+                                                            [id]="'checkbox' + x.empId + '_' + row.field"
+                                                            [disabled]="selectedDet.title == 'View'">
+                                                        <label
+                                                            [for]="'checkbox' + x.empId + '_' + row.field">{{x.empName}}
+                                                            <ng-container
+                                                                *ngIf="!isObjectEmpty(isChecked(x, row.field))">
+                                                                &nbsp;({{isChecked(x,row.field).level}})
+                                                            </ng-container>
+                                                        </label>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container> -->
+                                            <ng-container
+                                                *ngIf="selectedWorkForceData != null && selectedWorkForceData.length > 0">
+                                                <ng-container *ngFor="let x of selectedWorkForceData">
+                                                    <div class="checkbox-block form-check"
+                                                        (click)="(selectedDet.title == 'View') ? '' : onChangeEmp(x, row, 'remove')"
+                                                        *ngIf="x.isSelected && row.id == x.workstationId"
+                                                        [ngClass]="{'red-text': x.isEligible == false}">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            [checked]="x.isSelected"
+                                                            [id]="'checkbox' + x.empId + '_' + row.field"
+                                                            [disabled]="selectedDet.title == 'View'">
+                                                        <label
+                                                            [for]="'checkbox' + x.empId + '_' + row.field">{{x.empName}}
+                                                            <ng-container
+                                                                *ngIf="!isObjectEmpty(isChecked(x, row.field))">
+                                                                &nbsp;({{isChecked(x,row.field).level}})
+                                                            </ng-container>
+                                                        </label>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                            <ng-container
+                                                *ngIf="skillMatrixDetails.tableData != null && skillMatrixDetails.tableData.length > 0">
+                                                <ng-container *ngFor="let y of skillMatrixDetails.tableData">
+                                                    <div class="checkbox-block form-check" *ngIf="!y.isSelected"
+                                                        (click)="onChangeEmp(y, row,'add')">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            [checked]="y.isSelected"
+                                                            [id]="'checkbox' + y.empId + '_' + row.field">
+                                                        <label
+                                                            [for]="'checkbox' + y.empId + '_' + row.field">{{y.empName}}
+                                                            <ng-container
+                                                                *ngIf="!isObjectEmpty(isChecked(y, row.field))">
+                                                                &nbsp;({{isChecked(y,row.field).level}})
+                                                            </ng-container>
+                                                        </label>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                        </td>
+                                    </ng-container>
+                                </ng-container>
+                            </tr>
+                            <tr *ngIf="isObjectEmpty(skillMatrixDetails)">
+                                <td colspan="12" class="text-center no-record-found" *ngIf="!listLoader">
+                                    Data Not Found
+                                </td>
+                                <td colspan="12" class="text-center loading-div" *ngIf="listLoader">
+                                    <app-loading></app-loading>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                    <ng-container *ngIf="isObjectEmpty(skillMatrixDetails)">
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center no-record-found" *ngIf="!listLoader">
+                                    Data Not Found
+                                </td>
+                                <td colspan="6" class="text-center loading-div" *ngIf="listLoader">
+                                    <app-loading></app-loading>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </ng-container>
+                </table>
+            </div>
+            <!-- <div class="footerBlock text-right">
+                <button type="button" class="btn cancelBtn m-l-5" aria-label="Close"
+                    [disabled]="submitLoader && selectedDet.title == 'Add'" (click)="close('Cross Click')">Cancel
+                </button>
+            </div> -->
+        </div>
+    </perfect-scrollbar>
+</div>
+<div class="modal-footer">
+    <div class="row">
+        <div class="col-sm-12">
+            <button style="margin-right: 10px;" type="button" class="btn cancelBtn m-l-5" aria-label="Close"
+                    [disabled]="submitLoader && selectedDet.title == 'Add'" (click)="close('Cross Click')">Cancel
+                </button>
+            <button type="button" class="btn submitBtn event-btn" (click)="(!submitLoader) ? saveWorkForce() : ''"
+                *ngIf="selectedDet.title == 'Add'">
+                <span *ngIf="submitLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                <span *ngIf="submitLoader" class="load-text"> Loading...</span>
+                <span *ngIf="!submitLoader" class="btn-text">Submit </span>
+            </button>
+        </div>
+    </div>
+</div>

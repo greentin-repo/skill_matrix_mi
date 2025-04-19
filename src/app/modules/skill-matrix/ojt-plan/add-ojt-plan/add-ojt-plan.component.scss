@@ -1,0 +1,331 @@
+.headerBar {
+    display: inline-flex;
+    width: 100%;
+
+    .backArrow {
+        margin: auto;
+        display: inline-block;
+        padding-left: 1rem;
+
+        .feather {
+            color: #7044cd;
+            vertical-align: bottom;
+            font-size: 2em;
+            cursor: pointer;
+        }
+    }
+}
+
+.insideLabel {
+    .col-form-label {
+        position: absolute;
+        z-index: 999;
+        top: 0px;
+        font: normal normal bold 12px/1.5 Helvetica Neue;
+        left: 1.5rem;
+        color: #7044cd;
+    }
+}
+
+.padding-tb {
+    padding-top: 12px;
+    padding-bottom: 8px;
+}
+
+.example-month-picker .mat-calendar-period-button {
+    pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+    display: none;
+}
+
+.custom-Input-Group {
+    .input-group-prepend {
+        .input-group-text {
+            background: transparent;
+            cursor: pointer;
+
+            // padding: 5px;
+            .feather {
+                color: #7044cd;
+            }
+        }
+    }
+}
+
+.form-group {
+    margin-bottom: 0px !important;
+
+    .col-form-dt-label {
+        // margin-top: 10px;
+        font: normal normal bold 12px/1.5 Helvetica Neue;
+        color: #7044cd;
+        position: absolute;
+        z-index: 999;
+        padding: 0px 5px;
+        background: #fff;
+        left: 2em;
+        top: -8px;
+    }
+}
+
+.proficiencypop {
+    text-align: left;
+    font: normal normal 500 21px/28px Helvetica Neue;
+    letter-spacing: 0px;
+    color: #7044cd;
+    opacity: 1;
+}
+
+.skill-table {
+    .tableFixHead {
+        border-bottom: none;
+        max-height: calc(100vh - 25vh);
+        min-height: calc(100vh - 25vh);
+        height: calc(100vh - 25vh);
+    }
+
+    th {
+        background: #fff !important;
+    }
+
+    .tdData {
+        .assessment {
+            padding: 0.5rem 0px;
+
+            .assessmentname {
+                font: normal normal 500 14px/1.5 Helvetica Neue;
+                letter-spacing: 0px;
+                color: #474747;
+                text-align: left;
+                margin: auto;
+            }
+        }
+    }
+
+    td:not(:first-child) {
+        // vertical-align: middle;
+        // text-align: center;
+    }
+}
+
+// Your SCSS file
+
+.noofProjects {
+    background: #7044cd;
+    border-radius: 50px;
+    right: 2em;
+    color: white;
+    font: normal normal 500 18px/29px Helvetica Neue;
+    text-align: center;
+}
+
+.thbackground {
+    background-color: white;
+}
+
+/* Style the button */
+#registerBtn {
+    background-color: #7044cd;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+
+    .fa {
+        margin-right: 10px;
+    }
+
+    &.up {
+        .fa {
+            content: "\f106";
+        }
+    }
+
+    &.down {
+        .fa {
+            content: "\f107";
+        }
+    }
+}
+
+.modal-footer .footer-buttons {
+    margin-top: 1px;
+}
+
+.fixedColumn {
+    position: sticky;
+    top: 0;
+    /* Adjust this value if necessary */
+    left: 0;
+    /* Adjust this value if necessary */
+    z-index: 1;
+    background-color: white;
+}
+
+th.fixedColumn,
+td.fixedColumn {
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 2;
+}
+
+th.actionTh,
+td.actionTd {
+    min-width: 150px;
+    z-index: 3;
+}
+
+.fixedColumn:nth-child(1),
+.fixedColumn:nth-child(2) {
+    left: 150px;
+    box-shadow: 5px 0 5px -5px #333;
+    background: white;
+}
+
+tr th:first-child {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 4;
+}
+
+.actionTd div {
+    position: relative;
+    z-index: 5;
+    min-height: 36px;
+    overflow: hidden;
+}
+
+th.fixedColumn.empNameCol {
+    left: 150px;
+    z-index: 5;
+}
+
+.extraContent {
+    padding: 0px 0px 0px;
+    bottom: 5px;
+}
+
+.empSkillLevelTd {
+    text-align: center;
+    vertical-align: middle;
+
+    .form-check-label {
+        color: #000 !important;
+        font-weight: 400;
+        text-align: center;
+    }
+
+    .checkbox-block {
+        label {
+            margin: 0px;
+
+            &:after {
+                left: 0px !important;
+                right: 0px !important;
+                margin: auto;
+                text-align: center;
+            }
+        }
+    }
+
+    &.EQUAL {
+        background: #99cd3a;
+        color: #000;
+    }
+
+    &.NOT_ELIGIBLE {
+        background: #ed3833;
+        color: #000;
+    }
+}
+
+.tableFixHead table {
+    .checkbox-block.form-check {
+        margin: auto;
+        padding: 0px;
+        text-align: center;
+    }
+}
+
+.level-selection {
+    .custom-multiSelection {
+        .dropdown-btn {
+            padding-top: 7px !important;
+        }
+    }
+}
+
+.custom-multiSelection .multiselect-dropdown {
+    .dropdown-multiselect__caret {
+        background-size: contain;
+        top: 2px !important;
+        right: 5px !important;
+        width: 15px !important;
+        height: 20px !important;
+        background-position: center;
+    }
+}
+
+.dropdown-list {
+    position: absolute;
+    padding-top: 0px !important;
+    width: 100%;
+    z-index: 9999;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: #fff;
+    margin-top: 0px !important;
+    box-shadow: 0 1px 5px #959595;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.35rem !important;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 2px;
+    transition:
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+}
+
+.mat-select-panel {
+    min-width: 112px;
+    max-width: 280px;
+    margin-top: 2rem !important;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 0;
+    padding-bottom: 0;
+    max-height: 256px;
+    min-width: 100%;
+    border-radius: 4px;
+    outline: 0;
+}
+
+/* Add more rules for other options as needed */
+
+::ng-deep .customMatSelect .mat-form-field-infix {
+    position: relative;
+
+    // .mat-select {
+    //     width: 80%;
+    // }
+}
+.form-control-clear {
+    padding: 6px 10px;
+    display: inline-block;
+    cursor: pointer;
+}

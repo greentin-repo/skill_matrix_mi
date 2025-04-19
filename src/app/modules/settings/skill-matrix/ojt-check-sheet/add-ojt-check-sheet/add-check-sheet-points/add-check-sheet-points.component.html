@@ -1,0 +1,112 @@
+<div class="modal-header">
+    <h4 style="color: #7044cd;font-weight: bold;" class="modal-title headerTitle" id="modal-basic-title">Add OJT
+        Checksheet Points</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close('Cross Click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form class="checksheetForm" [formGroup]="checkSheetForm" (ngSubmit)="saveChecksheetForm(checkSheetForm)"
+    autocomplete="off">
+    <div class="modal-body" style="padding: 10px 5px 10px 10px;">
+        <perfect-scrollbar [style.height]="'calc(100vh - 15vh)'">
+            <ng-container formArrayName="daysList">
+                <div class="daywiseBlock"
+                    *ngFor="let dayNumForm of daysList().controls; let dayNumIndex = index;let dayNumLast = last;">
+                    <ng-container [formGroupName]="dayNumIndex">
+                        <div class="row m-0">
+                            <label for="dayNo" class="col-sm-2 col-form-label">Day Number &nbsp;<span
+                                    class="astrik">*</span></label>
+                            <div class="col-sm-8">
+                                <input placeholder="Enter Number Day" class="form-control" type="number" id="dayNo"
+                                    name="dayNo" formControlName="dayNo" disabled>
+                            </div>
+                            <div class="col-sm-2 p-0 text-right">
+                                <button type="button" class="btn btn-sm successBtn"
+                                    *ngIf="dayNumLast && !selectedDet.isEditPoint"
+                                    (click)="addDaysRow(daysList().controls.length)">
+                                    <i class="fa fa-plus"></i>
+                                </button>&nbsp;&nbsp;
+                                <button type="button" class="btn btn-sm dangerBtn"
+                                    (click)="removeDayNumRow(dayNumIndex)" *ngIf="daysList().controls.length > 1">
+                                    <i class="fa fa-times"></i>
+                                </button>&nbsp;&nbsp;
+                                <button type="button" class="btn btn-sm borderBtn"
+                                    (click)="dayNumForm.isVisible = (dayNumForm.isVisible) ? false : true">
+                                    <i class="fa"
+                                        [ngClass]="(dayNumForm.isVisible) ? 'fa-chevron-up':'fa-chevron-down'"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <ng-container formArrayName="pointList" *ngIf="!dayNumForm.isVisible">
+                            <table class="table table-bordered" style="margin-top: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th>Key Points &nbsp;<span class="astrik">*</span></th>
+                                        <th>Reference <!--&nbsp;<span class="astrik">*</span>--></th>
+                                        <th style="width: 10%;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let point of pointList(dayNumIndex).controls; let pointIndex = index;let pointLast = last;">
+                                        <ng-container [formGroupName]="pointIndex">
+                                            <td>
+                                                <input type="hidden" name="id" formControlName="id" />
+                                                <input type="hidden" name="action" formControlName="action" />
+                                                <input placeholder="Enter Checksheet Point" class="form-control"
+                                                    type="text" id="itemName" name="itemName"
+                                                    formControlName="itemName" />
+                                                <div *ngIf="pointList(dayNumIndex).controls.at(pointIndex).get('itemName').invalid && (pointList(dayNumIndex).controls.at(pointIndex).get('itemName').touched || pointList(dayNumIndex).controls.at(pointIndex).get('itemName').dirty)"
+                                                    class="custom-errorMsg">
+                                                    <div
+                                                        *ngIf="pointList(dayNumIndex).controls.at(pointIndex).get('itemName').errors.required">
+                                                        Please enter checksheet point
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input placeholder="Enter Reference" class="form-control" type="text"
+                                                    id="reference" name="reference" formControlName="reference" />
+                                                <div *ngIf="pointList(dayNumIndex).controls.at(pointIndex).get('reference').invalid && (pointList(dayNumIndex).controls.at(pointIndex).get('reference').touched || pointList(dayNumIndex).controls.at(pointIndex).get('reference').dirty)"
+                                                    class="custom-errorMsg">
+                                                    <div
+                                                        *ngIf="pointList(dayNumIndex).controls.at(pointIndex).get('reference').errors.required">
+                                                        Please enter reference
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="width: 10%;">
+                                                <button type="button" class="btn btn-sm successBtn"
+                                                    (click)="addPointsRow(dayNumIndex)" *ngIf="pointLast">
+                                                    <i class="fa fa-plus"></i></button>&nbsp;&nbsp;
+                                                <button type="button" class="btn btn-sm dangerBtn"
+                                                    (click)="(pointList(dayNumIndex).controls.at(pointIndex).get('id').value > 0) ? deleteChecksheetPoint(pointList(dayNumIndex).controls.at(pointIndex).get('id').value,dayNumIndex,pointIndex) :removePointRow(dayNumIndex,pointIndex)"
+                                                    *ngIf="pointList(dayNumIndex).controls.length > 1">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </ng-container>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </perfect-scrollbar>
+    </div>
+    <div class="modal-footer">
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="submit" class="btn submitBtn event-btn">
+                    <span *ngIf="submitLoader" class="spinner-grow spinner-grow-sm" role="status"></span>
+                    <span *ngIf="submitLoader" class="load-text"> Loading...</span>
+                    <span *ngIf="!submitLoader" class="btn-text">Submit </span>
+                </button>
+                <button type="button" class="btn cancelBtn m-l-5" aria-label="Close" [disabled]="submitLoader"
+                    (click)="close('Cross Click')">Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

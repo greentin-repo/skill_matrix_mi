@@ -1,0 +1,40 @@
+.headerTitle {
+    color: #7044cd !important;
+    font: normal normal 500 18px/1.5 Helvetica Neue !important;
+}
+
+.tableFixHead table .fixedColumn {
+    position: sticky;
+    top: 0px;
+    z-index: 2;
+    border-left: none;
+    border-right: none;
+}
+
+.tableFixHead {
+
+    // tr th:first-child(1), tr td:first-child(1) {
+    //     width: 50px;min-width: 50px;max-width: 50px;
+    //     text-wrap: wrap;
+    //     word-break: break-word;
+    // }
+    // tr th:nth-child(2), tr td:nth-child(2) {
+    //     width: 100px;min-width: 100px;max-width: 100px;
+    //     left: 64px;
+    //     text-wrap: wrap;
+    //     word-break: break-word;
+    // }
+    // tr th:nth-child(3), tr td:nth-child(3) {
+    //     width: 200px;min-width: 200px;max-width: 200px;
+    //     left: 164px;
+    //     text-wrap: wrap;
+    //     word-break: break-word;
+    // }
+    tr th:nth-child(11),
+    tr td:nth-child(11) {
+        width: 150px;
+        min-width: 150px;
+        max-width: 150px;
+        right: 72px;
+    }
+}

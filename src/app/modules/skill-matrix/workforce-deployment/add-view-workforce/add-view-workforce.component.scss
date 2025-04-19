@@ -1,0 +1,106 @@
+.tableFixHead {
+    max-height: calc(100vh - 23vh) !important;
+    min-height: calc(100vh - 23vh) !important;
+    height: calc(100vh - 23vh) !important;
+
+    &.ViewTable {
+        max-height: calc(100vh - 15vh) !important;
+        min-height: calc(100vh - 15vh) !important;
+        height: calc(100vh - 15vh) !important;
+    }
+}
+
+.formInputField {
+    border-bottom: 1px solid #7044cd;
+
+    .insideLabel {
+        margin-bottom: 10px;
+
+        .col-form-label {
+            position: absolute;
+            z-index: 999;
+            top: 0px;
+            font: normal normal bold 12px/1.5 Helvetica Neue;
+            left: 1.5rem;
+            color: #7044cd;
+        }
+
+        &.datePickerBlock {
+            .col-form-label {
+                top: -10px;
+                background: #fff;
+                padding: 0px 5px;
+                left: 15px;
+            }
+
+            .custom-Input-Group {
+                .input-group-prepend {
+                    .input-group-text {
+                        background-color: transparent;
+                    }
+
+                    .form-control:disabled {
+                        background-color: transparent;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.checkbox-block {
+    padding: 8px 10px !important;
+    border-bottom: 1px solid lightgray !important;
+    cursor: pointer !important;
+
+    &:last-child {
+        border-bottom: none !important;
+    }
+
+    label {
+        margin: 0px;
+        cursor: pointer !important;
+
+        &::before {
+            margin-right: 5px !important;
+        }
+
+        &:after {
+            top: 0.9rem !important;
+            left: 0.89rem !important;
+        }
+    }
+}
+
+/* .fixedColumn {
+    z-index: 4;
+    &:nth-child(1) {
+        left: 0px;
+    }
+    &:nth-child(2) {
+        left: 5.8%; // 67px;
+    }
+    &:nth-child(3) {
+        left: 12.5%; // 142px;
+    }
+    &:nth-child(4) {
+        left: 18.5%; // 211px; 
+    }
+    &:nth-child(5) {
+        left: 23%; // 266px
+    }
+} */
+.red-text {
+    color: red;
+}
+
+.footerBlock {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 5px 25px !important;
+    border-top: 1px solid #e3eaef;
+    border-bottom-right-radius: calc(0.3rem - 1px);
+    border-bottom-left-radius: calc(0.3rem - 1px);
+}

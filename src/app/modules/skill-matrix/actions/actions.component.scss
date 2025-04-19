@@ -1,0 +1,11 @@
+.tableFixHead table .fixedColumn {
+    position: sticky;
+    top: 0px;
+    z-index: 2; 
+    border-left: none;
+    border-right: none;
+}
+
+.btn-excel-export {
+    cursor: pointer;
+}

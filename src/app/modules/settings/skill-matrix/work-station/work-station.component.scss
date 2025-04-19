@@ -1,0 +1,65 @@
+.homepage-block {
+    .tableFixHead {
+        overflow-y: auto;
+        max-height: calc(100vh - 30vh);
+        min-height: calc(100vh - 30vh);
+        height: calc(100vh - 30vh);
+        border-bottom: 2px solid #7044cd;
+
+    }
+
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .extraContent .col-form-label {
+        position: absolute;
+        z-index: 999;
+        font: normal normal 700 12px/1.5 Helvetica Neue !important;
+        left: 1rem !important;
+        color: #7044cd !important;
+        margin: -2px 0 !important;
+    }
+
+    .tableFixHead table .fixedColumn {
+        position: sticky;
+        top: 0px;
+        /* left: 0px; */
+        z-index: 999;
+        border-left: none;
+        border-right: none;
+    }
+
+}
+
+.form-group .col-form-label {
+    text-align: left;
+    font: normal normal normal 13px/1.5 Helvetica Neue;
+    letter-spacing: 0;
+    color: #707070;
+}
+
+input[type=text] {
+    outline: none;
+    outline-style: none;
+    border: none;
+    font-weight: 400;
+}
+
+@media (max-width: 1024px) {
+    .modal-body .form-group {
+        border-bottom: 1px solid lightgray;
+        padding: 7px 20px;
+        margin: 0px;
+    }
+}
+@media (max-width: 1440px) {
+    .modal-body .form-group {
+        border-bottom: 1px solid lightgray;
+        padding: 7px 20px;
+        margin: 0px;
+    }
+}

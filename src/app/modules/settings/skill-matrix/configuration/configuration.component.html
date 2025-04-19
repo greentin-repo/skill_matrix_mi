@@ -1,0 +1,117 @@
+<!-- Configuration Ui
+Author simran
+Dat 27/09/2023 -->
+    <div class="extraContent">
+        
+<div class="row m-0">
+    <!-- <div class="col-md-9 m-auto">
+        <div class="main-tab-switcher">
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(1)}" (click)="setMainTab(1)">Stages
+            </div>
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(3)}" (click)="setMainTab(3)">Level
+            </div>
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(2)}" (click)="setMainTab(2)">Activity Assessment Gap (Days)
+            </div>
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(4)}" (click)="setMainTab(4)">Model
+            </div>
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(5)}" (click)="setMainTab(5)">Gap
+                Reason
+            </div>
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(6)}" (click)="setMainTab(6)">No. Of
+                Shifts
+            </div>
+            <div class="main-tab-switch" [ngClass]="{mainActiveSwitch:isSetMainTab(7)}" (click)="setMainTab(7)">Document Number
+            </div>  
+        </div>
+    </div> -->
+    <!-- Aniket :- Add Horizontal ScrollBar -->
+    <div class="col-9 m-auto" style=" max-width: 72%;">
+        <div class="pr tabMenu">
+            <div class="scrollLeftside" (click)="scrollLeft()" *ngIf="scrollLeftBtn">
+                <i class="feather icon-chevron-left"></i>
+            </div>
+            <div class="swiper-container" #widgetsContent>
+                <div class="swiper-wrapper header-block">
+                    <div class="scrollmenu">
+                        <div class="main-tab-switch1" [ngClass]="{mainActiveSwitch:isSetMainTab(1)}" (click)="setMainTab(1)">Stages
+                        </div>
+                        <div class="main-tab-switch1" [ngClass]="{mainActiveSwitch:isSetMainTab(3)}" (click)="setMainTab(3)">Level
+                        </div>
+                        <div class="main-tab-switch1" [ngClass]="{mainActiveSwitch:isSetMainTab(2)}" (click)="setMainTab(2)">Activity Assessment Gap (Days)
+                        </div>
+                        <div class="main-tab-switch1" [ngClass]="{mainActiveSwitch:isSetMainTab(4)}" (click)="setMainTab(4)">Model
+                        </div>
+                        <div class="main-tab-switch1" [ngClass]="{mainActiveSwitch:isSetMainTab(5)}" (click)="setMainTab(5)">Gap
+                            Reason
+                        </div>
+                        <div class="main-tab-switch1" [ngClass]="{mainActiveSwitch:isSetMainTab(6)}" (click)="setMainTab(6)">No. Of
+                            Shifts
+                        </div>
+                        <!--  Aniket :- Add tab for document number  -->
+                        <div class="main-tab-switch1" [ngClass]="{mainActiveSwitch:isSetMainTab(7)}" (click)="setMainTab(7)">Document Number
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="scrollRightside" (click)="scrollRight()" *ngIf="scrollRightBtn">
+                <i class="feather icon-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 p-r-5 p-l-5" style="margin-top: -18px">
+        <div class="form-group m-0 plantDropdown" *ngIf="showBranchForStageAndAssess">
+            <label for="branch" class="col-form-label1">Plant</label>
+            <div class="">
+                <ng-multiselect-dropdown name="branch" id="branch"
+                    class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                    [placeholder]="'Select Plant'"
+                    [settings]="singleDropdownSettings"
+                    (onSelect)="onChange($event,'plant')"
+                    (onDeSelect)="onChange(false,'plant')"
+                    [data]="plantList" [(ngModel)]="searchDet.branchId">
+                </ng-multiselect-dropdown>
+            </div>
+        </div>
+        <!-- <div class="form-group m-0">
+            <label for="branch" class="col-form-label1 p-0" style="top: 11px;">Plant</label>
+            <div class="p-l-5">
+                <ng-multiselect-dropdown name="branch" id="branch"
+                    class="custom-multiSelection customWidthForInter assessmentdropDown addLabelInside"
+                    [placeholder]="'Select Plant'" [settings]="SingleBranchDropdownSettings"
+                    (onSelect)="onChangeBranch($event)" (onDeSelect)="onChangeBranch(false)"
+                    [data]="branchAccessList" [(ngModel)]="referenceModel.branch">
+                </ng-multiselect-dropdown>
+            </div>
+        </div> -->
+    </div>
+    <!-- <div class="col-3 m-auto">
+        <app-loginInfo></app-loginInfo>
+    </div> -->
+     
+    <!-- <div class="col-1 p-0 m-auto text-center">
+        <button class="btn btn-default filter-btn" title="Filter" (click)="filterModalOpen(FilterModal)">
+            <i class="fa fa-filter filter-icon" aria-hidden="true"></i>
+        </button>
+    </div> -->
+    </div>
+    <div class="row">
+        <div class="col-6"></div>
+        <div class="col-6"></div>
+
+    </div>
+</div>
+<app-stagelabel [branchId]="searchDet.branchId" *ngIf="isSetMainTab(1)"></app-stagelabel>
+<app-level [branchId]="searchDet.branchId" *ngIf="isSetMainTab(3)"></app-level>
+<app-assessment-configuration [branchId]="searchDet.branchId" *ngIf="isSetMainTab(2)"></app-assessment-configuration>
+<app-reference-model [branchId]="searchDet.branchId" *ngIf="isSetMainTab(4)"></app-reference-model>
+<app-reference-gap-reason [branchId]="searchDet.branchId" *ngIf="isSetMainTab(5)"></app-reference-gap-reason>
+<app-reference-shift [branchId]="searchDet.branchId" *ngIf="isSetMainTab(6)"></app-reference-shift>
+<!--  Aniket :- open tab to show document list  -->
+<app-document-number [branchId]="searchDet.branchId" *ngIf="isSetMainTab(7)"></app-document-number>
+
+
+<!-- <app-reference-level [branchId]="searchDet.branchId" *ngIf="isSetMainTab(5)"></app-reference-level> -->
+
+
+
+

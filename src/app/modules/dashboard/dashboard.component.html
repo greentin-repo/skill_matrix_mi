@@ -1,0 +1,90 @@
+<div class="row m-0 topBar" style="margin-bottom: 20px !important;">
+    <div class="col-3">
+        <label class="col-sm-12 col-form-label filter-label p-b-0">Level</label>
+        <div class>
+            <ng-multiselect-dropdown name="optId"
+                class="custom-multiSelection customWidthForInter assessmentdropDown"
+                name="level" [placeholder]="'Select level'"
+                [settings]="SingleDropdownSettings" [data]="levelList"
+                [(ngModel)]="searchDet.option"
+                (onSelect)="onChange($event,'level')"
+                (onDeSelect)="onChange(false,'level')">
+            </ng-multiselect-dropdown>
+            <div
+                *ngIf="showDropdownError"
+                class="custom-errorMsg">Please select level</div>
+        </div>
+    </div>
+    <div class="col-3" *ngIf="optionValue.name !== 'Organization' && searchDet.option !=''"
+        [ngClass]="(optionValue.name !== 'Organization') ? 'col-3' : 'col-4' ">
+        <label for="branchId"
+            class="col-sm-12 col-form-label filter-label p-b-0">Plant</label>
+        <ng-multiselect-dropdown [data]="branchAccessList"
+            class="custom-multiSelection customWidthForInter assessmentdropDown"
+            [(ngModel)]="searchDet.branchId"
+            [settings]="SingleDropdownSettings" [placeholder]="'Select plant'"
+            (onSelect)="onChange($event,'plant')"
+            (onDeSelect)="onChange(false,'plant')">
+        </ng-multiselect-dropdown>
+        <div
+            *ngIf="showPlantError"
+            class="custom-errorMsg">Please select plant</div>
+    </div>
+    <div class="col-3 "
+        *ngIf="shouldShowCellDropdown() && (optionValue.name !== 'Organization' && optionValue.name !== 'Plant' && searchDet.option !='')"
+        [ngClass]="(optionValue.name !== 'Organization' && optionValue.name !== 'Plant') ? 'col-3' : 'col-4' ">
+        <label for="lineIds" class="col-sm-12 col-form-label filter-label p-b-0">Cell/Line</label>
+        <ng-multiselect-dropdown [data]="dataList"
+            class="custom-multiSelection assessmentdropDown customWidthForRport "
+            [(ngModel)]="searchDet.lineIds"
+            [settings]="multipleDropdownSettings" [placeholder]="'Select cell'"
+            (onSelect)="onChange($event,'Cell')"
+            (onDeSelect)="onChange(false,'Cell')"
+            (onSelectAll)="onChangeAll($event,'Cell')"
+            (onDeSelectAll)="onChangeAll(false,'Cell')">
+        </ng-multiselect-dropdown>
+        <div
+            *ngIf="showCellError"
+            class="custom-errorMsg">Please select cell/line</div>
+    </div>
+
+    <!-- <div class="col-2 mt-2" [ngClass]="{'col-3': optionValue.name === 'Organization'}">
+        <label for="training" class="col-sm-12 filter-label">From Date</label>
+        <input type="date" class="form-control datePickInput" [(ngModel)]="searchDet.fromDate" />
+    </div>
+    <div class="col-2 mt-2" [ngClass]="{'col-3': optionValue.name === 'Organization'}">
+        <label for="training" class="col-sm-12 filter-label">To Date</label>
+        <input type="date" class="form-control datePickInput" [(ngModel)]="searchDet.toDate" />
+    </div> -->
+
+    <div class="col-2 m-t-40" style="padding-top: 2px;">
+        <button class="submitBtn btn" type="button" (click)="submitData()">Submit</button>
+    </div>
+    <div class="col-1 text-center mt-4 excelbutton-container" *ngIf="this.graphDetails && this.graphDetails.length > 0">
+        <div class="excelbutton">
+            <div class="exportPdf" (click)="downloadPdf()"
+                style="cursor: pointer;">
+                <i class="fas fa-file-pdf iconPDF"></i>
+            </div>
+            <div class="excelFont">Export As PDF</div>
+        </div>
+    </div>
+</div>
+<app-loading style="position: absolute;top:50%;left:50%;"
+    *ngIf="isDownloadingPDF || submitLoader"></app-loading>
+<div class="homepage-block bg-Transperant p-l-15 p-r-15">
+    <div class="form-group row ml-4">
+        <div class="col-4 p-r-5 p-l-5 form-group"></div>
+        <div class="col-2"></div>
+        <div class="col-4 p-r-5 p-l-5 form-group"></div>
+    </div>
+    <div class="barGraph" [ngClass]="{'noData': isGraphDetailsEmpty()}">
+        <div id="org-chart-container" class="chart-container"></div>
+        <div id="branch-chart-container" class="chart-container"></div>
+        <div id="dept-chart-container" class="chart-container"></div>
+        <div class="pr" style="height: calc(100vh - 18vh);"
+            *ngIf="hasDataToShow && !submitLoader">
+            <div class="dataNotAvailable"></div>
+        </div>
+    </div>
+</div>

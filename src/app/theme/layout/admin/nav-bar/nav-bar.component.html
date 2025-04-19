@@ -1,0 +1,22 @@
+<div class="container"
+    *ngIf="this.nextConfig.layout === 'horizontal' && this.nextConfig.subLayout === 'horizontal-2'; else mainHeader">
+    <ng-container *ngTemplateOutlet="mainHeader"></ng-container>
+</div>
+<ng-template #mainHeader>
+    <div class="m-header p-l-0" [ngClass]="{'collapseSideBar':screenDet.hideLabel}"
+        [ngStyle]="screenDet.hideLabel && {'width':'70px','padding':'0px'}">
+        <a href="javascript:" class="mobile-menu" id="mobile-collapse" (click)="navCollapse()"><span></span></a>
+        <a href="javascript:" (click)="navCollapse()" class="b-brand">
+            <img id="main-logo" src="assets/images/login/Logo.png" alt="" class="orgLogo" />
+            <img src="assets/images/login/my_enovation_white@2x_pencil.png" alt="" class="orgLogo mobileOrgLogo" />
+            <!-- <img id="main-logo" src="assets/images/login/Background.png" alt="" class="orgLogo" />
+    <p class="productName" *ngIf="!screenDet.hideLabel">myeNovation</p> -->
+        </a>
+        <a class="mob-toggler" [ngClass]="{'on' : this.menuClass}" href="javascript:" (click)="toggleMobOption()"><i
+                class="feather icon-more-vertical"></i></a>
+    </div>
+    <!-- <div class="collapse navbar-collapse topNavBar" [style.display]="this.collapseStyle">
+    <app-nav-left class="mr-auto"></app-nav-left>
+    <app-nav-right class="ml-auto"></app-nav-right>
+  </div> -->
+</ng-template>

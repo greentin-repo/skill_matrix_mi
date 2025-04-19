@@ -1,0 +1,37 @@
+<div class="table-block">
+    <div class="table-responsive tableFixHead">
+        <table matSort (matSortChange)="sortData($event)" [matSortActive]="sort.active"
+            [matSortDirection]="sort.direction" matSortDisableClear class="table table-bordered">
+            <thead>
+                <tr>
+                    <th mat-sort-header="BranchName">Plant</th>
+                    <th mat-sort-header="DeptName">Department</th>
+                    <th mat-sort-header="LineName">Cell/Line</th>
+                    <th mat-sort-header="LevelName">Level</th>
+                    <th mat-sort-header="GapCount">Skill Gap Count</th>
+                    <th>Required Skill Count</th>
+                    <th mat-sort-header="GapAvg">Average</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let x of reportData.skillGapCellWise">
+                    <td>{{x.branchName}}</td>
+                    <td>{{x.deptName}}</td>
+                    <td>{{x.lineName}}</td>
+                    <td>{{x.levelName}}</td>
+                    <td>{{x.gapCount}}</td>
+                    <td>{{x.requiredCount}}</td>
+                    <td>{{x.gapAvg}}</td>
+                </tr>
+                <tr *ngIf="reportData.skillGapCellWise == null || reportData.skillGapCellWise.length == 0">
+                    <td colspan="3" class="text-center no-record-found">
+                        Data Not Found
+                        <!-- <div class="dataNotAvailable"></div> -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"></app-pagination> -->
+
+</div>

@@ -1,0 +1,245 @@
+<div class="row m-0">
+    <div class="col-11 m-auto">
+        <app-topBar title="Actions"></app-topBar>
+    </div>
+    <!-- <div class="col-3 m-auto">
+        <app-loginInfo></app-loginInfo>
+    </div> -->
+    <!-- <div class="col-1 p-0 m-auto text-center">
+        <button class="btn btn-default filter-btn" title="Filter" (click)="filterModalOpen(filterPopup)">
+            <i class="fa fa-filter filter-icon" aria-hidden="true"></i>
+        </button>
+    </div> -->
+    <div class="col-1 p-0 m-auto text-center" style="display: flex; gap: 30px; flex-direction: row; "> 
+        <div class="btn-filter-wrap">
+            <button class="btn btn-default filter-btn" [ngClass]="{'applied' : isAppliedFilter}" title="Filter"
+                (click)="filterModalOpen(filterPopup)">
+                <i class="fa fa-filter filter-icon" aria-hidden="true"></i>
+            </button>
+            <div class="btn-clear-filter" *ngIf="isAppliedFilter" (click)="removeFilter();">x</div>
+            <div class="lbl-filter-applied" *ngIf="isAppliedFilter">Filter Applied</div>
+        </div> 
+        <img src="assets/images/ic_excel.png" style="height: 37px; width: 30px;" alt="" class="img-fluid btn-excel-export" (click)="exportReport()">
+    </div>
+</div>
+<div class="homepage-block bg-Transperant p-l-15 p-r-15">
+    <div class="extraContent">
+        <div class="row m-0">
+            <div class="p-l-0 p-r-5 col-4">
+                <div class="row m-0">
+                    <div class="p-l-0 p-r-5" [ngClass]="(filterFlag)?'col-6':'col-12'">
+                        <div class="form-group has-search">
+                            <span class="fa fa-search form-control-feedback" *ngIf="!searchDet.searchData"
+                                (click)="getSearchList(true)"></span>
+                            <span *ngIf="searchDet.searchData" class="fa fa-times-circle form-control-clear"
+                                (click)="getSearchList(false)"></span>
+                            <input style="border-bottom: 1px solid #7044cd;" type="text" class="form-control"
+                                name="searchInput" placeholder="Search here.." [(ngModel)]="searchDet.searchInput"
+                                (keyup)="$event.keyCode == 13 ? getSearchList(true) : ''" autocomplete="off" />
+                        </div>
+                    </div>
+                    <!-- <div class="col-6 p-r-5 p-l-5" *ngIf="filterFlag">
+                        <div class="filterDiv">
+                            <button class="clearFilter" (click)="removeFilter()">Clear filter</button>
+                            &nbsp;
+                            <span style="color: green;font-size: 12px; font-weight: 500;">Filter
+                                Applied</span>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-4 p-r-5 p-l-5 form-group">
+
+            </div>
+            <div class="col-4 p-0">
+                <!-- <div class="addRegDiv" style="bottom: -0.1rem;">
+                    <button class="btn addRegBtn m-0" type="button" (click)="modalOpen(workStation,'top')"><i
+                            class="fa fa-plus m-r-10"></i>Add
+                        Workstation</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="table-block">
+        <div class="table-responsive tableFixHead">
+            <table datatable class="table" matSort (matSortChange)="sortData($event)">
+                <thead>
+                    <tr>
+                        <th class="fixedColumn" mat-sort-header="BranchName">Plant</th>
+                        <th class="" mat-sort-header="AssignedEmpId"> Assigned Emp ID</th>
+                        <th class="" mat-sort-header="AssignedEmpName">Assigned Name</th>
+                        <th class="" mat-sort-header="CmpyEmpId">Emp ID</th>
+                        <th class="" mat-sort-header="EmpName">Emp Name</th>
+                        <th class="" mat-sort-header="DeptName">Department</th>
+                        <th class="" mat-sort-header="Line">Cell/Line</th>
+                        <th class="" mat-sort-header="Workstation">Workstation</th>
+                        <th class="" mat-sort-header="LevelName">Level</th>
+                        <th class="" mat-sort-header="ActivityDate">Assigned Date</th>
+                        <!-- <th class="" mat-sort-header="ActivityDate"> Activity Due Date</th> -->
+                        <th class="" mat-sort-header="Activity">Pending Stage</th>
+                        <th class="pending fixedColumn" mat-sort-header="status">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let x of actionList">
+                        <td class="actionTd fixedColumn">{{x.branchName}}</td>
+                        <td>{{x.assignedEmpId}}</td>
+                        <td>{{x.assignedEmpName}}</td>
+                        <td>{{x.cmpyEmpId}}</td>
+                        <td>{{x.oeEmpName}}</td>
+                        <td>{{x.deptName}}</td>
+                        <td>{{x.lineName}}</td>
+                        <td>{{x.workstation}}</td>
+                        <td>{{x.currentSkillLevel}}</td>
+                        <td>{{(x.activityDate) ? (x.activityDate | date:'dd-MM-yyyy') : 'N/A'}}</td>
+                        <!-- <td>{{x.activityDueDate}}</td> -->
+                        <td>{{x.activity}}</td>
+                        <td class="actionTd fixedColumn"
+                            [ngClass]="{'completed':x.status == 'COMPLETED','pending':x.status == 'PENDING'}">
+                            {{x.status}}</td>
+                    </tr>
+                    <tr *ngIf="(actionList == null || actionList.length == 0)">
+                        <td colspan="8" class="text-center no-record-found" *ngIf="!listLoading">
+                            Data not found
+                        </td>
+                        <td colspan="8" class="text-center loading-div" *ngIf="listLoading">
+                            <app-loading></app-loading>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"></app-pagination>
+</div>
+<ng-template #filterPopup let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title popup-header-txt" id="myModalLabel2">Filter</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="filterFormData" (ngSubmit)="submitFilterForm(filterFormData)" autocomplete="off"
+        class="needs-validation">
+        <div class="modal-body p-2" style="height: calc(100vh - 14vh);">
+            <perfect-scrollbar>
+                <div class="row m-b-0">
+                    <label for="branch" class="col-sm-12 col-form-label filter-label">Plant</label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="branch" id="branch"
+                            class="custom-multiSelection assessmentdropDown customWidthForRport"
+                            [placeholder]="'Select Plant'" [settings]="SingleDropdownSettings" formControlName="branch"
+                            [data]="getSortFunction(plantList,'plant')" [disabled]="false"
+                            [(ngModel)]="searchDet.branchId" (onSelect)="onChange($event,'plant')"
+                            (onDeSelect)="onChange(false,'plant')">
+                        </ng-multiselect-dropdown>
+                        <div *ngIf=" submitAttempted && filterFormData.controls['branch'].invalid && (filterFormData.controls['branch'].touched || filterFormData.controls['branch'].dirty)"
+                            class="custom-errorMsg" style="padding-left: 15px;z-index: 10;">
+                            <div *ngIf="filterFormData.controls['branch'].errors.required">
+                                Please Select Plant
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-b-0">
+                    <label for="opt" class="col-sm-12 col-form-label filter-label">Department</label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="dept" id="dept"
+                            class="custom-multiSelection assessmentdropDown customWidthForRport"
+                            [placeholder]="'Select Department'" [settings]="SingleDropdownSettings"
+                            formControlName="dept" [data]="getSortFunction(masterDeptList,'dept')" [disabled]="false"
+                            [(ngModel)]="searchDet.deptId" (onSelect)="onChange($event,'dept')"
+                            (onDeSelect)="onChange(false,'dept')">
+                        </ng-multiselect-dropdown>
+                        <!-- <div *ngIf="submitAttempted && filterFormData.controls['dept'].invalid && (filterFormData.controls['dept'].touched || filterFormData.controls['dept'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="filterFormData.controls['dept'].errors.required">
+                                Please select department
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="row m-b-0">
+                    <label for="opt" class="col-sm-12 col-form-label filter-label">Cell/Line</label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="opt"
+                            class="custom-multiSelection assessmentdropDown customWidthForRport"
+                            [placeholder]="'Select Cell/Line'" [settings]="multipleDropdownSettings"
+                            [data]="getSortFunction(cellList,'cell')" formControlName="lineIds"
+                            [(ngModel)]="searchDet.lineIds" (onSelect)="onChange($event,'line')"
+                            (onSelectAll)="onChangeAll($event,'dept')">
+                        </ng-multiselect-dropdown>
+                        <!-- <div *ngIf="submitAttempted && filterData.controls['lineIds'].invalid && (filterData.controls['lineIds'].touched || filterData.controls['lineIds'].dirty)"
+                            class="custom-errorMsg" style="padding-left: 15px;">
+                            <div *ngIf="filterData.controls['lineIds'].errors.required">
+                                Please select Cell/Line
+                            </div>
+                        </div> -->
+
+                    </div>
+                </div>
+
+                <div class="row m-b-0">
+                    <label for="skillLvlId" class="col-sm-12 col-form-label filter-label p-b-0">Level</label>
+                    <div class="col-sm-12">
+                        <ng-multiselect-dropdown name="skillLvlId" id="skillLvlId"
+                            class="custom-multiSelection customWidthForInter assessmentdropDown"
+                            [placeholder]="'Select Level'" [settings]="SingleDropdownSettings" [data]="masterLevelList"
+                            formControlName="skillLvlId" [(ngModel)]="searchDet.skillLvlId"
+                            (onSelect)="onChange($event,'skillLvlId')" (onDeSelect)="onChange(false,'skillLvlId')">
+                        </ng-multiselect-dropdown>
+                        <!-- <div *ngIf="submitAttempted && filterData.controls['skillLvlId'].invalid && (filterData.controls['skillLvlId'].touched || filterData.controls['skillLvlId'].dirty)"
+                            class="custom-errorMsg">
+                            <div *ngIf="filterData.controls['skillLvlId'].errors.required">
+                                Please select level
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="row m-b-0">
+                    <label for="opt" class="col-sm-12 col-form-label filter-label">From Date</label>
+                    <div class="col-sm-12">
+                        <div class="input-group m-0 custom-Input-Group" (click)="startDatePicker.open()">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="feather icon-calendar"></i>
+                                </div>
+                            </div>
+                            <input matInput [(ngModel)]="searchDet.fromDate" [max]="maxDate"
+                                [matDatepicker]="startDatePicker" class="form-control datePickInput"
+                                placeholder="From Date" (keydown)="false" (dateChange)="selectCustomDate($event,'')"
+                                formControlName="fromDate" name="opt">
+                            <mat-datepicker #startDatePicker></mat-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-b-0">
+                    <label for="opt" class="col-sm-12 col-form-label filter-label">To Date</label>
+                    <div class="col-sm-12">
+                        <div class="input-group m-0 custom-Input-Group" (click)="toDatePicker.open()">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <i class="feather icon-calendar"></i>
+                                </div>
+                            </div>
+                            <input matInput [(ngModel)]="searchDet.toDate" [min]="searchDet.fromDate" [max]="maxDate"
+                                [matDatepicker]="toDatePicker" class="form-control datePickInput" placeholder="To Date"
+                                (keydown)="false" (dateChange)="selectCustomDate('', $event)" formControlName="toDate"
+                                name="opt">
+                            <mat-datepicker #toDatePicker></mat-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </perfect-scrollbar>
+        </div>
+        <div class="modal-footer footerBlock text-right">
+            <button class="btn submitBtn event-btn" type="submit">
+                <span *ngIf="submitSpinner" class="spinner-grow spinner-grow-sm" role="status"></span>
+                <span *ngIf="submitSpinner" class="load-text"> Loading...</span>
+                <span *ngIf="!submitSpinner" class="btn-text">Apply Filter</span>
+            </button>
+            <!-- <button type="button" class="btn cancelBtn" aria-label="Close" (click)="d('Cross click')">Cancel
+            </button> -->
+        </div>
+    </form>
+</ng-template>

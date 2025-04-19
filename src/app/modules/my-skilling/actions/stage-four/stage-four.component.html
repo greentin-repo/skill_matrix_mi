@@ -1,0 +1,306 @@
+<div *ngIf="submitLoading">
+    <app-loading></app-loading>
+</div>
+<div class="row modal-header stage-header">
+    <div class="col-11">
+        <div class="modal-title">Production</div>
+    </div>
+    <div class="col-1">
+        <button type="button" class="close" (click)="closeModal()">
+            <span>×</span>
+        </button>
+    </div>
+</div>
+<div class="modal-body" style="height: 76.5%;padding-bottom: 0px;">
+    <perfect-scrollbar [style.max-height]="'calc(81vh)'">
+        <div class="expand-card" *ngFor="let day of dayList; let i = index;">
+            <div class="title" (click)="expand(i)">Day {{i + 1}}<i class="fa"
+                    [ngClass]="{'fa-minus': day.expand === true, 'fa-plus': day.expand === undefined || day.expand === false}"
+                    aria-hidden="true"></i></div>
+            <div class="content hidden" [ngClass]="{'expand': day.expand}">
+                <div class="table-block">
+                    <ng-container *ngFor="let audit of day.dayAudit">
+                        <div class="table-responsive tableFixHead" *ngIf="audit.stageId != 5">
+                            <div class="stage-title">
+                                <div class="index">{{audit.stageId}}</div>
+                                <div class="text">{{audit.stage}}</div>
+                            </div>
+                            <table class="table" matSort *ngIf="audit.stageId == 1">
+                                <thead>
+                                    <tr>
+                                        <th class="fixedColumn">Day</th>
+                                        <th class="">Date</th>
+                                        <th class="">Key Point</th>
+                                        <th class="">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of audit.auditPointList">
+                                        <td>{{item.dayNo || ''}}</td>
+                                        <td>{{item.assignedDate | date: 'dd-MM-yyyy'}}</td>
+                                        <td>{{item.keyPoint || ''}}</td>
+                                        <td
+                                            [ngClass]="{'completed':item.status == 'COMPLETED','pending':item.status == 'PENDING', 'rejected':item.status == 'REJECTED', 'not-completed':item.status == 'NOT COMPLETED'}">
+                                            {{item.status || ''}}</td>
+                                    </tr>
+                                    <tr *ngIf="(audit.auditPointList == null || audit.auditPointList.length == 0)">
+                                        <td colspan="4" class="text-center">
+                                            Data Not Found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="(audit.auditPointList != null || audit.auditPointList.length != 0)">
+                                    <tr>
+                                        <td colspan="1">OE Comment</td>
+                                        <td colspan="3">
+                                            <textarea style="border: none;" class="form-control textarea-custom" name=""
+                                                id="" rows="2" [(ngModel)]="audit.auditPointList[0].oeComment" disabled
+                                                maxlength="1000"></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" matSort *ngIf="audit.stageId == 2">
+                                <thead>
+                                    <tr>
+                                        <th class="fixedColumn" style="text-align: center;">Day</th>
+                                        <th class="">Date</th>
+                                        <th class="">Key Point</th>
+                                        <th class="">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of audit.auditPointList">
+                                        <td>{{item.dayNo}}</td>
+                                        <td>{{item.assignedDate | date: 'dd-MM-yyyy'}}</td>
+                                        <td>{{item.keyPoint}}</td>
+                                        <td
+                                            [ngClass]="{'completed':item.status == 'COMPLETED','pending':item.status == 'PENDING', 'rejected':item.status == 'REJECTED', 'not-completed':item.status == 'NOT COMPLETED'}">
+                                            {{item.status || ''}}</td>
+                                    </tr>
+                                    <tr *ngIf="(audit.auditPointList == null || audit.auditPointList.length == 0)">
+                                        <td colspan="4" class="text-center">
+                                            Data Not Found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="(audit.auditPointList != null || audit.auditPointList.length != 0)">
+                                    <tr>
+                                        <td colspan="1" style="width: 27%;">Trainer Activity Comment</td>
+                                        <td colspan="3">
+                                            <textarea style="border: none;" class="form-control textarea-custom" name=""
+                                                id="" rows="2" [(ngModel)]="audit.auditPointList[0].trainerActComment"
+                                                disabled maxlength="1000"></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" matSort *ngIf="audit.stageId == 3">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" rowspan="2">Day</th>
+                                        <th scope="col" rowspan="2">Date</th>
+                                        <th scope="col" colspan="2"
+                                            *ngIf="checkParameter(audit.parameterList, 'cyclePlan')"
+                                            style="text-align: center;">Production</th>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Text')">
+                                            <th scope="col" rowspan="2">{{getParameterDataByLabel('Text', 0)}}</th>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Number')">
+                                            <th scope="col" rowspan="2">{{getParameterDataByLabel('Number', 0)}}</th>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Datetime') && getParameterDataByLabel('Datetime', 0) !=0">
+                                            <th scope="col" rowspan="2">{{getParameterDataByLabel('Datetime', 0)}}
+                                            </th>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Datetime') && getParameterDataByLabel('Datetime', 1) !=0">
+                                            <th scope="col" rowspan="2">{{getParameterDataByLabel('Datetime', 1)}}
+                                            </th>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Model') && getParameterDataByLabel('Model', 0) !=0">
+                                            <th scope="col" rowspan="2">{{getParameterDataByLabel('Model', 0)}}
+                                            </th>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Model') && getParameterDataByLabel('Model', 1) !=0">
+                                            <th scope="col" rowspan="2">{{getParameterDataByLabel('Model', 1)}}
+                                            </th>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Gap')">
+                                            <th scope="col" rowspan="2">Gap Reason</th>
+                                        </ng-container>
+                                        <ng-container *ngIf="isCyclePlan(audit.parameterList) > 0">
+                                            <ng-container
+                                                *ngFor="let cycle of getCyclePlanList(audit.parameterList); let i = index">
+                                                <th scope="col" colspan="2" style="text-align: center;">Cycle {{ i + 1
+                                                    }}</th>
+                                            </ng-container>
+                                        </ng-container>
+                                        <th scope="col" rowspan="2">Status</th>
+                                    </tr>
+                                    <tr>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'cyclePlan')">
+                                            <th scope="col">Plan</th>
+                                            <th scope="col">Actual</th>
+                                        </ng-container>
+                                        <ng-container *ngIf="isCyclePlan(audit.parameterList) > 0">
+                                            <ng-container *ngFor="let cycle of getCyclePlanList(audit.parameterList);">
+                                                <th scope="col">Standard</th>
+                                                <th scope="col">Actual</th>
+                                            </ng-container>
+                                        </ng-container>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- <tr *ngFor="let item of audit.auditPointList"> -->
+                                    <tr>
+                                        <!-- <td>{{item.dayNo}}</td> -->
+                                        <td>{{audit.auditPointList[0].dayNo}}</td>
+                                        <!-- <td>{{item.assignedDate | date: 'dd-MM-yyyy'}}</td> -->
+                                        <td>{{audit.auditPointList[0].assignedDate | date: 'dd-MM-yyyy'}}</td>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'cyclePlan')">
+                                            <td>{{isCyclePlan(audit.parameterList)}}</td>
+                                            <td>{{getParamaterData(audit.parameterList, 'cyclePlan')}}</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Text')">
+                                            <td>{{getParamaterData(audit.parameterList, 'Text')}}</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Number')">
+                                            <td>{{getParamaterData(audit.parameterList, 'Number')}}</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Datetime') && getParameterDataByValue('Datetime', 0) !=0">
+                                            <td>{{getParameterDataByValue('Datetime', 0)}}</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Datetime') && getParameterDataByValue('Datetime', 1) !=0">
+                                            <td>{{getParameterDataByValue('Datetime', 1)}}</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Model') && getParameterDataByValue('Model', 0) !=0">
+                                            <td>{{getParameterDataByValue('Model', 0)}}</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="checkParameter(audit.parameterList, 'Model') && getParameterDataByValue('Model', 1) !=0">
+                                            <td>{{getParameterDataByValue( 'Model', 1)}}</td>
+                                        </ng-container>
+
+                                        <ng-container *ngIf="isCyclePlan(audit.parameterList) > 0">
+                                            <td>{{getParamaterData(audit.parameterList, 'Gap')}}</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="isCyclePlan(audit.parameterList) > 0">
+                                            <ng-container *ngFor="let cycle of getCyclePlanList(audit.parameterList);">
+                                                <td>{{cycle.actualValue}}</td>
+                                                <td>{{cycle.expectedValue}}</td>
+                                            </ng-container>
+                                        </ng-container>
+                                        <!-- <td [ngClass]="{'completed':item.status == 'COMPLETED','pending':item.status == 'PENDING', 'rejected':item.status == 'REJECTED', 'not-completed':item.status == 'NOT COMPLETED'}">{{item.status || ''}}</td> -->
+                                        <td
+                                            [ngClass]="{'completed':audit.auditPointList[0].status == 'COMPLETED','pending':audit.auditPointList[0].status == 'PENDING', 'rejected':audit.auditPointList[0].status == 'REJECTED', 'not-completed':audit.auditPointList[0].status == 'NOT COMPLETED'}">
+                                            {{audit.auditPointList[0].status || ''}}</td>
+                                    </tr>
+                                    <tr *ngIf="(audit.auditPointList == null || audit.auditPointList.length == 0)">
+                                        <td colspan="4" class="text-center">
+                                            Data Not Found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered" matSort *ngIf="audit.stageId == 4">
+                                <thead>
+                                    <tr>
+                                        <th class="fixedColumn">Day</th>
+                                        <th class="">Date</th>
+                                        <th class="">Key Point</th>
+                                        <th class="">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of audit.auditPointList">
+                                        <td>{{item.dayNo}}</td>
+                                        <td>{{item.assignedDate | date: 'dd-MM-yyyy'}}</td>
+                                        <td>{{item.keyPoint}}</td>
+                                        <td
+                                            [ngClass]="{'completed':item.status == 'COMPLETED','pending':item.status == 'PENDING', 'rejected':item.status == 'REJECTED', 'not-completed':item.status == 'NOT COMPLETED'}">
+                                            {{item.status || ''}}</td>
+                                    </tr>
+                                    <tr *ngIf="(audit.auditPointList == null || audit.auditPointList.length == 0)">
+                                        <td colspan="4" class="text-center">
+                                            Data Not Found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="(audit.auditPointList != null || audit.auditPointList.length != 0)">
+                                    <tr>
+                                        <td colspan="1">QA Comment</td>
+                                        <td colspan="3">
+                                            <textarea style="border: none;" class="form-control textarea-custom" name=""
+                                                id="" rows="2" [(ngModel)]="audit.auditPointList[0].comment" disabled
+                                                maxlength="1000"></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- <table class="table table-bordered" matSort *ngIf="audit.stageId == 5">
+                                <thead>
+                                    <tr>
+                                        <th class="fixedColumn">Day</th>
+                                        <th class="">Date</th>
+                                        <th class="">Key Point</th>
+                                        <th class="">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of audit.auditPointList">
+                                        <td>{{item.dayNo}}</td>
+                                        <td>{{item.assignedDate | date: 'dd-MM-yyyy'}}</td>
+                                        <td>{{item.keyPoint}}</td>
+                                        <td [ngClass]="{'completed':item.status == 'COMPLETED','pending':item.status == 'PENDING'}">{{item.status || ''}}</td>
+                                    </tr>
+                                    <tr *ngIf="(audit.auditPointList == null || audit.auditPointList.length == 0)">
+                                        <td colspan="4" class="text-center">
+                                            Data Not Found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> -->
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </perfect-scrollbar>
+</div>
+<!-- <div class="form-group m-0 row" *ngIf="dayList[0].dayAudit[3].comment !== '' && dayList[0].dayAudit[3].comment !== null">
+    <label style="margin-left: 1.5rem;" for="comment" class="col-form-label">QA Comment</label>
+    <div style="margin-left: 2rem;" *ngIf="dayList !== null && dayList.length > 0">
+        <input type="text" placeholder=" " id="comment" name="comment" disabled
+            class="custom-inputField" [(ngModel)]="dayList[0].dayAudit[3].comment" />
+    </div>
+</div> -->
+<div class="modal-footer paginationFooter" style="padding: 5px 10px !important;">
+    <div class="row m-0">
+        <!-- <div class="col-7 p-0">
+            <div class="form-group m-0 row">
+                <label for="comment" class="col-sm-2 col-form-label">Comment<span class="astrik">* </span></label>
+                <div class="col-sm-10">
+                    <input type="text" placeholder="Comment" id="comment" name="comment" class="custom-inputField"
+                        [(ngModel)]="trainingDet.comment" />
+                </div>
+            </div>
+        </div> -->
+        <div class="col-9 p-0" style="display: inline-flex;">
+            <label for="comment" class="col-form-label" style="margin-right: 10px;display: contents;">Comment <span
+                    class="astrik">* </span></label>
+            <textarea class="form-control textarea-custom" id="comment" name="comment" [(ngModel)]="trainingDet.comment"
+                rows="2" placeholder="Comment" [maxlength]="1000" [disabled]="actionDet.status != 'PENDING'"></textarea>
+        </div>
+        <div class="col-3 text-right">
+            <ng-container *ngIf="actionDet.status == 'PENDING'">
+                <button type="button" class="btn submitBtn" (click)="submitStageFourStatus(true)"
+                    style="background: #7044cd;">Completed</button>
+                <button type="button" class="btn submitBtn" (click)="submitStageFourStatus(false)"
+                    style="margin-left: 10px; background: #f20000;">Not
+                    Completed</button>
+            </ng-container>
+            <button type="button" class="btn cancelBtn" (click)="closeModal()"
+                style="margin-left: 10px;">Cancel</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="paginationFooter bg-Transperant shadow-none">
+    <div class="row m-0">
+        <div class="col-4 m-auto text-left p-l-0">
+            <div class="paginationTotalCount" [ngStyle]="(staticPagination.total == 0) && {'margin-top':'5px'}">
+                <p class="m-0">Total Rows: {{staticPagination.total}} </p>
+            </div>
+        </div>
+        <div class="col-4 text-center" style="position: relative;">
+            <div class="submitBottomBtn" *ngIf="isSubmitBtnShow">
+                <button class="btn btn-sm submitBtn" (click)="callSubmitBtn()" [disabled]="submitSpinner || !submitButton">
+                    <span *ngIf="submitSpinner" class="spinner-grow spinner-grow-sm" role="status"></span>
+                    <span *ngIf="submitSpinner" class="load-text"> Loading...</span>
+                    <span *ngIf="!submitSpinner" class="btn-text">{{buttonLabel || 'Submit'}}</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-4 text-right p-r-0">
+            <ng-container *ngIf="staticPagination.total > 0">
+                <ngb-pagination class="customPagination" [collectionSize]="staticPagination.total" [(page)]="staticPagination.page" [pageSize]="staticPagination.itemsPerPage" (pageChange)="loadPage($event)">
+                    <ng-template ngbPaginationPrevious><i class="fa fa-angle-left"></i></ng-template>
+                    <ng-template ngbPaginationNext><i class="fa fa-angle-right"></i></ng-template>
+                    <ng-template ngbPaginationNumber let-page>
+                        <b>
+                            <ng-container *ngIf="staticPagination.listLength == staticPagination.total">
+                                {{((staticPagination.page-1)*staticPagination.itemsPerPage)+1}} -
+                                {{(staticPagination.itemsPerPage*staticPagination.page)>staticPagination.total
+                                &&
+                                staticPagination.total ||
+                                (staticPagination.itemsPerPage*staticPagination.page)}}
+                                <!-- {{staticPagination.page*staticPagination.itemsPerPage}} -->
+                            </ng-container>
+                            <ng-container
+                                *ngIf="staticPagination.listLength != staticPagination.total && staticPagination.listLength>0">
+                                {{((staticPagination.page-1)*staticPagination.itemsPerPage)+1}} -
+                                {{(staticPagination.itemsPerPage > staticPagination.listLength)
+                                ?
+                                (staticPagination.listLength +
+                                ((staticPagination.page-1)*staticPagination.itemsPerPage)) :
+                                (staticPagination.itemsPerPage*staticPagination.page)}}
+                                <!-- {{staticPagination.page*staticPagination.itemsPerPage}} -->
+                            </ng-container>
+                        </b><small>of
+                            {{staticPagination.total}}</small>
+                    </ng-template>
+                </ngb-pagination>
+            </ng-container>
+        </div>
+    </div>
+</div>

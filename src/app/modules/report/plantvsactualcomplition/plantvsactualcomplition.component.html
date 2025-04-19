@@ -1,0 +1,36 @@
+<div class="table-block">
+    <div class="table-responsive tableFixHead">
+        <table matSort (matSortChange)="sortData($event)" [matSortActive]="sort.active"
+            [matSortDirection]="sort.direction" matSortDisableClear class="table table-bordered">
+            <thead>
+                <tr>
+                    <th mat-sort-header="BranchName">Plant</th>
+                    <th mat-sort-header="DeptName">Department</th>
+                    <th mat-sort-header="LineName">Cell/Line</th>
+                    <th mat-sort-header="LevelName">Level</th>
+                    <th mat-sort-header="TotalPlan">Total Plan</th>
+                    <th mat-sort-header="ActualCompletion">Actual Completion</th>
+                    <th mat-sort-header="CompletionPercentage">Completion %</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let x of reportData.plantVsActual">
+                    <td>{{x.branchName}}</td>
+                    <td>{{x.deptName}}</td>
+                    <td>{{x.lineName}}</td>
+                    <td>{{x.levelName}}</td>
+                    <td>{{x.totalPlan}}</td>
+                    <td>{{x.actualCompletion}}</td>
+                    <td>{{x.completionPercentage}}</td>
+                </tr>
+                <tr *ngIf="reportData.plantVsActual == null || reportData.plantVsActual.length == 0">
+                    <td colspan="5" class="text-center no-record-found">
+                        Data Not Found
+                        <!-- <div class="dataNotAvailable"></div> -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"></app-pagination> -->
+</div>

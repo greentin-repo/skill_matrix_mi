@@ -1,0 +1,13 @@
+.checksheetForm {
+    background: #fff;
+    position: relative;
+    // height: 10rem;
+}
+.daywiseBlock {
+    border: 1px solid #7044cd;
+    padding: 5px;
+    margin: 0px 10px 5px 0px;
+    &:last-child {
+        margin-bottom: 0px;
+    }
+}

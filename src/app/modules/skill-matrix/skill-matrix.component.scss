@@ -1,0 +1,227 @@
+.logo {
+    height: 20px;
+}
+
+.insideLabel {
+    .col-form-label {
+        position: absolute;
+        z-index: 999;
+        top: 0px;
+        font: normal normal bold 12px/1.5 Helvetica Neue;
+        left: 1.5rem;
+        color: #7044cd;
+    }
+}
+
+
+.center-align {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.bg-l1 {
+    background-color: red;
+}
+
+.bg-l2 {
+    background-color: #D9D9D9;
+}
+
+.bg-l3 {
+    background-color: green;
+}
+
+.skill-table {
+    margin-top: 5px;
+    border-top: 1px solid lightgray;
+
+    thead th {
+        box-shadow: none !important;
+        border-color: lightgray;
+        border-width: 1px;
+        // border: none !important;
+    }
+}
+
+.excelbutton {
+    cursor: pointer;
+
+    .excelFont {
+        font: normal normal 500 11px/1.5 Helvetica Neue;
+    }
+}
+
+.empSkillLevelTd {
+    .form-check-label {
+        color: #000 !important;
+        font-weight: 400;
+        text-align: center;
+    }
+
+    &.EQUAL {
+        // background: #99cd3a;
+        background: #FF0000;
+        // color: #fff;
+    }
+
+    &.ELIGIBLE {
+        background: #D9D9D9;
+        // color: #fff;
+    }
+
+    &.NOT_ELIGIBLE {
+        background: #99cd3a;
+        // color: #fff;
+    }
+
+    &.OTHER {
+        background: #FFF;
+    }
+}
+
+.red-background {
+    background: #FF0000;
+}
+
+.gray-background {
+    background: #D9D9D9;
+}
+
+.green-background {
+    background: #99cd3a;
+}
+
+.white-background {
+    background: #FFF;
+}
+
+.count-block {
+    padding: 0px;
+    margin: 0px;
+    display: inline-block;
+    width: 100%;
+
+    .countLi {
+        float: left;
+        list-style: none;
+        width: 22%;
+        background: #fff;
+        padding: 0px 10px 5px;
+        margin: 10px 10px 5px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 8px #8e8e8e;
+
+
+        .heading {
+            font: normal normal normal 13px/1.5 Helvetica Neue;
+            // color: #000;
+            margin: 0px;
+        }
+
+        .headerBlock {
+            border-bottom: 1px solid #7044cd;
+            margin: 0px -10px;
+            padding: 0px 10px;
+
+            .heading {
+                color: #7044cd;
+                padding: 5px;
+                font-weight: bold;
+            }
+        }
+
+        .count {
+            font: normal normal bold 14px/1.5 Helvetica Neue;
+            color: #000;
+        }
+    }
+}
+
+.btn-excel-export {
+    cursor: pointer;
+}
+
+// Aniket :- input tag css
+.input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper label {
+    margin-right: 10px;
+}
+
+.form-control {
+    margin-top: -9px;
+    height: calc(1.5em + 0.75rem + -4px);
+    margin-bottom: -10px;
+}
+
+.vertical-text {
+    vertical-align: middle;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+.first-col {
+    position: sticky;
+    left: 0;
+    top: 0; /* Makes it sticky vertically */
+    width: 100px;
+    z-index: 5;
+}
+
+.second-col {
+    position: sticky;
+    left: 68px;
+    top: 0; /* Makes it sticky vertically */
+    width: 100px;
+    z-index: 5;
+}
+
+.third-col {
+    position: sticky;
+    left: 145px;
+    top: 0; /* Makes it sticky vertically */
+    width: 100px;
+    z-index: 5;
+}
+
+.first-col-td {
+    position: sticky;
+    *position: relative;
+    /*ie7*/
+    left: 0;
+    width: 100px;
+    z-index: 4;
+}
+
+.second-col-td {
+    position: sticky;
+    *position: relative;
+    /*ie7*/
+    left: 68px;
+    width: 100px;
+    z-index: 4;
+}
+
+.third-col-td {
+    position: sticky;
+    *position: relative;
+    /*ie7*/
+    left: 145px;
+    width: 100px;
+    z-index: 4;
+}
+
+.extraContent
+{
+    margin-left: 12px;
+    padding: 2px 10px 0px 5px;
+}
+.main {
+    display: flex;justify-content: space-evenly;
+}

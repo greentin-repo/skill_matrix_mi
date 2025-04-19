@@ -1,0 +1,363 @@
+<div>
+    <div class="modal-dialog modal-sm" role="document">
+        <form #myForm="ngForm" (ngSubmit)="stageTwoVerificationSubmission('','COMPLETED',myForm.valid)">
+
+            <div class="modal-content" style="height: calc(100vh - 7%);">
+                <div *ngIf="submitLoading">
+                    <app-loading></app-loading>
+                </div>
+                <div class="modal-body p-t-0 p-b-0" style="padding: 0;">
+                    <div [style.height]="'calc(100vh - 38vh)'">
+                        <div class="row modal-header stage-header">
+                            <div class="col-11">
+                                <div class="main-tab-switcher">
+                                    <div class="main-tab-switch active">
+                                        <span>Production </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-1">
+                                <button type="button" class="close" (click)="closeModal()">
+                                    <span>×</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="height: calc(100vh - 12%);">
+                            <div class="table-block">
+                                <div class="table-responsive tableFixHead">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr
+                                                *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                <th scope="col" colspan="2">Day</th>
+                                                <td>
+                                                    {{x.dayNo || ''}}</td>
+                                                <th scope="col" colspan="2">Date</th>
+                                                <td>
+                                                    {{x.assignedDate | date: 'dd-MM-yyyy'}}</td>
+                                            </tr>
+                                            <tr
+                                                *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                <th scope="col" *ngIf="showCycle != -1" rowspan="2">Production</th>
+                                                <th scope="col" *ngIf="showCycle != -1">Plan</th>
+                                                <ng-container *ngIf="showCycle != -1">
+                                                    <td colspan="4">
+                                                        {{showCycle}}
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                            <ng-container *ngIf="!trainingProdDetails.parameterList">
+                                                <tr>
+                                                    <td colspan="6" style="text-align: center; vertical-align: middle;">
+                                                        <div
+                                                            style="margin-top: 115px; font-size: larger;margin-bottom: 115px;">
+                                                            No verification parameters available</div>
+                                                    </td>
+                                                </tr>
+                                            </ng-container>
+                                            <tr
+                                                *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                <th scope="col" *ngIf="showCycle != -1">Actual <span
+                                                        class="asterisk">*</span></th>
+                                                <td *ngIf="showCycle != -1" colspan="4">
+                                                    <div
+                                                        *ngIf="actionDet.status == 'COMPLETED' || actionDet.status == 'REJECTED'">
+                                                        {{x.productionActual}}</div>
+                                                    <input *ngIf="actionDet.status == 'PENDING'" type="text"
+                                                        class="form-control" placeholder="Enter Value"
+                                                        name="parameterValue{{dataIndex}}"
+                                                        [(ngModel)]="x.productionActual" required>
+                                                </td>
+                                            </tr>
+                                            <tr
+                                                *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                <ng-container *ngIf="isVisibleParam('Text')">
+                                                    <th scope="col" colspan="2">{{getParamaterLabelByIndex('Text',
+                                                        0)}}<span class="asterisk">*</span>
+                                                    </th>
+                                                </ng-container>
+                                                <ng-container *ngIf="isVisibleParam('Text')">
+                                                    <td colspan="4">
+                                                        <div
+                                                            *ngIf="actionDet.status == 'COMPLETED' || actionDet.status == 'REJECTED'">
+                                                            {{getParamaterDataByIndex('Text', 0)}}</div>
+                                                        <div *ngIf="actionDet.status == 'PENDING'">
+                                                            <input type="text" class="form-control" name="text"
+                                                                id="text" [(ngModel)]="x.text" placeholder="Enter Text"
+                                                                required />
+                                                            <!-- (input)="onTextChanged($event.target.value, 'Text')" -->
+                                                        </div>
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                            <tr
+                                                *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                <ng-container *ngIf="isVisibleParam('Number')">
+                                                    <th scope="col" colspan="2">{{getParamaterLabelByIndex('Number',
+                                                        0)}} <span class="asterisk">*</span>
+                                                    </th>
+                                                </ng-container>
+                                                <ng-container *ngIf="isVisibleParam('Number')">
+                                                    <td colspan="4">
+                                                        <div
+                                                            *ngIf="actionDet.status == 'COMPLETED' || actionDet.status == 'REJECTED'">
+                                                            {{getParamaterDataByIndex('Number', 0)}}</div>
+                                                        <div *ngIf="actionDet.status == 'PENDING'">
+                                                            <input type="number" class="form-control" name="number"
+                                                                id="number" [(ngModel)]="x.number"
+                                                                placeholder="Enter Number"
+                                                                (input)="onNumberChanged($event.target.value, 'Number')"
+                                                                required />
+                                                        </div>
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                            <ng-container *ngIf="getParamaterLabelByIndex('DateTime', 0) != 0">
+                                                <tr
+                                                    *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                    <ng-container *ngIf="isVisibleParam('Datetime')">
+                                                        <th scope="col" colspan="2">
+                                                            {{getParamaterLabelByIndex('DateTime',
+                                                            0)}} <span class="asterisk">*</span>
+                                                        </th>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="isVisibleParam('Datetime')">
+                                                        <td colspan="4">
+                                                            <div
+                                                                *ngIf="actionDet.status == 'COMPLETED' || actionDet.status == 'REJECTED'">
+                                                                {{getParamaterDataByIndex('Datetime', 0)}}</div>
+                                                            <div class="input-group-prepend"
+                                                                *ngIf="actionDet.status == 'PENDING'"
+                                                                (click)="actualTimeDatePicker.open()">
+                                                                <div class="input-group-text">
+                                                                    <i class="feather icon-calendar"></i>
+                                                                </div>
+                                                                <input matInput [matDatepicker]="actualTimeDatePicker"
+                                                                    class="form-control datePickInput" name="actualTime"
+                                                                    id="actualTimeDatePicker" [(ngModel)]="x.actualTime"
+                                                                    (keydown)="false" placeholder="Select Date"
+                                                                    (dateChange)="onDateChange(dataIndex, 'actualTime', $event)"
+                                                                    [min]="minDate" required />
+                                                            </div>
+                                                            <mat-datepicker #actualTimeDatePicker></mat-datepicker>
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-container>
+                                            <ng-container *ngIf="getParamaterLabelByIndex('DateTime', 1) != 0">
+                                                <tr
+                                                    *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                    <ng-container *ngIf="isVisibleParam('Datetime')">
+                                                        <th scope="col" colspan="2">
+                                                            {{getParamaterLabelByIndex('DateTime',
+                                                            1)}} <span class="asterisk">*</span>
+                                                        </th>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="isVisibleParam('Datetime')">
+                                                        <td colspan="4">
+                                                            <div
+                                                                *ngIf="actionDet.status == 'COMPLETED' || actionDet.status == 'REJECTED'">
+                                                                {{getParamaterDataByIndex('Datetime', 1)}}</div>
+                                                            <div class="input-group-prepend"
+                                                                *ngIf="actionDet.status == 'PENDING'"
+                                                                (click)="targetTimeDatePicker.open()">
+                                                                <div class="input-group-text">
+                                                                    <i class="feather icon-calendar"></i>
+                                                                </div>
+                                                                <input matInput [matDatepicker]="targetTimeDatePicker"
+                                                                    class="form-control datePickInput" name="targetTime"
+                                                                    id="targetTimeDatePicker" [(ngModel)]="x.targetTime"
+                                                                    (keydown)="false" placeholder="Select Date"
+                                                                    (dateChange)="onDateChange(dataIndex, 'targetTime', $event)"
+                                                                    [min]="minDate" required />
+                                                            </div>
+                                                            <mat-datepicker #targetTimeDatePicker></mat-datepicker>
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-container>
+                                            <ng-container *ngIf="getParamaterLabelByIndex('Model', 0) != 0">
+                                                <tr
+                                                    *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                    <ng-container *ngIf="isVisibleParam('Model')">
+                                                        <th scope="col" colspan="2">{{getParamaterLabelByIndex('Model',
+                                                            0)}} <span class="asterisk">*</span>
+                                                        </th>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="isVisibleParam('Model')">
+                                                        <td colspan="4">
+                                                            <div
+                                                                *ngIf="actionDet.status == 'COMPLETED' || actionDet.status == 'REJECTED'">
+                                                                {{getParamaterDataByIndex('Model', 0)}}</div>
+                                                            <ng-multiselect-dropdown
+                                                                *ngIf="actionDet.status == 'PENDING'"
+                                                                name="model{{dataIndex}}"
+                                                                class="custom-multiSelection customWidthForInter"
+                                                                placeholder="Select Model" required
+                                                                [settings]="SingleDropdownModelSettings"
+                                                                [(ngModel)]="x.fromModel" [data]="modelList">
+                                                            </ng-multiselect-dropdown>
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-container>
+                                            <ng-container *ngIf="getParamaterLabelByIndex('Model', 1) != 0">
+                                                <tr
+                                                    *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                    <ng-container *ngIf="isVisibleParam('Model')">
+                                                        <th scope="col" colspan="2">{{getParamaterLabelByIndex('Model',
+                                                            1)}} <span class="asterisk">*</span>
+                                                        </th>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="isVisibleParam('Model')">
+                                                        <td colspan="4">
+                                                            <div
+                                                                *ngIf="actionDet.status == 'COMPLETED' || actionDet.status == 'REJECTED'">
+                                                                {{getParamaterDataByIndex('Model', 1)}}</div>
+                                                            <ng-multiselect-dropdown
+                                                                *ngIf="actionDet.status == 'PENDING'"
+                                                                name="toModel{{dataIndex}}"
+                                                                class="custom-multiSelection customWidthForInter"
+                                                                placeholder="Select Model" required
+                                                                [settings]="SingleDropdownModelSettings"
+                                                                [(ngModel)]="x.toModel" [data]="modelList">
+                                                            </ng-multiselect-dropdown>
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-container>
+                                            <tr
+                                                *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                <ng-container *ngIf="isVisibleParam('Gap')">
+                                                    <th *ngIf="actionDet.status == 'PENDING'" scope="col" colspan="2">
+                                                        Gap<span class="asterisk">*</span>
+                                                    </th>
+                                                </ng-container>
+                                                <ng-container *ngIf="isVisibleParam('Gap')">
+                                                    <td colspan="4" *ngIf="actionDet.status == 'PENDING'">
+                                                        <select *ngIf="actionDet.status == 'PENDING'"
+                                                            class="custom-selectField form-control"
+                                                            name="gap{{dataIndex}}" required
+                                                            (change)="onChangeComplete($event, x)" [(ngModel)]="x.gap">
+                                                            <option value="">Select Status</option>
+                                                            <option value="Yes">Yes</option>
+                                                            <option value="No">No</option>
+                                                        </select>
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                            <tr
+                                                *ngFor="let x of trainingProdDetails.auditPointList;let dataIndex = index">
+                                                <ng-container *ngIf="isVisibleParam('Gap')">
+                                                    <th scope="col" colspan="2">Gap Reason <span
+                                                            class="asterisk">*</span></th>
+                                                </ng-container>
+                                                <ng-container *ngIf="isVisibleParam('Gap')">
+                                                    <td colspan="4">
+                                                        <div
+                                                            *ngIf="actionDet.status == 'COMPLETED' || actionDet.status == 'REJECTED'">
+                                                            {{x.gapReason || "No"}}</div>
+                                                        <ng-multiselect-dropdown *ngIf="actionDet.status == 'PENDING'"
+                                                            name="gapReason{{dataIndex}}"
+                                                            class="custom-multiSelection customWidthForInter"
+                                                            placeholder="Select Gap Reason" [disabled]="x.gap == 'No'"
+                                                            [settings]="SingleDropdownSettings"
+                                                            (onSelect)="onChange($event)" [(ngModel)]="x.gapReason"
+                                                            [data]="gapReasonList" [required]="x.gap === 'Yes'">
+                                                        </ng-multiselect-dropdown>
+                                                        <textarea *ngIf="isOtherReason && x.gap == 'Yes'"
+                                                            class="form-control textarea-custom" id="gapOtherReason"
+                                                            name="gapOtherReason" [(ngModel)]="x.gapOtherReason"
+                                                            rows="2" placeholder="Enter other gap reason"
+                                                            [maxlength]="250"></textarea>
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                            <ng-container *ngIf="isVisibleParam('cyclePlan')">
+                                                <ng-container
+                                                    *ngFor="let cycle of trainingProdDetails.cyclePlanList; let cycleIndex = index">
+                                                    <tr>
+                                                        <th scope="col" rowspan="2" style="text-align: center;">Cycle {{
+                                                            cycleIndex + 1 }}</th>
+                                                        <th scope="col">Standard <span class="asterisk">*</span></th>
+                                                        <ng-container
+                                                            *ngFor="let x of trainingProdDetails.auditPointList; let dataIndex = index">
+                                                            <td colspan="4">
+                                                                <div
+                                                                    *ngIf="isStatusCompletedOrRejected(actionDet.status)">
+                                                                    {{ cycle.expectedValue }}
+                                                                </div>
+                                                                <input *ngIf="actionDet.status == 'PENDING'" type="text"
+                                                                    class="form-control"
+                                                                    name="expectedCycleVal{{ cycleIndex + '_' + dataIndex }}"
+                                                                    placeholder="Enter standard value" required
+                                                                    [(ngModel)]="cycle.expectedValue">
+                                                            </td>
+                                                        </ng-container>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col">Actual <span class="asterisk">*</span></th>
+                                                        <ng-container
+                                                            *ngFor="let x of trainingProdDetails.auditPointList; let dataIndex = index">
+
+                                                            <td colspan="4">
+                                                                <div
+                                                                    *ngIf="isStatusCompletedOrRejected(actionDet.status)">
+                                                                    {{ cycle.actualValue }}
+                                                                </div>
+                                                                <input *ngIf="actionDet.status == 'PENDING'" type="text"
+                                                                    class="form-control"
+                                                                    name="actualCycleVal{{ cycleIndex + '_' + dataIndex }}"
+                                                                    placeholder="Enter actual value"
+                                                                    [(ngModel)]="cycle.actualValue" required>
+                                                            </td>
+                                                        </ng-container>
+                                                    </tr>
+                                                </ng-container>
+                                            </ng-container>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-0"
+                    *ngIf="trainingProdDetails.auditPointList && trainingProdDetails.auditPointList[0].oeComment?.trim()">
+                    <div class="col-12" style="display: inline-flex; padding-bottom: 10px;">
+                        <label for="oeComment" class="col-form-label" style="margin-right: 10px; width: 12.5rem;">
+                            OE Comment:
+                        </label>
+                        <textarea class="form-control textarea-custom" id="oeComment" name="oeComment"
+                            [(ngModel)]="trainingProdDetails.auditPointList[0].oeComment" rows="2" placeholder="Comment"
+                            disabled [maxlength]="1000"></textarea>
+                    </div>
+                </div>
+
+                <div class="row m-0"
+                    *ngIf="trainingProdDetails.auditPointList && trainingProdDetails.auditPointList[0].trainerActComment?.trim()">
+                    <div class="col-12" style="display: inline-flex; padding-bottom: 10px;">
+                        <label for="trainerActComment" class="col-form-label"
+                            style="margin-right: 10px; width: 12.5rem;">
+                            Trainer Activity Comment:
+                        </label>
+                        <textarea class="form-control textarea-custom" id="trainerActComment" name="trainerActComment"
+                            [(ngModel)]="trainingProdDetails.auditPointList[0].trainerActComment" rows="2"
+                            placeholder="Comment" disabled [maxlength]="1000"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer text-right pad0 paginationFooter">
+                    <ng-container *ngIf="actionDet.status == 'PENDING'">
+                        <button type="submit" class="btn submitBtn" [ngClass]="{'disable-btn' : myForm.invalid }"
+                            style="background: #7044cd;">Approve</button>
+                        <button type="button" class="btn submitBtn"
+                            (click)="stageTwoVerificationSubmission('','REJECTED',true)"
+                            style="margin-left: 10px; background: #f20000;">Reject</button>
+                    </ng-container>
+                    <button type="button" class="btn cancelBtn" (click)="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

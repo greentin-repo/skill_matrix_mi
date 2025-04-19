@@ -1,0 +1,92 @@
+/* Pagination CSS */
+
+.paginationFooter {
+    background: #ffffff 0% 0% no-repeat padding-box;
+    box-shadow: 0px -5px 6px #00000029;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    .paginationTotalCount {
+        background: #ecf5f8;
+        border-radius: 15px;
+        color: #373737;
+        font: normal normal normal 14px/1 Helvetica Neue;
+        padding: 0.3rem 1.3rem;
+        display: inline-block;
+        // margin: 5px 0px;
+    }
+    .submitBottomBtn {
+        background: url("../../../../../assets/images/login/submitBtn.png") transparent no-repeat 100%;
+        background-position: center;
+        width: 100%;
+        background-size: auto;
+        margin-top: 0rem;
+        .submitBtn {
+            background: transparent;
+            font-size: 15px;
+            line-height: 33px;
+            padding: 0px;
+            width: calc(100% - 200px);
+            cursor: pointer;
+            box-shadow: none;
+            &:disabled {
+                cursor: not-allowed;
+            }
+        }
+    }
+    .customPagination {
+        /* padding: 0.3rem 1.3rem; */
+        display: flex;
+        justify-content: flex-end;
+        .pagination {
+            font-family: Helvetica, FontAwesome;
+            margin: 5px 0px;
+            .page-item {
+                display: none;
+            }
+            .page-item:first-child,
+            .page-item:nth-child(2),
+            .page-item:last-child {
+                display: block;
+            }
+            .page-item {
+                text-align: center;
+                border-radius: 0px;
+                a {
+                    background: #7044cd;
+                    color: #fff;
+                    border: none;
+                    padding: 0.3rem 1.3rem;
+                }
+                a:focus {
+                    box-shadow: none;
+                }
+            }
+            .page-item:first-child {
+                a {
+                    border-bottom-left-radius: 15px;
+                    border-top-left-radius: 15px;
+                }
+            }
+            .page-item:last-child {
+                a {
+                    border-bottom-right-radius: 15px;
+                    border-top-right-radius: 15px;
+                }
+            }
+            .page-item:nth-child(2) {
+                a {
+                    background: #ecf5f8;
+                    color: #3a3b3b;
+                    padding: 0.3rem 0.5rem;
+                }
+            }
+            .page-item.disabled {
+                a {
+                    background: #def0f6;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+}

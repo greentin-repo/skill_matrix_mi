@@ -1,0 +1,114 @@
+.input-group-append {
+    .fa {
+        position: relative;
+        top: 0.1em;
+    }
+}
+
+.custom-errorMsg {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #ff5252;
+}
+
+.customInputField {
+    margin-left: 15px;
+    padding-top: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    box-shadow: none;
+    // border-bottom: 1px solid lightgray;
+}
+
+.tableFixHead {
+    table {
+        position: relative;
+
+        th.actionTh,
+        td.actionTd {
+            width: 100px;
+        }
+
+        tbody td {
+            vertical-align: middle;
+        }
+    }
+}
+
+.modal-header {
+    border-bottom: 1px solid #e3eaef !important;
+
+    .popup-header-txt {
+        letter-spacing: 0px;
+        color: #7044cd;
+        font: normal normal 500 18px/1.5 Helvetica Neue;
+        text-align: left;
+        width: 100%;
+    }
+
+    .close {
+        padding: 0px;
+        margin: 0px;
+
+        span {
+            font: normal normal 300 25px/1 Helvetica Neue;
+        }
+    }
+    
+}
+
+.modal-content.previewCert.previewHeader {
+    border: none !important;
+}
+.modal-body{
+    .errroMsg{
+        position: absolute;
+        top: 100%;
+    }
+}
+// .modal-dialog {
+//     .previewCert .modal-content {
+//         border: none !important;
+//         position: relative;
+//         display: flex;
+//         flex-direction: column;
+//         width: 100%;
+//         pointer-events: auto;
+//         /* background-color: #fff; */
+//         background-clip: padding-box;
+//         // border: 1px solid rgba(0, 0, 0, 0.2);
+//         border-radius: 4px;
+//         outline: 0;
+
+//         .previewHeader {
+//             background-color: transparent;
+
+//             .popup-header-txt {
+//                 text-align: center !important;
+//             }
+//         }
+//     }
+// }
+.previewCert {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: transparent !important;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    outline: 0;
+
+    .previewHeader {
+        border-bottom: none !important;
+
+        .popup-header-txt {
+            text-align: center !important;
+            color: #fff;
+        }
+    }
+}

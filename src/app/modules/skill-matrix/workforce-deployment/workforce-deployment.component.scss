@@ -1,0 +1,25 @@
+.insideLabel {
+    margin-bottom: 10px;
+    .col-form-label {
+        position: absolute;
+        z-index: 999;
+        top: 0px;
+        font: normal normal bold 12px/1.5 Helvetica Neue;
+        left: 1.5rem;
+        color: #7044cd;
+    }
+}
+.extraContent .addRegDiv .addRegBtn {
+    right: 5rem !important;
+}
+.img-fluid{
+    height: 20px;
+}
+.title{
+    color: #7044CD !important;
+}
+.extraContent .addRegDiv .addRegBtn,
+.extraContent .addRegDiv .addRegBtn:hover,
+.extraContent .addRegDiv .addRegBtn:focus {
+    right: 9rem !important;
+}

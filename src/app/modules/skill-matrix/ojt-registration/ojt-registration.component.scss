@@ -1,0 +1,61 @@
+th .fixedColumn {
+    position: sticky;
+    left: 0;
+    // background-color: white;
+    z-index: 2;
+}
+
+td .fixedColumn {
+    position: sticky;
+    left: 0;
+    // background-color: white;
+    z-index: 2;
+}
+
+th.actionTh,
+td.actionTd {
+    // min-width: 150px;
+    z-index: 3;
+}
+
+.fixedColumn:nth-child(11),
+.fixedColumn:nth-child(11) {
+    right: 71px;
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+.fixedColumn:nth-child(9),
+.fixedColumn:nth-child(9) {
+    width: 120px;
+    right: 40px;
+    min-width: 120px;
+    max-width: 120px;
+}
+
+.fixedColumn:nth-child(1),
+.fixedColumn:nth-child(1) {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+}
+
+tr th:first-child {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+}
+
+.actionTd div {
+    position: relative;
+    z-index: 5;
+    min-height: 36px;
+    overflow: hidden;
+}
+
+th.fixedColumn.empNameCol {
+    left: 108px;
+    z-index: 5;
+}
