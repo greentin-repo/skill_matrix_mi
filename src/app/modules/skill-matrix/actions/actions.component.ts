@@ -41,6 +41,7 @@ export class ActionsComponent implements OnInit {
     totalPages: 0,
     listLength: 0,
   };
+  exportLoading: boolean = false;
   constructor(
     private skillingService: SkillingService,
     private modalService: NgbModal,
@@ -482,11 +483,69 @@ export class ActionsComponent implements OnInit {
     return tmp;
   }
 
-  exportReport(): void {
+  // Initiate the API call to fetch all records
+  getAllActionList() {
+    this.exportLoading = true;
+    
+    // Create request with current filters but no pagination limits
+    let req: any = {
+      orgId: this.loggedInEmpDet.organization.orgId,
+    };
+
+    // Apply filters from searchDet
+    if (this.searchDet.branchId != null && this.searchDet.branchId.length > 0) {
+      req.branchId = this.searchDet.branchId[0].id;
+    } else {
+      req.branchId = this.loggedInEmpDet.branch.branchId;
+    }
+    if (this.searchDet.deptId != null && this.searchDet.deptId.length > 0) {
+      req.deptId = this.searchDet.deptId[0].id;
+    }
+    if (this.searchDet.lineIds != null && this.searchDet.lineIds.length > 0) {
+      req.lineIds = this.getIDsArray(this.searchDet.lineIds);
+    }
+    if (this.searchDet.fromDate != null) {
+      req.fromDt = moment(this.searchDet.fromDate).format("YYYY-MM-DD");
+    }
+    if (this.searchDet.toDate != null) {
+      req.toDate = moment(this.searchDet.toDate).format("YYYY-MM-DD");
+    }
+    if (this.searchDet.skillLvlId != null && this.searchDet.skillLvlId.length > 0) {
+      req.skillLevelId = this.searchDet.skillLvlId[0].id;
+    }
+    if (this.searchDet.searchInput && this.searchDet.searchInput != "") {
+      req.search = this.searchDet.searchInput;
+    }
+    if (this.sorting) {
+      if (this.sorting.direction != "") {
+        req.colName = this.sorting.active;
+        req.orderType = this.sorting.direction.toUpperCase();
+      }
+    }
+
+    this.skillingService
+      .getSkillMatrixActionList("apis/sm/getSkillMatrixActionList", req)
+      .subscribe((response: any) => {
+        this.exportLoading = false;
+        if (response.result && response.smActionList != null && response.smActionList.length > 0) {
+          this.exportReport(response.smActionList);
+        } else {
+          alert("No data available to export.");
+        }
+      },
+      (error) => {
+        this.exportLoading = false;
+        console.error("Error fetching data:", error);
+        alert("Failed to fetch data for export.");
+      }
+    );
+  }
+
+  exportReport(response): void {
     // Create a new workbook and worksheet
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet("Report");
-
+  
     // Define columns for the worksheet - using the keys from your sample data
     worksheet.columns = [
       { header: "Branch Name", key: "branchName", width: 15 },
@@ -508,15 +567,25 @@ export class ActionsComponent implements OnInit {
     worksheet.getRow(1).fill = {
       type: "pattern",
       pattern: "solid",
-      fgColor: { argb: "FFD3D3D3" }, // Light gray background
+      fgColor: { argb: "FFD3D3D3" },
     };
-
-    // Add the data rows
-    this.actionList.forEach((record) => {
+  
+    // Process and add the data rows
+    response.forEach((record) => {
+      // Format dates if needed before adding to worksheet
+      if (record.activityDate) {
+        const date = new Date(record.activityDate);
+        if (!isNaN(date.getTime())) { // Check if date is valid
+          record = { 
+            ...record, 
+            activityDate: moment(record.activityDate).format("DD-MM-YYYY") 
+          };
+        }
+      }
       worksheet.addRow(record);
     });
 
-    // Auto-fit columns (optional)
+    // Auto-fit columns
     worksheet.columns.forEach((column) => {
       const lengths = column.values
         ?.filter((v) => v !== undefined)
@@ -527,13 +596,17 @@ export class ActionsComponent implements OnInit {
       }
     });
 
-    // Generate the Excel file
+    // Generate the Excel file with a more descriptive filename
     workbook.xlsx.writeBuffer().then((buffer) => {
-      // Use file-saver to save the file
       const blob = new Blob([buffer], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      fs.saveAs(blob, `Report_${new Date().toISOString().split("T")[0]}.xlsx`);
+
+      const today = new Date().toISOString().split("T")[0];      
+      let filename = `Skill_Matrix_Action_List${today}`;
+
+      fs.saveAs(blob, `${filename}.xlsx`);
+
     });
   }
 }
