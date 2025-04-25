@@ -405,7 +405,7 @@ export class OjtRegistrationComponent implements OnInit {
     this.isSuperAdmin = this.userDet.roles.some((role: any) => role.name === "SUPERADMIN")
   }
 
-  handleDeletePendingOJT(id) {
+  handleDeletePendingOJT(obj) {
     Swal.fire({
       title: "Are you sure?",
       text: "Do you want remove this OJT ?",
@@ -419,7 +419,7 @@ export class OjtRegistrationComponent implements OnInit {
       allowEnterKey: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.deleteOJTPlan(`apis/sm/deleteOJT/${id}`).subscribe((response: any) => {
+        this.apiService.deleteOJTPlan(`apis/sm/deleteOjtRegistration/${obj.ojtRegisId}`).subscribe((response: any) => {
           if (response.result) {
             this.alertService.success("OJT Deleted successfully");
             this.getOjtRegList("");
