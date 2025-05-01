@@ -19,7 +19,7 @@
             <div class="btn-clear-filter" *ngIf="isAppliedFilter" (click)="removeFilter();">x</div>
             <div class="lbl-filter-applied" *ngIf="isAppliedFilter">Filter Applied</div>
         </div> 
-        <img src="assets/images/ic_excel.png" style="height: 37px; width: 30px;" alt="" class="img-fluid btn-excel-export" (click)="exportReport()">
+        <img src="assets/images/ic_excel.png" style="height: 37px; width: 30px;" alt="" class="img-fluid btn-excel-export" (click)="getAllActionList()">
     </div>
 </div>
 <div class="homepage-block bg-Transperant p-l-15 p-r-15">
@@ -243,3 +243,6 @@
         </div>
     </form>
 </ng-template>
+<div *ngIf="exportLoading">
+    <app-loading></app-loading>
+</div>
