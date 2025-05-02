@@ -146,10 +146,10 @@
                             </span>
                         </td>
                         <td class="actionTd fixedColumn">
-                            <i class="fa fa-edit editIcon" (click)="updateWorkstationForm(workStation, data)"></i>
+                            <i class="fa fa-edit editIcon" (click)="updateWorkstationMappingForm(workstationMappingTemplate, data)"></i>
                             &nbsp; &nbsp;
                             <i class="fas fa-trash-alt deleteIcon"
-                                (click)="deactivateWorkstationDetails(data)"></i>&nbsp; &nbsp;
+                                (click)="deactivateWorkstationMapping(data)"></i>&nbsp; &nbsp;
                         </td>
                     </tr>
                     <tr *ngIf="(mappingStationData == null || mappingStationData.length == 0)">
