@@ -487,7 +487,7 @@ export class WorkStationComponent implements OnInit {
     });
   }
 
-  /* Common function For Searching  
+  /* Common function For Searching 
   @Author Saurabh salunke
 * @Date August 31, 2023*/
   getSearchList(ev) {
@@ -504,7 +504,7 @@ export class WorkStationComponent implements OnInit {
   }
 
 
-  /* To clear pagination  
+  /* To clear pagination 
   @Author Saurabh salunke
 * @Date Oct 12, 2023*/
   clearPagination() {
@@ -1053,8 +1053,7 @@ export class WorkStationComponent implements OnInit {
     }
   }
   
-  deactivateWorkstationMapping(data) {
-    console.log(data)
+  onDeleteWorkstationMapping(data) {
     Swal.fire({
       title: 'Are You Sure!',
       text: 'Do you want to remove this workstation mapping?',
@@ -1069,7 +1068,11 @@ export class WorkStationComponent implements OnInit {
     }).then((result) => {
       this.dataSpinner[data] = true;
       if (result.isConfirmed) {
-        this.skillMatrixService.deleteWorkstationMapping('apis/sm/workstation-mapping/delete-by-parent/' + data.parentWorkstationId).subscribe((response: any) => {
+        const deletePayload = {
+          parentWorkstationId: data.parentWorkstationId,
+          branchId: data.branchId
+        };
+        this.skillMatrixService.deleteWorkstationMapping('apis/sm/workstation-mapping/delete-by-parent', deletePayload).subscribe((response: any) => {
           this.dataSpinner[data.id] = false;
           if (response.result) {
             this.alertService.success("Workstation mapping removed successfully");

@@ -263,8 +263,8 @@ export class SkillMatrixService {
   }
 
   // Delete Workstation Mapping
-  deleteWorkstationMapping(url: string) {
-    return this.httpService.deleteMethod(url);
+  deleteWorkstationMapping(url: string, data: any) {
+    return this.httpService.postMethod(url, data);
   }
 
   // Update Workstation Mapping
