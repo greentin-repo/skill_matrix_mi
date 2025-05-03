@@ -422,7 +422,7 @@ export class OjtRegistrationComponent implements OnInit {
       allowEnterKey: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.deleteOJTPlan(`deleteOjtRegistration`, payload).subscribe((response: any) => {
+        this.apiService.deletePendingOJTPlan(`deleteOjtRegistration`, payload).subscribe((response: any) => {
           if (response.result) {
             this.alertService.success("OJT Deleted successfully");
             this.getOjtRegList("");

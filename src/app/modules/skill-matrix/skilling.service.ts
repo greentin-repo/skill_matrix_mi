@@ -5,8 +5,8 @@ import { HttpService } from '../../shared/auth/http.service'
 })
 export class SkillingService {
  
-  deleteOJTPlan(url: any, payload: any) {
-    return this.httpService.postMethod(url, payload);
+  deleteOJTPlan(url: any) {
+    return this.httpService.getMethod(url);
   }
 
   constructor(
@@ -102,5 +102,10 @@ export class SkillingService {
   getOJTRegistrationDetails(url: any) {
     return this.httpService.getMethod(url);
   }
-
+  // getWorkforceList(req: any) {
+  //   return this.httpService.postMethod('apis/sm/getWorkForceDeploymentList', req); 
+  // }
+  deletePendingOJTPlan(url: any, payload) {
+    return this.httpService.postMethod(url, payload);
+  }
 }
