@@ -258,7 +258,17 @@ export class SkillMatrixService {
     return this.httpService.postMethod(url, data);
   }
   // Get Workstation Mapping List
-  getWorkstationMappingList(url: string, data: any) {
+  getWorkstationMappingList(url: string) {
+    return this.httpService.getMethod(url);
+  }
+
+  // Delete Workstation Mapping
+  deleteWorkstationMapping(url: string, data: any) {
+    return this.httpService.postMethod(url, data);
+  }
+
+  // Update Workstation Mapping
+  updateWorkstationMapping(url: string, data: any) {
     return this.httpService.postMethod(url, data);
   }
 }

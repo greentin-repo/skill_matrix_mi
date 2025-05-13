@@ -487,7 +487,7 @@ export class WorkStationComponent implements OnInit {
     });
   }
 
-  /* Common function For Searching  
+  /* Common function For Searching 
   @Author Saurabh salunke
 * @Date August 31, 2023*/
   getSearchList(ev) {
@@ -504,7 +504,7 @@ export class WorkStationComponent implements OnInit {
   }
 
 
-  /* To clear pagination  
+  /* To clear pagination 
   @Author Saurabh salunke
 * @Date Oct 12, 2023*/
   clearPagination() {
@@ -957,7 +957,7 @@ export class WorkStationComponent implements OnInit {
     if (this.searchDet.searchData && this.searchDet.searchInput && this.searchDet.searchInput != '') {
       getReq.search = this.searchDet.searchInput;
     } 
-    this.skillMatrixService.getWorkstationMappingList('apis/sm/workstation-mapping/get-all', getReq).subscribe((response: any) => {
+    this.skillMatrixService.getWorkstationMappingList('apis/sm/getAllWorkstationMapping').subscribe((response: any) => {
       this.submitSpinner = false;
       this.listLoading = false;
       if (response.result) {
@@ -1011,23 +1011,118 @@ export class WorkStationComponent implements OnInit {
       deptId: masterWorkstation ? masterWorkstation.deptId : null,
       lineId: masterWorkstation ? masterWorkstation.lineId : null
     };
-    
-    this.skillMatrixService.saveWorkstationMapping('apis/sm/workstation-mapping/save', mappingData).subscribe(
-      (response: any) => {
-        this.submitSpinner = false;
-        if (response.result) {
-          this.alertService.success("Workstation mapping saved successfully.");
-          this.workstationMappingForm.reset();
-          this.modalService.dismissAll();
-        } else {
+
+    if (this.isEditing) {
+      // Update existing mapping
+      this.skillMatrixService.updateWorkstationMapping('apis/sm/workstation-mapping/update', mappingData).subscribe(
+        (response: any) => {
+          this.submitSpinner = false;
+          if (response.result) {
+            this.alertService.success("Workstation mapping updated successfully.");
+            this.workstationMappingForm.reset();
+            this.modalService.dismissAll();
+            this.getMappingList(); // Refresh the list after update
+          } else {
+            this.alertService.error('Error occurred while updating mapping. Please try again');
+          }
+        },
+        (error: any) => {
+          this.submitSpinner = false;
+          this.alertService.error('Error occurred while updating mapping. Please try again');
+        }
+      );
+    } else {
+      // Create new mapping
+      this.skillMatrixService.saveWorkstationMapping('apis/sm/workstation-mapping/save', mappingData).subscribe(
+        (response: any) => {
+          this.submitSpinner = false;
+          if (response.result) {
+            this.alertService.success("Workstation mapping saved successfully.");
+            this.workstationMappingForm.reset();
+            this.modalService.dismissAll();
+            this.getMappingList(); // Refresh the list after save
+          } else {
+            this.alertService.error('Error occurred while saving mapping. Please try again');
+          }
+        },
+        (error: any) => {
+          this.submitSpinner = false;
           this.alertService.error('Error occurred while saving mapping. Please try again');
         }
-      },
-      (error: any) => {
-        this.submitSpinner = false;
-        this.alertService.error('Error occurred while saving mapping. Please try again');
-      }
-    );
+      );
+    }
   }
   
+  onDeleteWorkstationMapping(data) {
+    Swal.fire({
+      title: 'Are You Sure!',
+      text: 'Do you want to remove this workstation mapping?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#7044cd',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Remove It',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+    }).then((result) => {
+      this.dataSpinner[data] = true;
+      if (result.isConfirmed) {
+        const deletePayload = {
+          parentWorkstationId: data.parentWorkstationId,
+          branchId: data.branchId
+        };
+        this.skillMatrixService.deleteWorkstationMapping('apis/sm/workstation-mapping/delete-by-parent', deletePayload).subscribe((response: any) => {
+          this.dataSpinner[data.id] = false;
+          if (response.result) {
+            this.alertService.success("Workstation mapping removed successfully");
+            this.getMappingList();
+          }
+          else {
+            if (response.statusCode == 100) {
+              this.alertService.error(response.reason);
+            } else {
+              this.alertService.error('Error occurred while removing mapping. Please try again');
+            }
+          }
+        })
+      } else {
+        this.dataSpinner[data.id] = false;
+      }
+    });
+  }
+
+  updateWorkstationMappingForm(modal, data) {
+    this.isEditing = true;
+    console.log(data);
+    this.modalTital = "Update Workstation Mapping"
+
+    // Get the branch details
+    const branch = this.branchAccessList.find(b => b.name === data.branchName);
+    
+    // Get the master workstation details
+    const masterWorkstation = {
+      id: data.parentWorkstationId,
+      name: data.parentWorkstationName
+    };
+
+    // Get the child workstations
+    const childWorkstations = data.childWorkstations.map(child => ({
+      id: child.childWorkstationId,
+      name: child.childWorkstationName
+    }));
+
+    this.workstationMappingForm.patchValue({
+      branch: [branch],
+      masterWorkstation: [masterWorkstation],
+      mappingWorkstations: childWorkstations
+    });
+
+    // Get the workstation list for the selected branch
+    this.getListForMapping(branch.id);
+
+    this.modalService.open(modal, {
+      windowClass: 'top'
+    });
+  }
 }

@@ -406,6 +406,9 @@ export class OjtRegistrationComponent implements OnInit {
   }
 
   handleDeletePendingOJT(obj) {
+    let payload = {
+      ojtId: obj.ojtRegisId
+    }
     Swal.fire({
       title: "Are you sure?",
       text: "Do you want remove this OJT ?",
@@ -419,7 +422,7 @@ export class OjtRegistrationComponent implements OnInit {
       allowEnterKey: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.deleteOJTPlan(`apis/sm/deleteOjtRegistration/${obj.ojtRegisId}`).subscribe((response: any) => {
+        this.apiService.deletePendingOJTPlan(`deleteOjtRegistration`, payload).subscribe((response: any) => {
           if (response.result) {
             this.alertService.success("OJT Deleted successfully");
             this.getOjtRegList("");

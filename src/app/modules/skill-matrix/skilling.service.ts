@@ -105,7 +105,7 @@ export class SkillingService {
   // getWorkforceList(req: any) {
   //   return this.httpService.postMethod('apis/sm/getWorkForceDeploymentList', req); 
   // }
-  deletePendingOJTPlan(url: any) {
-    return this.httpService.deleteMethod(url);
+  deletePendingOJTPlan(url: any, payload) {
+    return this.httpService.postMethod(url, payload);
   }
 }
