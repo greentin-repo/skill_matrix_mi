@@ -252,4 +252,13 @@ export class SkillMatrixService {
   saveCopyChecksheet(url: string, data: any) {
     return this.httpService.postMethod(url, data);
   }
+
+  // Create New Workstation Mapping
+  saveWorkstationMapping(url: string, data: any) {  
+    return this.httpService.postMethod(url, data);
+  }
+  // Get Workstation Mapping List
+  getWorkstationMappingList(url: string, data: any) {
+    return this.httpService.postMethod(url, data);
+  }
 }

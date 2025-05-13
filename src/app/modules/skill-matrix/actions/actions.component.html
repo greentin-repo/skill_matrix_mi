@@ -10,7 +10,7 @@
             <i class="fa fa-filter filter-icon" aria-hidden="true"></i>
         </button>
     </div> -->
-    <div class="col-1 p-0 m-auto text-center">
+    <div class="col-1 p-0 m-auto text-center" style="display: flex; gap: 30px; flex-direction: row; "> 
         <div class="btn-filter-wrap">
             <button class="btn btn-default filter-btn" [ngClass]="{'applied' : isAppliedFilter}" title="Filter"
                 (click)="filterModalOpen(filterPopup)">
@@ -18,7 +18,8 @@
             </button>
             <div class="btn-clear-filter" *ngIf="isAppliedFilter" (click)="removeFilter();">x</div>
             <div class="lbl-filter-applied" *ngIf="isAppliedFilter">Filter Applied</div>
-        </div>
+        </div> 
+        <img src="assets/images/ic_excel.png" style="height: 37px; width: 30px;" alt="" class="img-fluid btn-excel-export" (click)="getAllActionList()">
     </div>
 </div>
 <div class="homepage-block bg-Transperant p-l-15 p-r-15">
@@ -75,7 +76,7 @@
                         <th class="" mat-sort-header="LevelName">Level</th>
                         <th class="" mat-sort-header="ActivityDate">Assigned Date</th>
                         <!-- <th class="" mat-sort-header="ActivityDate"> Activity Due Date</th> -->
-                        <th class="" mat-sort-header="Activity">Activity</th>
+                        <th class="" mat-sort-header="Activity">Pending Stage</th>
                         <th class="pending fixedColumn" mat-sort-header="status">Status</th>
                     </tr>
                 </thead>
@@ -242,3 +243,6 @@
         </div>
     </form>
 </ng-template>
+<div *ngIf="exportLoading">
+    <app-loading></app-loading>
+</div>
