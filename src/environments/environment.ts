@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://gtdev.greentinsolutions.com:8085/spicer/' //Dev
+  // apiUrl: 'http://gtdev.greentinsolutions.com:8085/spicer/' //Dev
   // apiUrl: 'http://10.37.61.251:8080/enovation-prod/'   //Prod
+  apiUrl: 'http://91.108.110.98:8080/',
   // apiUrl: "http://localhost:8091/",
 };
 /*
