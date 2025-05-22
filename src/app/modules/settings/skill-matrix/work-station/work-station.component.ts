@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
@@ -27,6 +27,7 @@ export class WorkStationComponent implements OnInit {
   branchAccessList: any = [];
   deptList: any = [];
   workstationData: any = [];
+  mappingStationData: any = [];
   formSubmitLoader: boolean = false;
   SingleDropdownSettings: IDropdownSettings = {};
   submitAttempted: boolean = false;
@@ -55,6 +56,12 @@ export class WorkStationComponent implements OnInit {
   selectedCell: any;
   isSubmit: boolean = false;
   modalTital: String = "";
+  selectedTab: any;
+  isVisible: boolean = false;
+  workstationMappingForm: FormGroup;
+  filteredWorkstationList: any; 
+  workstationList: any[] = []; // For workstation mapping 
+  @ViewChild('workstationMappingTemplate') workstationMappingTemplate: TemplateRef<any>;
 
   constructor(
     private skillMatrixService: SkillMatrixService,
@@ -100,12 +107,19 @@ export class WorkStationComponent implements OnInit {
       reqSkillLvl: new FormControl('', Validators.required)
 
     });
+    this.workstationMappingForm = this.fb.group({
+      branch: new FormControl('', Validators.required),
+      masterWorkstation: new FormControl('', Validators.required),
+      mappingWorkstations: new FormControl('', Validators.required),
+    });
     this.filterFormData = this.fb.group({
       branch: new FormControl('', Validators.required),
       dept: new FormControl(''),
       cell: new FormControl(''),
     });
 
+    this.selectTab('workStation');
+    this.getMappingList();
   }
 
   /* gets Branch access list on employee
@@ -473,7 +487,7 @@ export class WorkStationComponent implements OnInit {
     });
   }
 
-  /* Common function For Searching  
+  /* Common function For Searching 
   @Author Saurabh salunke
 * @Date August 31, 2023*/
   getSearchList(ev) {
@@ -490,7 +504,7 @@ export class WorkStationComponent implements OnInit {
   }
 
 
-  /* To clear pagination  
+  /* To clear pagination 
   @Author Saurabh salunke
 * @Date Oct 12, 2023*/
   clearPagination() {
@@ -589,10 +603,11 @@ export class WorkStationComponent implements OnInit {
   modalOpen(modal, popupClass) {
     this.isEditing = false;
     this.selctedWorkstationId = 0;
-    this.resetData();
+    this.resetData();    
+    this.workstationMappingForm.reset();
     // this.deparmentList = [];
     // this.cellLevelList = [];
-    this.modalTital = "Add Workstation"
+    this.modalTital = this.isVisible ? "Add Workstation" : "Add Workstation Mapping";
     const screenWidth = window.innerWidth;
     let modifiedPopupClass = popupClass;
 
@@ -816,5 +831,298 @@ export class WorkStationComponent implements OnInit {
     }
     return array;
   }
+
+  selectTab(tab) {
+    this.selectedTab = tab;
+    this.isVisible = tab === 'workStation' ? true : false;
+    this.staticPagination = {
+      total: 0,
+      page: 1,
+      maxSize: 5,
+      itemsPerPage: 10,
+      totalPages: 0,
+      listLength: 0
+    }
+  }
+
+  onChangeMappingPlant(event) {
+    if (event) {
+      this.workstationMappingForm.patchValue({
+        masterWorkstation: '',
+        mappingWorkstations: ''
+      });
+
+      this.getListForMapping(event.id);
+
+    } else {
+      this.workstationList = [];
+      this.filteredWorkstationList = [];
+      this.workstationMappingForm.patchValue({
+        masterWorkstation: '',
+        mappingWorkstations: ''
+      });
+    }
+  }
   
+  /* Get workstation list for mapping */
+  getListForMapping(branchId) {
+    this.submitSpinner = true;
+    
+    let getReq: any = {
+      "orgId": this.userDet.organization.orgId,
+      "branchId": branchId || this.userDet.branch.branchId
+    }
+    
+    this.skillMatrixService.getWorkstationList('apis/sm/getWorkstationList', getReq).subscribe((response: any) => {
+      this.submitSpinner = false;
+      
+      if (response.result && response.dataList != null && response.dataList.length > 0) {
+        this.workstationList = response.dataList.filter(item => item.isActive === true);
+        this.filteredWorkstationList = this.setArray(this.workstationList, 'id', 'workstation');
+      } else {
+        this.workstationList = [];
+        this.filteredWorkstationList = [];
+      }
+    }, (error: any) => {
+      this.submitSpinner = false;
+      this.workstationList = [];
+      this.filteredWorkstationList = [];
+    });
+  }
+  
+  onMasterWorkstationSelect(event) {
+    this.updateFilteredWorkstationList();
+  }
+  
+  onMasterWorkstationDeselect() {
+    this.updateFilteredWorkstationList();
+  }
+  
+  updateFilteredWorkstationList() {
+    const selectedMaster = this.workstationMappingForm.get('masterWorkstation').value;
+
+    if (selectedMaster && selectedMaster.length > 0) {
+      // Clear the mappingWorkstations field
+      this.workstationMappingForm.get('mappingWorkstations').reset();
+
+      // Filter out the selected master workstation
+      this.filteredWorkstationList = this.workstationList.filter(item => 
+        item.id !== selectedMaster[0].id
+      );
+    } else {
+      this.filteredWorkstationList = [...this.workstationList];
+    }
+  }
+
+  getMappingList() {
+    this.listLoading = true;
+    this.submitSpinner = true;
+    if (this.staticPagination.page == 1) {
+      this.staticPagination.offset = 0;
+    } else {
+      this.staticPagination.offset = (this.staticPagination.page - 1) * this.staticPagination.itemsPerPage;
+    }
+
+    let getReq: any = {
+      "orgId": this.userDet.organization.orgId,
+      'offset': this.staticPagination.offset,
+      'limit': this.staticPagination.itemsPerPage,
+    }
+    if (this.getIDsArray(this.selectedBranch.cell) != null && this.getIDsArray(this.selectedBranch.cell).length > 0) {
+      for (let i = 0; i < this.getIDsArray(this.selectedBranch.cell).length; i++) {
+        getReq.lineIds = this.getIDsArray(this.selectedBranch.cell)
+      }
+    }
+    if (this.selectedBranch.branch != null && this.selectedBranch.branch.length > 0) {
+      for (let i = 0; i < this.selectedBranch.branch.length; i++) {
+        getReq.branchId = this.selectedBranch.branch[0].id;
+
+      }
+    }
+    else{
+      getReq.branchId = this.userDet.branch.branchId; 
+    }
+    if (this.selectedBranch.dept != null && this.selectedBranch.dept.length > 0) {
+      for (let i = 0; i < this.selectedBranch.dept.length; i++) {
+        getReq.deptId = this.selectedBranch.dept[0].id
+      }
+    }
+    if (this.sorting) {
+      if (this.sorting.direction != "") {
+        getReq.colName = this.sorting.active,
+          getReq.orderType = this.sorting.direction.toUpperCase();
+
+      }
+    }
+    if (this.searchDet.searchData && this.searchDet.searchInput && this.searchDet.searchInput != '') {
+      getReq.search = this.searchDet.searchInput;
+    } 
+    this.skillMatrixService.getWorkstationMappingList('apis/sm/getAllWorkstationMapping').subscribe((response: any) => {
+      this.submitSpinner = false;
+      this.listLoading = false;
+      if (response.result) {
+        if (this.staticPagination.page == 1) {
+          this.staticPagination.total = response.totalCount;
+          this.staticPagination.totalPages = Math.ceil(this.mappingStationData.totalCount / this.staticPagination.itemsPerPage);
+        }
+        if (response.dataList != null && response.dataList.length > 0) {
+          this.mappingStationData = response.dataList.filter(item => item.isActive === true);
+          this.staticPagination.listLength = this.mappingStationData.length;
+          this.modalService.dismissAll();
+        } else {
+          this.mappingStationData = [];
+          this.staticPagination.listLength = this.mappingStationData.length;
+        }
+      }
+      else {
+        this.mappingStationData = [];
+        // this.modalService.dismissAll();
+        this.staticPagination.listLength = this.mappingStationData.length;
+      }
+    }, (error: any) => {
+      this.mappingStationData = [];
+      this.listLoading = false;
+
+    })
+  }
+  
+  submitWorkstationMapping(form) {
+    if (form.invalid) {
+      Object.keys(form.controls).forEach(key => {
+        form.get(key).markAsTouched();
+      });
+      return;
+    }
+    
+    this.submitSpinner = true;
+    
+    // Get the selected master workstation to extract deptId and lineId
+    const selectedMasterWorkstationId = form.value.masterWorkstation[0].id;
+    
+    // Find the corresponding entry in workstationList to get deptId and lineId
+    const masterWorkstation = this.workstationList.find(item => item.id === selectedMasterWorkstationId);
+    
+    const mappingData = {
+      orgId: this.userDet.organization.orgId,
+      branchId: form.value.branch[0].id,
+      parentWorkstationId: selectedMasterWorkstationId,
+      childWorkstationId: this.getIDsArray(form.value.mappingWorkstations),
+      isActive: true,
+      deptId: masterWorkstation ? masterWorkstation.deptId : null,
+      lineId: masterWorkstation ? masterWorkstation.lineId : null
+    };
+
+    if (this.isEditing) {
+      // Update existing mapping
+      this.skillMatrixService.updateWorkstationMapping('apis/sm/workstation-mapping/update', mappingData).subscribe(
+        (response: any) => {
+          this.submitSpinner = false;
+          if (response.result) {
+            this.alertService.success("Workstation mapping updated successfully.");
+            this.workstationMappingForm.reset();
+            this.modalService.dismissAll();
+            this.getMappingList(); // Refresh the list after update
+          } else {
+            this.alertService.error('Error occurred while updating mapping. Please try again');
+          }
+        },
+        (error: any) => {
+          this.submitSpinner = false;
+          this.alertService.error('Error occurred while updating mapping. Please try again');
+        }
+      );
+    } else {
+      // Create new mapping
+      this.skillMatrixService.saveWorkstationMapping('apis/sm/workstation-mapping/save', mappingData).subscribe(
+        (response: any) => {
+          this.submitSpinner = false;
+          if (response.result) {
+            this.alertService.success("Workstation mapping saved successfully.");
+            this.workstationMappingForm.reset();
+            this.modalService.dismissAll();
+            this.getMappingList(); // Refresh the list after save
+          } else {
+            this.alertService.error('Error occurred while saving mapping. Please try again');
+          }
+        },
+        (error: any) => {
+          this.submitSpinner = false;
+          this.alertService.error('Error occurred while saving mapping. Please try again');
+        }
+      );
+    }
+  }
+  
+  onDeleteWorkstationMapping(data) {
+    Swal.fire({
+      title: 'Are You Sure!',
+      text: 'Do you want to remove this workstation mapping?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#7044cd',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Remove It',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+    }).then((result) => {
+      this.dataSpinner[data] = true;
+      if (result.isConfirmed) {
+        const deletePayload = {
+          parentWorkstationId: data.parentWorkstationId,
+          branchId: data.branchId
+        };
+        this.skillMatrixService.deleteWorkstationMapping('apis/sm/workstation-mapping/delete-by-parent', deletePayload).subscribe((response: any) => {
+          this.dataSpinner[data.id] = false;
+          if (response.result) {
+            this.alertService.success("Workstation mapping removed successfully");
+            this.getMappingList();
+          }
+          else {
+            if (response.statusCode == 100) {
+              this.alertService.error(response.reason);
+            } else {
+              this.alertService.error('Error occurred while removing mapping. Please try again');
+            }
+          }
+        })
+      } else {
+        this.dataSpinner[data.id] = false;
+      }
+    });
+  }
+
+  updateWorkstationMappingForm(modal, data) {
+    this.isEditing = true;
+    console.log(data);
+    this.modalTital = "Update Workstation Mapping"
+
+    // Get the branch details
+    const branch = this.branchAccessList.find(b => b.name === data.branchName);
+    
+    // Get the master workstation details
+    const masterWorkstation = {
+      id: data.parentWorkstationId,
+      name: data.parentWorkstationName
+    };
+
+    // Get the child workstations
+    const childWorkstations = data.childWorkstations.map(child => ({
+      id: child.childWorkstationId,
+      name: child.childWorkstationName
+    }));
+
+    this.workstationMappingForm.patchValue({
+      branch: [branch],
+      masterWorkstation: [masterWorkstation],
+      mappingWorkstations: childWorkstations
+    });
+
+    // Get the workstation list for the selected branch
+    this.getListForMapping(branch.id);
+
+    this.modalService.open(modal, {
+      windowClass: 'top'
+    });
+  }
 }

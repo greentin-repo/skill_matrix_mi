@@ -5,11 +5,13 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Sort } from '@angular/material/sort';
 import * as moment from 'moment';
+import { Workbook } from 'exceljs';
+import * as fs from 'file-saver';
 
 @Component({
-  selector: 'app-actions',
-  templateUrl: './actions.component.html',
-  styleUrls: ['./actions.component.scss']
+  selector: "app-actions",
+  templateUrl: "./actions.component.html",
+  styleUrls: ["./actions.component.scss"],
 })
 export class ActionsComponent implements OnInit {
   filterFormData: FormGroup;
@@ -37,29 +39,30 @@ export class ActionsComponent implements OnInit {
     maxSize: 5,
     itemsPerPage: 10,
     totalPages: 0,
-    listLength: 0
-  }
+    listLength: 0,
+  };
+  exportLoading: boolean = false;
   constructor(
     private skillingService: SkillingService,
     private modalService: NgbModal,
-    private fb: FormBuilder,
-  ) { }
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
-    this.loggedInEmpDet = JSON.parse(localStorage.getItem('userDet'));
+    this.loggedInEmpDet = JSON.parse(localStorage.getItem("userDet"));
 
     this.filterFormData = this.fb.group({
-      branch: new FormControl('', Validators.required),
-      dept: new FormControl(''),
-      lineIds: new FormControl(''),
+      branch: new FormControl("", Validators.required),
+      dept: new FormControl(""),
+      lineIds: new FormControl(""),
       fromDate: new FormControl(""),
       toDate: new FormControl(""),
-      skillLvlId: new FormControl(''),
+      skillLvlId: new FormControl(""),
     });
     this.SingleDropdownSettings = {
       singleSelection: true,
-      idField: 'id',
-      textField: 'name',
+      idField: "id",
+      textField: "name",
       allowSearchFilter: true,
       closeDropDownOnSelection: true,
     };
@@ -97,6 +100,7 @@ export class ActionsComponent implements OnInit {
       this.getSkillMatrixOjtList()
     }
   }
+
   filterModalOpen(modal: any) {
     this.filterFlag = true
     this.modalService.open(modal, {
@@ -108,16 +112,36 @@ export class ActionsComponent implements OnInit {
   * @Date August 24, 2023
  */
   getBranchAccessList() {
-    this.skillingService.getBranchAccessList('getBranchAccessSetupByEmpId/' + this.loggedInEmpDet.organization.orgId + "/" + this.loggedInEmpDet.empId)
+    this.skillingService
+      .getBranchAccessList(
+        "getBranchAccessSetupByEmpId/" +
+          this.loggedInEmpDet.organization.orgId +
+          "/" +
+          this.loggedInEmpDet.empId
+      )
       .subscribe((res: any) => {
         if (res.result) {
           if (res.branchAccessList != null && res.branchAccessList.length > 0) {
-            this.plantList = this.setArray(res.branchAccessList, 'branchId', 'branchName');
+            this.plantList = this.setArray(
+              res.branchAccessList,
+              "branchId",
+              "branchName"
+            );
           } else {
-            this.plantList = [{ id: this.loggedInEmpDet.branch.branchId, name: this.loggedInEmpDet.branch.name }];
+            this.plantList = [
+              {
+                id: this.loggedInEmpDet.branch.branchId,
+                name: this.loggedInEmpDet.branch.name,
+              },
+            ];
           }
         } else {
-          this.plantList = [{ id: this.loggedInEmpDet.branch.branchId, name: this.loggedInEmpDet.branch.name }];
+          this.plantList = [
+            {
+              id: this.loggedInEmpDet.branch.branchId,
+              name: this.loggedInEmpDet.branch.name,
+            },
+          ];
         }
         // this.searchDet.branchId = [this.plantList[0]];
       });
@@ -137,19 +161,25 @@ export class ActionsComponent implements OnInit {
     * @Date August 24, 2023
   */
   getDeptList(branch) {
-    this.skillingService.getdepartmentlistbybranchid('getdepartmentlistbybranchid/' + branch.id).subscribe((response: any) => {
-      if (response.result) {
-        if (response.deptList != null && response.deptList.length > 0) {
-          this.masterDeptList = this.setArray(response.deptList, 'deptId', 'deptName');
-          console.log(this.masterDeptList)
-          // this.searchDet.skillLvlId = [this.masterLevelList[0]];
+    this.skillingService
+      .getdepartmentlistbybranchid("getdepartmentlistbybranchid/" + branch.id)
+      .subscribe((response: any) => {
+        if (response.result) {
+          if (response.deptList != null && response.deptList.length > 0) {
+            this.masterDeptList = this.setArray(
+              response.deptList,
+              "deptId",
+              "deptName"
+            );
+            console.log(this.masterDeptList);
+            // this.searchDet.skillLvlId = [this.masterLevelList[0]];
+          } else {
+            this.masterDeptList = [];
+          }
         } else {
           this.masterDeptList = [];
         }
-      } else {
-        this.masterDeptList = [];
-      }
-    })
+      });
   }
   /* get skill mtrix action list
      Author : simran
@@ -160,18 +190,18 @@ export class ActionsComponent implements OnInit {
     if (this.staticPagination.page == 1) {
       this.staticPagination.offset = 0;
     } else {
-      this.staticPagination.offset = (this.staticPagination.page - 1) * this.staticPagination.itemsPerPage;
+      this.staticPagination.offset =
+        (this.staticPagination.page - 1) * this.staticPagination.itemsPerPage;
     }
     let req: any = {
-      'orgId': this.loggedInEmpDet.organization.orgId,
-      'offset': this.staticPagination.offset,
-      'limit': this.staticPagination.itemsPerPage
-    }
-    console.log(this.searchDet.branchId)
+      orgId: this.loggedInEmpDet.organization.orgId,
+      offset: this.staticPagination.offset,
+      limit: this.staticPagination.itemsPerPage,
+    };
+    console.log(this.searchDet.branchId);
     if (this.searchDet.branchId != null && this.searchDet.branchId.length > 0) {
       req.branchId = this.searchDet.branchId[0].id;
-    }
-    else {
+    } else {
       req.branchId = this.loggedInEmpDet.branch.branchId;
     }
     if (this.searchDet.deptId != null && this.searchDet.deptId.length > 0) {
@@ -186,10 +216,13 @@ export class ActionsComponent implements OnInit {
     if (this.searchDet.toDate != null) {
       req.toDate = moment(this.searchDet.toDate).format("YYYY-MM-DD");
     }
-    if (this.searchDet.skillLvlId != null && this.searchDet.skillLvlId.length > 0) {
+    if (
+      this.searchDet.skillLvlId != null &&
+      this.searchDet.skillLvlId.length > 0
+    ) {
       req.skillLevelId = this.searchDet.skillLvlId[0].id;
     }
-    if (this.searchDet.searchInput && this.searchDet.searchInput != '') {
+    if (this.searchDet.searchInput && this.searchDet.searchInput != "") {
       req.search = this.searchDet.searchInput;
     }
     if (this.sorting) {
@@ -198,30 +231,35 @@ export class ActionsComponent implements OnInit {
         req.orderType = this.sorting.direction.toUpperCase();
       }
     }
-    this.skillingService.getSkillMatrixActionList('apis/sm/getSkillMatrixActionList', req).subscribe((response: any) => {
-      if (response.result) {
-        if (this.staticPagination.page == 1) {
-          this.staticPagination.total = response.totalCount;
-          this.staticPagination.totalPages = Math.ceil(response.totalCount / this.staticPagination.itemsPerPage);
-        }
-        if (response.smActionList != null && response.smActionList.length > 0) {
-          this.actionList = response.smActionList;
-          console.log(this.actionList)
-          this.staticPagination.listLength = this.actionList.length;
-        }
-        else {
+    this.skillingService
+      .getSkillMatrixActionList("apis/sm/getSkillMatrixActionList", req)
+      .subscribe((response: any) => {
+        if (response.result) {
+          if (this.staticPagination.page == 1) {
+            this.staticPagination.total = response.totalCount;
+            this.staticPagination.totalPages = Math.ceil(
+              response.totalCount / this.staticPagination.itemsPerPage
+            );
+          }
+          if (
+            response.smActionList != null &&
+            response.smActionList.length > 0
+          ) {
+            this.actionList = response.smActionList;
+            console.log(this.actionList);
+            this.staticPagination.listLength = this.actionList.length;
+          } else {
+            this.actionList = [];
+            this.staticPagination.listLength = this.actionList.length;
+          }
+        } else {
           this.actionList = [];
+          this.listLoading = false;
           this.staticPagination.listLength = this.actionList.length;
         }
-      }
-      else {
-        this.actionList = [];
-        this.listLoading = false;
-        this.staticPagination.listLength = this.actionList.length;
-      }
-    });
+      });
     console.log(req);
-  }
+  };
   /*
         Apply filter function
         Author: simran
@@ -230,7 +268,7 @@ export class ActionsComponent implements OnInit {
   submitFilterForm(form) {
     this.submitAttempted = true;
     if (form.invalid) {
-      Object.keys(form.controls).forEach(key => {
+      Object.keys(form.controls).forEach((key) => {
         form.controls[key].markAsDirty();
       });
       return;
@@ -276,7 +314,7 @@ export class ActionsComponent implements OnInit {
     Date : 14/09/2023
   */
   onChange(ev: any, type) {
-    console.log(ev)
+    console.log(ev);
     // if (ev) {
     //   this.getDeptList(ev)
     // } else {
@@ -288,9 +326,7 @@ export class ActionsComponent implements OnInit {
         //this.getLineNameList(ev);
         this.searchDet.deptId = [];
         this.searchDet.lineIds = [];
-
-      }
-      else if (type == "dept") {
+      } else if (type == "dept") {
         this.getCellList(ev);
         //this.getLineNameList(ev);
         this.searchDet.lineIds = [];
@@ -300,8 +336,7 @@ export class ActionsComponent implements OnInit {
         if (this.searchDet) {
           this.searchDet.departmentList = [];
         }
-      }
-      else if (type == "dept") {
+      } else if (type == "dept") {
         if (this.searchDet) {
           this.searchDet.cellLineList = [];
         }
@@ -323,7 +358,7 @@ export class ActionsComponent implements OnInit {
 
   sortData(sort: Sort) {
     this.sorting = sort;
-    this.getSkillMatrixOjtList()
+    this.getSkillMatrixOjtList();
   }
 
   /*
@@ -331,6 +366,7 @@ export class ActionsComponent implements OnInit {
     Author: Simran
     Date : 14/09/2023
   */
+ 
   clearPagination() {
     this.staticPagination = {
       total: 0,
@@ -341,6 +377,7 @@ export class ActionsComponent implements OnInit {
       listLength: 0
     }
   }
+
   getSortFunction(array, fieldToSort) {
     if (array && Array.isArray(array) && array.length > 0) {
       if (fieldToSort === "dept" || fieldToSort === "plant") {
@@ -386,47 +423,58 @@ export class ActionsComponent implements OnInit {
      Date : 30/10/2023
  */
   getMasterSkillLevelList() {
-    this.skillingService.getMasterLevelList('apis/sm/getLevelList').subscribe((res: any) => {
-      if (res.result) {
-        if (res.dataList != null && res.dataList.length > 0) {
-          this.masterLevelList = this.setArray(res.dataList, 'id', 'levelName');
-          // this.searchDet.skillLvlId = [this.masterLevelList[0]];
+    this.skillingService
+      .getMasterLevelList("apis/sm/getLevelList")
+      .subscribe((res: any) => {
+        if (res.result) {
+          if (res.dataList != null && res.dataList.length > 0) {
+            this.masterLevelList = this.setArray(
+              res.dataList,
+              "id",
+              "levelName"
+            );
+            // this.searchDet.skillLvlId = [this.masterLevelList[0]];
+          } else {
+            this.masterLevelList = [];
+          }
         } else {
           this.masterLevelList = [];
         }
-      } else {
-        this.masterLevelList = [];
-      }
-    })
+      });
   }
   getCellList(data) {
     var req: any = {
       branchId: this.searchDet.branchId[0].id,
       // deptId:this.searchDet.deptId
-      deptId: data.id
+      deptId: data.id,
     };
-    this.skillingService.getCellList("apis/sm/getCellList", req).subscribe((response: any) => {
-      if (response.result) {
-        if (response.dataList != null && response.dataList.length > 0) {
-          this.cellList = this.setArray(response.dataList, "lineId", "lineName");
-          // this.cellList = this.sortFunction( this.cellList,"lineName");
-          console.log(this.cellList)
-          // this.searchDet.cell = [this.cellList[0]];
-          console.log(this.searchDet.cell)
-
+    this.skillingService
+      .getCellList("apis/sm/getCellList", req)
+      .subscribe((response: any) => {
+        if (response.result) {
+          if (response.dataList != null && response.dataList.length > 0) {
+            this.cellList = this.setArray(
+              response.dataList,
+              "lineId",
+              "lineName"
+            );
+            // this.cellList = this.sortFunction( this.cellList,"lineName");
+            console.log(this.cellList);
+            // this.searchDet.cell = [this.cellList[0]];
+            console.log(this.searchDet.cell);
+          } else {
+            this.cellList = [];
+          }
         } else {
           this.cellList = [];
         }
-      } else {
-        this.cellList = [];
-      }
-    });
+      });
   }
   onChangeAll(ev: any, type) {
     if (ev) {
-      console.log('Select All action');
+      console.log("Select All action");
     } else {
-      console.log('Unselect All action');
+      console.log("Unselect All action");
     }
   }
   getIDsArray(array) {
@@ -437,5 +485,132 @@ export class ActionsComponent implements OnInit {
       }
     }
     return tmp;
+  }
+
+  // Initiate the API call to fetch all records
+  getAllActionList() {
+    this.exportLoading = true;
+    
+    // Create request with current filters but no pagination limits
+    let req: any = {
+      orgId: this.loggedInEmpDet.organization.orgId,
+    };
+
+    // Apply filters from searchDet
+    if (this.searchDet.branchId != null && this.searchDet.branchId.length > 0) {
+      req.branchId = this.searchDet.branchId[0].id;
+    } else {
+      req.branchId = this.loggedInEmpDet.branch.branchId;
+    }
+    if (this.searchDet.deptId != null && this.searchDet.deptId.length > 0) {
+      req.deptId = this.searchDet.deptId[0].id;
+    }
+    if (this.searchDet.lineIds != null && this.searchDet.lineIds.length > 0) {
+      req.lineIds = this.getIDsArray(this.searchDet.lineIds);
+    }
+    if (this.searchDet.fromDate != null) {
+      req.fromDt = moment(this.searchDet.fromDate).format("YYYY-MM-DD");
+    }
+    if (this.searchDet.toDate != null) {
+      req.toDate = moment(this.searchDet.toDate).format("YYYY-MM-DD");
+    }
+    if (this.searchDet.skillLvlId != null && this.searchDet.skillLvlId.length > 0) {
+      req.skillLevelId = this.searchDet.skillLvlId[0].id;
+    }
+    if (this.searchDet.searchInput && this.searchDet.searchInput != "") {
+      req.search = this.searchDet.searchInput;
+    }
+    if (this.sorting) {
+      if (this.sorting.direction != "") {
+        req.colName = this.sorting.active;
+        req.orderType = this.sorting.direction.toUpperCase();
+      }
+    }
+
+    this.skillingService
+      .getSkillMatrixActionList("apis/sm/getSkillMatrixActionList", req)
+      .subscribe((response: any) => {
+        this.exportLoading = false;
+        if (response.result && response.smActionList != null && response.smActionList.length > 0) {
+          this.exportReport(response.smActionList);
+        } else {
+          alert("No data available to export.");
+        }
+      },
+      (error) => {
+        this.exportLoading = false;
+        console.error("Error fetching data:", error);
+        alert("Failed to fetch data for export.");
+      }
+    );
+  }
+
+  exportReport(response): void {
+    // Create a new workbook and worksheet
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet("Report");
+  
+    // Define columns for the worksheet - using the keys from your sample data
+    worksheet.columns = [
+      { header: "Branch Name", key: "branchName", width: 15 },
+      { header: "Assigned Employee ID", key: "assignedEmpId", width: 20 },
+      { header: "Assigned Employee Name", key: "assignedEmpName", width: 30 },
+      { header: "Company Employee ID", key: "cmpyEmpId", width: 20 },
+      { header: "OE Employee Name", key: "oeEmpName", width: 25 },
+      { header: "Department Name", key: "deptName", width: 25 },
+      { header: "Line Name", key: "lineName", width: 30 },
+      { header: "Workstation", key: "workstation", width: 20 },
+      { header: "Current Skill Level", key: "currentSkillLevel", width: 15 },
+      { header: "Activity Date", key: "activityDate", width: 20 },
+      { header: "Activity", key: "activity", width: 20 },
+      { header: "Status", key: "status", width: 15 },
+    ];
+
+    // Style the header row
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.getRow(1).fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FFD3D3D3" },
+    };
+  
+    // Process and add the data rows
+    response.forEach((record) => {
+      // Format dates if needed before adding to worksheet
+      if (record.activityDate) {
+        const date = new Date(record.activityDate);
+        if (!isNaN(date.getTime())) { // Check if date is valid
+          record = { 
+            ...record, 
+            activityDate: moment(record.activityDate).format("DD-MM-YYYY") 
+          };
+        }
+      }
+      worksheet.addRow(record);
+    });
+
+    // Auto-fit columns
+    worksheet.columns.forEach((column) => {
+      const lengths = column.values
+        ?.filter((v) => v !== undefined)
+        .map((v) => v.toString().length);
+      if (lengths && lengths.length > 0) {
+        const maxLength = Math.max(...lengths);
+        column.width = maxLength < 10 ? 10 : maxLength;
+      }
+    });
+
+    // Generate the Excel file with a more descriptive filename
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const today = new Date().toISOString().split("T")[0];      
+      let filename = `Skill_Matrix_Action_List${today}`;
+
+      fs.saveAs(blob, `${filename}.xlsx`);
+
+    });
   }
 }

@@ -92,12 +92,10 @@
                             [ngClass]="{'completed':x.status == 'COMPLETED','pending':x.status == 'PENDING','not-completed':x.status == 'NOT COMPLETED','rejected':x.status == 'REJECTED'}">
                             {{x.status || 'N/A'}}</td>
                         <td class="actionTd fixedColumn">
-                            <!-- <i class="fa fa-edit editIcon" (click)="addOJTPlan(AddOjtPlan,x,true)"></i>
-                            &nbsp; &nbsp; -->
-                            <i class="fa fa-eye editIcon" (click)="handleIconClick(x,ojtRegistrationDetails)"></i>
-                            <!-- &nbsp; &nbsp;
-                            <i *ngIf="x.status != 'PUBLISH'" class="fas fa-trash-alt deleteIcon"
-                                (click)="deleteOJTPlan(x)"></i>&nbsp; &nbsp; -->
+                            <div class="icon-container" [ngClass]="{'single-icon': !isSuperAdmin}">
+                                <i class="fa fa-eye editIcon" (click)="handleIconClick(x,ojtRegistrationDetails)"></i>
+                                <i *ngIf="x.status == 'PENDING' && isSuperAdmin" class="fas fa-trash-alt deleteIcon" (click)="handleDeletePendingOJT(x)"></i>
+                            </div>
                         </td>
                         <td colspan="11" class="text-center loading-div" *ngIf="listLoading">
                             <app-loading></app-loading>

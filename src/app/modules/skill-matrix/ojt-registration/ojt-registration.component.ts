@@ -40,6 +40,7 @@ export class OjtRegistrationComponent implements OnInit {
   };
   selectedOjtDetails: any = {};
   isAppliedFilter: boolean = false;
+  isSuperAdmin: any;
 
   constructor(private router: Router,
     public modalConfig: NgbModalConfig,
@@ -86,6 +87,7 @@ export class OjtRegistrationComponent implements OnInit {
     };
     this.getBranchAccessList();
     this.getOjtRegList("");
+    this.checkIsSuperAdmin();
   }
 
   getBranchAccessList() {
@@ -397,5 +399,38 @@ export class OjtRegistrationComponent implements OnInit {
     } else {
       this.getOjtRegList("");
     }
+  }
+
+  checkIsSuperAdmin() {    
+    this.isSuperAdmin = this.userDet.roles.some((role: any) => role.name === "SUPERADMIN")
+  }
+
+  handleDeletePendingOJT(obj) {
+    let payload = {
+      ojtId: obj.ojtRegisId
+    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want remove this OJT ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: '#7044cd',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Remove it',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.apiService.deletePendingOJTPlan(`deleteOjtRegistration`, payload).subscribe((response: any) => {
+          if (response.result) {
+            this.alertService.success("OJT Deleted successfully");
+            this.getOjtRegList("");
+          } else {
+            this.alertService.error("Error deleting OJT");
+          }
+        });
+      }
+    });
   }
 }
