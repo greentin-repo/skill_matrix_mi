@@ -68,13 +68,13 @@ export class ActionsComponent implements OnInit {
     };
     this.multipleDropdownSettings = {
       singleSelection: false,
-      idField: 'id',
-      textField: 'name',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
+      idField: "id",
+      textField: "name",
+      selectAllText: "Select All",
+      unSelectAllText: "UnSelect All",
       // itemsShowLimit: 3,
       itemsShowLimit: 2,
-      allowSearchFilter: true
+      allowSearchFilter: true,
     };
     // this.SingleDeptDropdownSettings = {
     //   singleSelection: true,
@@ -93,18 +93,16 @@ export class ActionsComponent implements OnInit {
     this.clearPagination();
     this.searchDet.searchData = ev;
     if (!ev) {
-      this.searchDet.searchInput = '';
+      this.searchDet.searchInput = "";
+      this.getSkillMatrixOjtList();
+    } else {
       this.getSkillMatrixOjtList();
     }
-    else {
-      this.getSkillMatrixOjtList()
-    }
   }
-
   filterModalOpen(modal: any) {
-    this.filterFlag = true
+    this.filterFlag = true;
     this.modalService.open(modal, {
-      windowClass: 'filterPopup',
+      windowClass: "filterPopup",
     });
   }
   /* gets Branch access list on employee
@@ -366,7 +364,6 @@ export class ActionsComponent implements OnInit {
     Author: Simran
     Date : 14/09/2023
   */
- 
   clearPagination() {
     this.staticPagination = {
       total: 0,
@@ -374,10 +371,9 @@ export class ActionsComponent implements OnInit {
       maxSize: 5,
       itemsPerPage: 10,
       totalPages: 0,
-      listLength: 0
-    }
+      listLength: 0,
+    };
   }
-
   getSortFunction(array, fieldToSort) {
     if (array && Array.isArray(array) && array.length > 0) {
       if (fieldToSort === "dept" || fieldToSort === "plant") {
@@ -552,17 +548,17 @@ export class ActionsComponent implements OnInit {
   
     // Define columns for the worksheet - using the keys from your sample data
     worksheet.columns = [
-      { header: "Branch Name", key: "branchName", width: 15 },
-      { header: "Assigned Employee ID", key: "assignedEmpId", width: 20 },
-      { header: "Assigned Employee Name", key: "assignedEmpName", width: 30 },
-      { header: "Company Employee ID", key: "cmpyEmpId", width: 20 },
-      { header: "OE Employee Name", key: "oeEmpName", width: 25 },
-      { header: "Department Name", key: "deptName", width: 25 },
-      { header: "Line Name", key: "lineName", width: 30 },
+      { header: "Plant", key: "branchName", width: 15 },
+      { header: "Assigned Emp ID", key: "assignedEmpId", width: 20 },
+      { header: "Assigned Name", key: "assignedEmpName", width: 30 },
+      { header: "Emp ID", key: "cmpyEmpId", width: 20 },
+      { header: "Emp Name", key: "oeEmpName", width: 25 },
+      { header: "Department", key: "deptName", width: 25 },
+      { header: "Cell/Line", key: "lineName", width: 30 },
       { header: "Workstation", key: "workstation", width: 20 },
-      { header: "Current Skill Level", key: "currentSkillLevel", width: 15 },
-      { header: "Activity Date", key: "activityDate", width: 20 },
-      { header: "Activity", key: "activity", width: 20 },
+      { header: "Level", key: "currentSkillLevel", width: 15 },
+      { header: "Assigned Date", key: "activityDate", width: 20 },
+      { header: "Pending Stage", key: "activity", width: 20 },
       { header: "Status", key: "status", width: 15 },
     ];
 
