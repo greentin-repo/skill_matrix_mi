@@ -163,7 +163,7 @@
                 </tbody>
             </table>
         </div>
-        <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMore($event)"></app-pagination>
+        <app-pagination [staticPagination]="staticPagination" (paginationData)="loadMoreMappingData($event)"></app-pagination>
     </div>
 </div>
 <!-- Top Modal -->
@@ -436,7 +436,7 @@
                     <ng-multiselect-dropdown name="masterWorkstation" class="custom-multiSelection customWidthForInter"
                         [placeholder]="'Select Master Workstation'" [settings]="SingleDropdownSettings" formControlName="masterWorkstation"
                         [data]="filteredWorkstationList"
-                        [disabled]="isEditing && workstationMappingForm.get('masterWorkstation').value" (onSelect)="onMasterWorkstationSelect($event)"
+                        [disabled]="isEditing && workstationMappingForm.get('branch').value" (onSelect)="onMasterWorkstationSelect($event)"
                         (onDeSelect)="onMasterWorkstationDeselect()">
                     </ng-multiselect-dropdown>
                     <div *ngIf="workstationMappingForm.controls['masterWorkstation']?.invalid && (workstationMappingForm.controls['masterWorkstation'].touched || workstationMappingForm.controls['masterWorkstation'].dirty)"
@@ -452,7 +452,8 @@
                 <div class="col-sm-8">
                   <ng-multiselect-dropdown name="mappingWorkstations" class="custom-multiSelection customWidthForInter"
                     [placeholder]="'Select Workstations For Mapping'" [settings]="multipleDropdownSettings" formControlName="mappingWorkstations"
-                    [data]="filteredWorkstationList">
+                    [data]="workstationMappingForm.get('masterWorkstation').value ? filteredWorkstationList : []"
+                    >
                   </ng-multiselect-dropdown>
                   <div *ngIf="workstationMappingForm.controls['mappingWorkstations']?.invalid && (workstationMappingForm.controls['mappingWorkstations'].touched || workstationMappingForm.controls['mappingWorkstations'].dirty)"
                     class="custom-errorMsg" style="padding-left: 15px;">

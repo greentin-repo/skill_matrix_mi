@@ -59,7 +59,7 @@ export class WorkStationComponent implements OnInit {
   selectedTab: any;
   isVisible: boolean = false;
   workstationMappingForm: FormGroup;
-  filteredWorkstationList: any; 
+  filteredWorkstationList: any[] = []
   workstationList: any[] = []; // For workstation mapping 
   @ViewChild('workstationMappingTemplate') workstationMappingTemplate: TemplateRef<any>;
 
@@ -119,7 +119,6 @@ export class WorkStationComponent implements OnInit {
     });
 
     this.selectTab('workStation');
-    this.getMappingList();
   }
 
   /* gets Branch access list on employee
@@ -720,6 +719,12 @@ export class WorkStationComponent implements OnInit {
     this.getWorkstationList();
   }
 
+  loadMoreMappingData(ev) {
+    this.mappingStationData = [];
+    this.listLoading = true;
+    this.staticPagination = ev;
+    this.getMappingList();
+  }
 
   /* get cell/line list
    @Author Saurabh salunke
@@ -843,6 +848,12 @@ export class WorkStationComponent implements OnInit {
       totalPages: 0,
       listLength: 0
     }
+
+    if (!this.isVisible) {
+      this.getMappingList();
+    } else {
+      this.getWorkstationList();
+    }
   }
 
   onChangeMappingPlant(event) {
@@ -933,15 +944,6 @@ export class WorkStationComponent implements OnInit {
         getReq.lineIds = this.getIDsArray(this.selectedBranch.cell)
       }
     }
-    if (this.selectedBranch.branch != null && this.selectedBranch.branch.length > 0) {
-      for (let i = 0; i < this.selectedBranch.branch.length; i++) {
-        getReq.branchId = this.selectedBranch.branch[0].id;
-
-      }
-    }
-    else{
-      getReq.branchId = this.userDet.branch.branchId; 
-    }
     if (this.selectedBranch.dept != null && this.selectedBranch.dept.length > 0) {
       for (let i = 0; i < this.selectedBranch.dept.length; i++) {
         getReq.deptId = this.selectedBranch.dept[0].id
@@ -957,17 +959,17 @@ export class WorkStationComponent implements OnInit {
     if (this.searchDet.searchData && this.searchDet.searchInput && this.searchDet.searchInput != '') {
       getReq.search = this.searchDet.searchInput;
     } 
-    this.skillMatrixService.getWorkstationMappingList('apis/sm/getAllWorkstationMapping').subscribe((response: any) => {
+    this.skillMatrixService.getWorkstationMappingList('apis/sm/getAllWorkstationMapping', getReq).subscribe((response: any) => {
       this.submitSpinner = false;
       this.listLoading = false;
       if (response.result) {
         if (this.staticPagination.page == 1) {
-          this.staticPagination.total = response.totalCount;
+          this.staticPagination.total = response.totalCount || 0;
           this.staticPagination.totalPages = Math.ceil(this.mappingStationData.totalCount / this.staticPagination.itemsPerPage);
         }
         if (response.dataList != null && response.dataList.length > 0) {
           this.mappingStationData = response.dataList.filter(item => item.isActive === true);
-          this.staticPagination.listLength = this.mappingStationData.length;
+          this.staticPagination.listLength = this.mappingStationData.length || 0;
           this.modalService.dismissAll();
         } else {
           this.mappingStationData = [];
@@ -1042,7 +1044,11 @@ export class WorkStationComponent implements OnInit {
             this.modalService.dismissAll();
             this.getMappingList(); // Refresh the list after save
           } else {
-            this.alertService.error('Error occurred while saving mapping. Please try again');
+            if (response.result === false && response.statusCode === 500 && typeof response.reason === 'string' && response.reason.includes('Mapping already exists')) {
+              this.alertService.error('Workstation mapping already exists.');
+            } else {
+              this.alertService.error('Error occurred while saving mapping. Please try again');
+            }
           }
         },
         (error: any) => {
@@ -1092,37 +1098,45 @@ export class WorkStationComponent implements OnInit {
     });
   }
 
-  updateWorkstationMappingForm(modal, data) {
+  updateWorkstationMappingForm(template: TemplateRef<any>, data: any) {
     this.isEditing = true;
-    console.log(data);
-    this.modalTital = "Update Workstation Mapping"
+    this.modalTital = "Update Workstation Mapping";
 
-    // Get the branch details
     const branch = this.branchAccessList.find(b => b.name === data.branchName);
-    
-    // Get the master workstation details
+
     const masterWorkstation = {
       id: data.parentWorkstationId,
       name: data.parentWorkstationName
     };
 
-    // Get the child workstations
     const childWorkstations = data.childWorkstations.map(child => ({
       id: child.childWorkstationId,
       name: child.childWorkstationName
     }));
 
+    // PATCH FORM FIRST
     this.workstationMappingForm.patchValue({
       branch: [branch],
       masterWorkstation: [masterWorkstation],
       mappingWorkstations: childWorkstations
     });
 
-    // Get the workstation list for the selected branch
-    this.getListForMapping(branch.id);
+    // fetch list, THEN filter out master workstation
+    this.skillMatrixService.getWorkstationList('apis/sm/getWorkstationList', {
+      orgId: this.userDet.organization.orgId,
+      branchId: branch.id
+    }).subscribe((response: any) => {
+      if (response?.result && response?.dataList?.length) {
+        this.workstationList = response.dataList.filter(item => item.isActive === true);
+        this.filteredWorkstationList = this.setArray(this.workstationList, 'id', 'workstation');
+      } else {
+        this.workstationList = [];
+        this.filteredWorkstationList = [];
+      }
 
-    this.modalService.open(modal, {
-      windowClass: 'top'
+      this.modalService.open(template, {
+        windowClass: 'top'
+      });
     });
   }
 }
